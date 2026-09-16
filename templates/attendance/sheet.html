@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Planilla de Asistencia | {{ section.name }} - {{ subject.name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <h3 class="fw-bold text-dark mb-0">{{ section.name }} &bull; {{ subject.name }}</h3>
+            <span class="badge {{ session.academic_period.status_badge_class }}">
+                {{ session.academic_period.name }} ({{ session.academic_period.get_status_display }})
+            </span>
+        </div>
+        <p class="text-muted small mb-0">
+            <i class="bi bi-calendar3 me-1 text-primary"></i>Fecha: <strong>{{ session_date|date:"d/m/Y" }}</strong> &bull; Grado: {{ section.grade_level.name }} &bull; Registrado por: {{ session.recorded_by.get_full_name|default:session.recorded_by.username|default:"Docente" }}
+        </p>
+    </div>
+    <div class="d-flex gap-2">
+        {% if is_editable %}
+        <button class="btn btn-success btn-sm d-flex align-items-center gap-1 shadow-sm" 
+                hx-post="{% url 'attendance:mark_all_present' session.id %}" 
+                hx-target="#attendance-sheet-table-container" 
+                hx-swap="outerHTML"
+                title="Marcar todos los estudiantes de la lista como presentes">
+            <i class="bi bi-check-all fs-6"></i>
+            <span>Marcar Todos Presentes</span>
+        </button>
+        {% else %}
+        <span class="badge bg-danger p-2"><i class="bi bi-lock-fill me-1"></i>Periodo Cerrado - Modo Solo Lectura</span>
+        {% endif %}
+        <a href="{% url 'attendance:index' %}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
+            <i class="bi bi-arrow-left"></i>
+            <span>Cambiar Grupo/Fecha</span>
+        </a>
+    </div>
+</div>
+
+<!-- Leyenda del Semáforo Institucional de Faltas -->
+<div class="card ac-card p-3 mb-4 bg-light border-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 small">
+        <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-info-circle-fill text-primary fs-5"></i>
+            <strong>Semáforo de Faltas (Decreto 1290):</strong>
+        </div>
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+            <span class="d-flex align-items-center gap-1">
+                <span class="badge bg-success text-white">🟢 &lt; 10%</span>
+                <span class="text-muted">Asistencia Normal</span>
+            </span>
+            <span class="d-flex align-items-center gap-1">
+                <span class="badge bg-warning text-dark">🟡 10% - 19.9%</span>
+                <span class="text-muted">Advertencia Preventiva</span>
+            </span>
+            <span class="d-flex align-items-center gap-1">
+                <span class="badge bg-danger text-white">🔴 &ge; 20%</span>
+                <span class="text-muted">Riesgo de Pérdida / Bloqueo</span>
+            </span>
+        </div>
+        <div class="text-muted small">
+            <em>Convenciones: P (Presente) &bull; T (Tardanza) &bull; FJ (Falta Justificada) &bull; FI (Falta Injustificada)</em>
+        </div>
+    </div>
+</div>
+
+<!-- Planilla de Llamado de Lista Interactiva HTMX -->
+{% include 'attendance/partials/sheet_table.html' with enriched_records=enriched_records session=session is_editable=is_editable %}
+
+{% endblock %}

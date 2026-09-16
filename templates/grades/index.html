@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Planilla de Calificaciones | ACADEMIX{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold text-dark mb-0">Planilla y Matriz de Calificaciones</h3>
+        <p class="text-muted small mb-0">Ponderaciones porcentuales por criterio, notas numéricas y cálculo de definitivas</p>
+    </div>
+    <div>
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2">
+            <i class="bi bi-calendar-check me-1"></i> {{ current_year.name|default:"Año Escolar 2026" }}
+        </span>
+    </div>
+</div>
+
+<div class="row g-4 justify-content-center">
+    <div class="col-lg-8">
+        <div class="card ac-card p-4 p-md-5">
+            <h4 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                <i class="bi bi-card-checklist text-primary"></i> Seleccionar Asignatura y Periodo
+            </h4>
+            <p class="text-muted small mb-4">
+                Seleccione el grupo escolar, la materia y el periodo lectivo correspondiente para ingresar a la matriz con autoguardado en tiempo real.
+            </p>
+
+            <form method="GET" action="{% url 'grades:matrix' %}">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold text-secondary">Grupo / Sección Escolar</label>
+                        <select name="section_id" class="form-select form-select-lg" required>
+                            <option value="" disabled selected>-- Seleccione un curso --</option>
+                            {% for section in sections %}
+                            <option value="{{ section.id }}">{{ section.name }} (Grado {{ section.grade_level.name }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold text-secondary">Asignatura</label>
+                        <select name="subject_id" class="form-select form-select-lg" required>
+                            <option value="" disabled selected>-- Seleccione la asignatura --</option>
+                            {% for asg in assignments %}
+                            <option value="{{ asg.subject.id }}">{{ asg.subject.name }} ({{ asg.course_section.name }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label small fw-semibold text-secondary">Periodo Lectivo</label>
+                        <select name="period_id" class="form-select form-select-lg" required>
+                            {% for p in periods %}
+                            <option value="{{ p.id }}" {% if p == active_period %}selected{% endif %}>
+                                {{ p.name }} - {{ p.get_status_display }} ({{ p.percentage }}%)
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg fw-bold d-flex align-items-center justify-content-center gap-2 shadow-sm">
+                        <i class="bi bi-grid-3x3-gap-fill"></i>
+                        <span>Abrir Matriz de Calificaciones</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

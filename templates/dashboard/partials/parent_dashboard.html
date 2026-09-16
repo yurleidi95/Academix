@@ -1,0 +1,118 @@
+<!-- Dashboard Padre de Familia / Acudiente -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-4">
+        <div class="ac-card metric-card border-primary">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-semibold">MIS ACUDIDOS</div>
+                    <div class="fs-3 fw-bold text-dark mt-1">{{ stats.dependents_count|default:"0" }}</div>
+                    <span class="badge bg-primary-subtle text-primary mt-1 small">Estudiantes a cargo</span>
+                </div>
+                <div class="metric-icon-box bg-primary-subtle text-primary"><i class="bi bi-people-fill"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-4">
+        <div class="ac-card metric-card border-info">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-semibold">AÑO LECTIVO</div>
+                    <div class="fs-4 fw-bold text-dark mt-1">
+                        {% if stats.current_year %}{{ stats.current_year.year }}{% else %}—{% endif %}
+                    </div>
+                    <span class="badge bg-info-subtle text-info mt-1 small">En curso</span>
+                </div>
+                <div class="metric-icon-box bg-info-subtle text-info"><i class="bi bi-calendar-event-fill"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-4">
+        <div class="ac-card metric-card border-warning">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-semibold">PERIODO ACTIVO</div>
+                    <div class="fs-5 fw-bold text-dark mt-1">
+                        {% if stats.active_period %}{{ stats.active_period.name }}{% else %}Sin definir{% endif %}
+                    </div>
+                    <span class="badge bg-warning-subtle text-warning mt-1 small">Evaluación en curso</span>
+                </div>
+                <div class="metric-icon-box bg-warning-subtle text-warning"><i class="bi bi-hourglass-split"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    {% if stats.dependents %}
+    <div class="col-lg-8">
+        <div class="card ac-card p-4">
+            <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                <i class="bi bi-mortarboard-fill text-primary"></i> Mis Acudidos
+            </h5>
+            <div class="row g-3">
+                {% for dep in stats.dependents %}
+                <div class="col-md-6">
+                    <div class="border rounded-3 p-3 h-100 d-flex flex-column gap-2">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold"
+                                 style="width:45px; height:45px; font-size:1.2rem;">
+                                {{ dep.user.first_name|first|upper }}
+                            </div>
+                            <div>
+                                <div class="fw-bold text-dark">{{ dep.user.get_full_name }}</div>
+                                <small class="text-muted">Cód. {{ dep.student_code }}</small>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 mt-auto">
+                            <a href="{% url 'grades:index' %}" class="btn btn-sm btn-outline-primary flex-fill">
+                                <i class="bi bi-award me-1"></i>Notas
+                            </a>
+                            <a href="{% url 'attendance:index' %}" class="btn btn-sm btn-outline-success flex-fill">
+                                <i class="bi bi-calendar-check me-1"></i>Asistencia
+                            </a>
+                            {% if stats.active_period %}
+                            <a href="{% url 'reports:student_bulletin' student_id=dep.id period_id=stats.active_period.id %}"
+                               class="btn btn-sm btn-outline-info flex-fill">
+                                <i class="bi bi-file-text me-1"></i>Boletín
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card ac-card p-4 h-100">
+            <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                <i class="bi bi-info-circle-fill text-info"></i> Información Útil
+            </h5>
+            <div class="d-flex flex-column gap-3">
+                <div class="p-3 bg-warning-subtle rounded-3">
+                    <div class="fw-semibold text-warning-emphasis mb-1"><i class="bi bi-exclamation-triangle-fill me-1"></i>Aviso de Faltas</div>
+                    <small class="text-muted">Recibirá alertas automáticas cuando su acudido supere el 15% de inasistencias acumuladas.</small>
+                </div>
+                <div class="p-3 bg-primary-subtle rounded-3">
+                    <div class="fw-semibold text-primary mb-1"><i class="bi bi-file-earmark-text-fill me-1"></i>Boletines Disponibles</div>
+                    <small class="text-muted">Los boletines oficiales se generan al cierre de cada periodo lectivo académico.</small>
+                </div>
+                <div class="p-3 bg-success-subtle rounded-3">
+                    <div class="fw-semibold text-success mb-1"><i class="bi bi-shield-check me-1"></i>Datos Seguros</div>
+                    <small class="text-muted">Toda la información académica está protegida y auditada de forma inmutable.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info d-flex align-items-center gap-3 p-4 rounded-3">
+            <i class="bi bi-info-circle-fill fs-1 text-info"></i>
+            <div>
+                <h5 class="fw-bold mb-1">Sin Estudiantes Asociados</h5>
+                <p class="mb-0">No tiene ningún estudiante vinculado a su cuenta como acudiente. Comuníquese con la Secretaría Académica para que registren la relación con su acudido.</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>

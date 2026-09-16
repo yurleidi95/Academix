@@ -1,0 +1,10 @@
+from django.urls import path
+from . import views
+
+app_name = 'grades'
+
+urlpatterns = [
+    path('', views.grades_index_view, name='index'),
+    path('matrix/', views.grades_matrix_view, name='matrix'),
+    path('update-inline/', views.update_score_inline_view, name='update_inline'),
+]

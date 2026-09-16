@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block title %}Agenda de Actividades Institucionales | ACADEMIX{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold text-dark mb-0">
+            <i class="bi bi-calendar-event text-primary me-2"></i>Agenda y Actividades Institucionales
+        </h3>
+        <p class="text-muted small mb-0">Eventos pedagógicos, culturales y reuniones programadas en la institución</p>
+    </div>
+    {% if can_schedule %}
+    <div>
+        <button class="btn btn-primary btn-sm d-flex align-items-center gap-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#newActivityModal">
+            <i class="bi bi-calendar-plus-fill"></i>
+            <span>Programar Nueva Actividad</span>
+        </button>
+    </div>
+    {% endif %}
+</div>
+
+<div class="row g-4">
+    <!-- Listado de Actividades -->
+    <div class="col-lg-8">
+        <div class="card ac-card p-4">
+            <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                <i class="bi bi-calendar3 text-primary"></i> Próximos Eventos
+            </h5>
+
+            {% if activities %}
+            <div class="d-flex flex-column gap-3">
+                {% for act in activities %}
+                <div class="border rounded-3 p-3 bg-white shadow-sm transition-hover">
+                    <div class="d-flex justify-content-between align-items-start gap-2 flex-wrap">
+                        <div>
+                            <span class="badge {% if act.target_audience == 'STUDENTS' %}bg-info-subtle text-info border border-info-subtle{% elif act.target_audience == 'TEACHERS' %}bg-success-subtle text-success border border-success-subtle{% elif act.target_audience == 'PARENTS' %}bg-warning-subtle text-warning-emphasis border border-warning-subtle{% else %}bg-primary-subtle text-primary border border-primary-subtle{% endif %} mb-2">
+                                <i class="bi bi-people me-1"></i>{{ act.get_target_audience_display }}
+                            </span>
+                            <h5 class="fw-bold text-dark mb-1">{{ act.title }}</h5>
+                            <div class="text-muted small mb-2 d-flex align-items-center gap-3 flex-wrap">
+                                <span><i class="bi bi-calendar-check me-1 text-primary"></i><strong>{{ act.event_date|date:"l, d \d\e F \d\e Y" }}</strong></span>
+                                {% if act.event_time %}
+                                <span><i class="bi bi-clock me-1 text-secondary"></i>{{ act.event_time|time:"H:i" }}</span>
+                                {% endif %}
+                                <span><i class="bi bi-geo-alt me-1 text-danger"></i>{{ act.location }}</span>
+                            </div>
+                        </div>
+                        <div>
+                            {% if act.event_date < today %}
+                            <span class="badge bg-secondary-subtle text-secondary border">Realizada</span>
+                            {% elif act.event_date == today %}
+                            <span class="badge bg-danger text-white animate-pulse">¡Hoy!</span>
+                            {% else %}
+                            <span class="badge bg-success-subtle text-success border">Próxima</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <p class="text-secondary small mb-0 mt-2">{{ act.description }}</p>
+                    {% if act.created_by %}
+                    <div class="text-muted small mt-2 pt-2 border-top d-flex justify-content-between align-items-center" style="font-size: 0.75rem;">
+                        <span>Publicado por: {{ act.created_by.get_full_name|default:act.created_by.username }}</span>
+                        <span>Registrado: {{ act.created_at|date:"d/m/Y H:i" }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-calendar-x fs-1 opacity-25 d-block mb-2"></i>
+                <p class="mb-0">No hay actividades institucionales programadas actualmente.</p>
+                {% if can_schedule %}
+                <small>Haz clic en "Programar Nueva Actividad" para registrar la primera.</small>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Panel Lateral Informativo -->
+    <div class="col-lg-4">
+        <div class="card ac-card p-4 h-100">
+            <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                <i class="bi bi-info-circle-fill text-info"></i> Notificaciones Escolares
+            </h5>
+            <div class="d-flex flex-column gap-3">
+                <div class="p-3 bg-primary-subtle rounded-3">
+                    <div class="fw-semibold text-primary mb-1"><i class="bi bi-bell-fill me-1"></i>Avisos a Estudiantes</div>
+                    <small class="text-muted">Al programar una actividad, el sistema genera automáticamente una notificación visible en la barra superior y en el panel principal de todos los estudiantes correspondientes.</small>
+                </div>
+                <div class="p-3 bg-success-subtle rounded-3">
+                    <div class="fw-semibold text-success mb-1"><i class="bi bi-shield-check me-1"></i>Difusión Institucional</div>
+                    <small class="text-muted">Las actividades dirigidas a toda la comunidad alertan de forma simultánea a padres de familia, docentes y directivos.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if can_schedule %}
+<!-- Modal para Programar Nueva Actividad -->
+<div class="modal fade" id="newActivityModal" tabindex="-1" aria-labelledby="newActivityModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold" id="newActivityModalLabel">
+                    <i class="bi bi-calendar-plus me-2"></i>Programar Actividad Institucional
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{% url 'alerts:activities' %}">
+                {% csrf_token %}
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted text-uppercase">Título de la Actividad *</label>
+                        <input type="text" name="title" class="form-control" placeholder="Ej: Jornada Pedagógica, Feria de la Ciencia, Entrega de Informes" required>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Fecha *</label>
+                            <input type="date" name="event_date" class="form-control" required value="{{ today|date:'Y-m-d' }}">
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-bold small text-muted text-uppercase">Hora (Opcional)</label>
+                            <input type="time" name="event_time" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted text-uppercase">Lugar / Espacio</label>
+                        <input type="text" name="location" class="form-control" placeholder="Ej: Auditorio Central, Cancha Múltiple, Salón de Clases" value="Instalaciones del Colegio">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted text-uppercase">Población Destinataria *</label>
+                        <select name="target_audience" class="form-select" required>
+                            <option value="ALL">Toda la Comunidad Institucional</option>
+                            <option value="STUDENTS" selected>Solo Estudiantes (Notificación directa al alumno)</option>
+                            <option value="TEACHERS">Solo Cuerpo Docente</option>
+                            <option value="PARENTS">Solo Padres de Familia / Acudientes</option>
+                        </select>
+                        <div class="form-text small">Los destinatarios verán la alerta emergente al iniciar sesión.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted text-uppercase">Descripción / Indicaciones</label>
+                        <textarea name="description" rows="3" class="form-control" placeholder="Detalles de la actividad, uniforme requerido, materiales, etc." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="bi bi-send-fill me-1"></i>Publicar y Notificar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

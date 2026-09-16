@@ -1,0 +1,87 @@
+<header class="topbar">
+    <div class="d-flex align-items-center">
+        <button class="btn btn-outline-secondary btn-sm me-3" id="sidebar-toggle" aria-label="Alternar barra lateral">
+            <i class="bi bi-list fs-5"></i>
+        </button>
+        <div class="d-none d-md-flex align-items-center text-muted small">
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle me-2">
+                <i class="bi bi-calendar-check me-1"></i> Año Lectivo 2026
+            </span>
+            <span class="text-secondary">&bull; Sede Central</span>
+        </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+        <!-- Indicador de Carga Global HTMX -->
+        <div class="htmx-indicator d-flex align-items-center text-primary small">
+            <div class="spinner-border spinner-border-sm me-1" role="status"></div>
+            <span>Sincronizando...</span>
+        </div>
+
+        <!-- Notificaciones Rápidas -->
+        <div class="dropdown">
+            <button class="btn btn-light btn-sm position-relative rounded-circle p-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-bell fs-6"></i>
+                <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                    <span class="visually-hidden">Alertas activas</span>
+                </span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="width: 280px;">
+                <li class="dropdown-header fw-bold">Centro de Avisos</li>
+                <li><hr class="dropdown-divider"></li>
+                <li class="px-3 py-2 small text-muted">
+                    <i class="bi bi-info-circle text-primary me-1"></i> Sistema operativo en Sprint 1 (Módulos base activos).
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item text-center small text-primary" href="#system-alerts-container">Ver todas las alertas</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Menú de Usuario y Rol -->
+        <div class="dropdown">
+            <button class="btn btn-light d-flex align-items-center gap-2 border-0 bg-transparent" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="sidebar-user-avatar bg-primary text-white" style="width: 36px; height: 36px; font-size: 0.9rem;">
+                    {{ user.first_name|first|default:user.username|first|upper }}
+                </div>
+                <div class="text-start d-none d-sm-block">
+                    <div class="fw-semibold text-dark small mb-0">{{ user.get_full_name|default:user.username }}</div>
+                    <span class="badge {{ user.get_role_badge_class }}" style="font-size: 0.65rem;">
+                        {{ user.get_role_display }}
+                    </span>
+                </div>
+                <i class="bi bi-chevron-down text-muted small ms-1"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                <li class="px-3 py-2 border-bottom">
+                    <span class="d-block fw-bold text-dark">{{ user.username }}</span>
+                    <small class="text-muted">{{ user.email|default:"Sin correo registrado" }}</small>
+                </li>
+                <li>
+                    <a class="dropdown-item py-2" href="{% url 'accounts:profile' %}">
+                        <i class="bi bi-person me-2 text-primary"></i> Mi Perfil
+                    </a>
+                </li>
+                {% if user.is_admin_role or user.is_rector %}
+                <li>
+                    <a class="dropdown-item py-2" href="{% url 'audit:list' %}">
+                        <i class="bi bi-shield-check me-2 text-success"></i> Bitácora de Auditoría
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item py-2" href="/admin/" target="_blank">
+                        <i class="bi bi-sliders me-2 text-warning"></i> Panel Django Admin
+                    </a>
+                </li>
+                {% endif %}
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item py-2 text-danger" href="{% url 'accounts:logout' %}">
+                        <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>

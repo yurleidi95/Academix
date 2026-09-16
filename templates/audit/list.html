@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Bitácora de Auditoría Inmutable | ACADEMIX{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold text-dark mb-0">Bitácora de Auditoría Inmutable</h3>
+        <p class="text-muted small mb-0">Trazabilidad estricta: quién, cuándo, qué afectó, valores JSON e IP de origen</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'audit:export_csv' %}" class="btn btn-success btn-sm fw-bold">
+            <i class="bi bi-file-earmark-spreadsheet-fill me-1"></i> Exportar Auditoría (CSV)
+        </a>
+        <button class="btn btn-outline-secondary btn-sm" hx-get="{% url 'audit:list' %}" hx-target="#audit-table-container" hx-swap="innerHTML">
+            <i class="bi bi-arrow-clockwise me-1"></i> Actualizar
+        </button>
+    </div>
+</div>
+
+<!-- Filtros Reactivos con HTMX -->
+<div class="card ac-card p-3 mb-4">
+    <form class="row g-3" hx-get="{% url 'audit:list' %}" hx-target="#audit-table-container" hx-trigger="change, keyup changed delay:350ms" hx-swap="innerHTML">
+        <div class="col-md-5">
+            <div class="input-group">
+                <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                <input type="text" name="q" class="form-control" placeholder="Buscar por motivo, usuario o ID..." value="{{ query }}">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <select name="action" class="form-select">
+                <option value="">-- Todas las acciones --</option>
+                {% for act_val, act_lbl in actions %}
+                <option value="{{ act_val }}" {% if action_filter == act_val %}selected{% endif %}>{{ act_lbl }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="table" class="form-control" placeholder="Filtrar por entidad/tabla..." value="{{ table_filter }}">
+        </div>
+    </form>
+</div>
+
+<!-- Contenedor de la Tabla Reemplazable por HTMX -->
+<div id="audit-table-container">
+    {% include 'audit/partials/audit_table.html' %}
+</div>
+
+{% endblock %}

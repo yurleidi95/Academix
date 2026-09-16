@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Estructura Académica y Cursos | ACADEMIX{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold text-dark mb-0">Estructura Académica y Cursos</h3>
+        <p class="text-muted small mb-0">Gestión de años escolares, grados, secciones y grupos institucionales</p>
+    </div>
+    <div class="d-flex gap-2">
+        {% if user.is_admin_role or user.is_rector %}
+        <button class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#createSectionModal">
+            <i class="bi bi-plus-circle"></i>
+            <span>Nuevo Grupo / Sección</span>
+        </button>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Métricas de Resumen -->
+<div class="row g-4 mb-4">
+    <div class="col-sm-6 col-lg-3">
+        <div class="ac-card metric-card border-primary p-3">
+            <div class="text-muted small fw-semibold">AÑO LECTIVO VIGENTE</div>
+            <div class="fs-4 fw-bold text-dark mt-1">{{ current_year.name|default:"Sin definir" }}</div>
+            <span class="badge bg-success-subtle text-success small"><i class="bi bi-check-circle me-1"></i>Vigente</span>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="ac-card metric-card border-info p-3">
+            <div class="text-muted small fw-semibold">GRADOS ESCOLARES</div>
+            <div class="fs-4 fw-bold text-dark mt-1">{{ grades.count }}</div>
+            <span class="text-muted small">Primaria, Secundaria y Media</span>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="ac-card metric-card border-warning p-3">
+            <div class="text-muted small fw-semibold">CURSOS / GRUPOS</div>
+            <div class="fs-4 fw-bold text-dark mt-1">{{ sections.count }}</div>
+            <span class="text-muted small">Registrados en {{ active_year.year|default:"2026" }}</span>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="ac-card metric-card border-success p-3">
+            <div class="text-muted small fw-semibold">DOCENTES DISPONIBLES</div>
+            <div class="fs-4 fw-bold text-dark mt-1">{{ teachers.count }}</div>
+            <span class="text-muted small">Para asignación de dirección</span>
+        </div>
+    </div>
+</div>
+
+<!-- Barra de Filtros Reactivos HTMX -->
+<div class="card ac-card p-3 mb-4">
+    <form class="row g-3" hx-get="{% url 'courses:sections_partial' %}" hx-target="#sections-table-container" hx-trigger="change, keyup changed delay:300ms" hx-swap="innerHTML">
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                <input type="text" name="q" class="form-control" placeholder="Buscar grupo por nombre (ej. 6-A)...">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <select name="grade" class="form-select">
+                <option value="">-- Todos los grados --</option>
+                {% for grade in grades %}
+                <option value="{{ grade.id }}">{{ grade.name }} ({{ grade.get_level_stage_display }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <select name="year" class="form-select">
+                {% for yr in years %}
+                <option value="{{ yr.id }}" {% if yr == active_year %}selected{% endif %}>{{ yr.name }} {% if yr.is_current %}(Vigente){% endif %}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </form>
+</div>
+
+<!-- Contenedor Reemplazable de la Tabla de Cursos -->
+<div id="sections-table-container">
+    {% include 'courses/partials/sections_table.html' %}
+</div>
+
+<!-- Modal para Crear Nuevo Grupo / Sección -->
+<div class="modal fade" id="createSectionModal" tabindex="-1" aria-labelledby="createSectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <form method="POST" action="{% url 'courses:create_section' %}">
+                {% csrf_token %}
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold" id="createSectionModalLabel">
+                        <i class="bi bi-plus-circle text-primary me-2"></i>Crear Nuevo Grupo Escolar
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Año Lectivo</label>
+                        <select name="academic_year" class="form-select" required>
+                            {% for yr in years %}
+                            <option value="{{ yr.id }}" {% if yr.is_current %}selected{% endif %}>{{ yr.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Grado Escolar</label>
+                        <select name="grade_level" class="form-select" required>
+                            {% for grade in grades %}
+                            <option value="{{ grade.id }}">{{ grade.name }} ({{ grade.get_level_stage_display }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold text-secondary">Identificador (ej. 6-C)</label>
+                            <input type="text" name="name" class="form-control" placeholder="6-C" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold text-secondary">Aula / Espacio</label>
+                            <input type="text" name="classroom" class="form-control" placeholder="Aula 203">
+                        </div>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold text-secondary">Cupo Máximo</label>
+                            <input type="number" name="capacity" class="form-control" value="35" min="1" max="50" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold text-secondary">Director de Grupo (Opcional)</label>
+                            <select name="homeroom_teacher" class="form-select">
+                                <option value="">-- Por asignar --</option>
+                                {% for t in teachers %}
+                                <option value="{{ t.id }}">{{ t.get_full_name|default:t.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary btn-sm fw-bold">Guardar Grupo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+<div class="modal-header bg-dark text-white">
+    <h5 class="modal-title fs-6 fw-bold">
+        <i class="bi bi-shield-check me-2 text-primary"></i>Detalle de Evento #{{ log.id }} — {{ log.table_name }}
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body p-4 small">
+    <div class="row g-2 mb-3">
+        <div class="col-6">
+            <span class="text-muted">Acción:</span> <strong>{{ log.get_action_display }}</strong>
+        </div>
+        <div class="col-6">
+            <span class="text-muted">Fecha y Hora:</span> <strong>{{ log.timestamp|date:"d/m/Y H:i:s" }}</strong>
+        </div>
+        <div class="col-6">
+            <span class="text-muted">Usuario Responsable:</span> <strong>{{ log.user.get_full_name|default:log.user.username }}</strong>
+        </div>
+        <div class="col-6">
+            <span class="text-muted">Dirección IP:</span> <strong>{{ log.ip_address|default:"127.0.0.1" }}</strong>
+        </div>
+        <div class="col-12">
+            <span class="text-muted">Motivo / Justificación:</span>
+            <div class="p-2 rounded bg-light border mt-1">{{ log.reason }}</div>
+        </div>
+    </div>
+
+    <h6 class="fw-bold text-dark border-bottom pb-2 mb-3">Diferencias y Estado de Datos (JSON)</h6>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="fw-bold text-danger small mb-1">
+                <i class="bi bi-dash-circle me-1"></i>Datos Anteriores (Old):
+            </label>
+            <pre class="bg-light p-2 rounded border font-monospace small" style="max-height: 200px; overflow-y: auto;">{{ log.old_values|default:"{}" }}</pre>
+        </div>
+        <div class="col-md-6">
+            <label class="fw-bold text-success small mb-1">
+                <i class="bi bi-plus-circle me-1"></i>Datos Nuevos (New):
+            </label>
+            <pre class="bg-light p-2 rounded border font-monospace small" style="max-height: 200px; overflow-y: auto;">{{ log.new_values|default:"{}" }}</pre>
+        </div>
+    </div>
+</div>
+<div class="modal-footer bg-light">
+    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+</div>

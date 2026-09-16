@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}Sábana Consolidada de Calificaciones — ACADEMIX{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+    <!-- Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom">
+        <div>
+            <h1 class="h3 fw-bold text-dark mb-1">
+                <i class="bi bi-grid-3x3-gap-fill text-success me-2"></i>Sábana Consolidada de Calificaciones
+            </h1>
+            <p class="text-muted small mb-0">
+                Matriz global de desempeño por grupo y periodo lectivo con ranking y promedios consolidados.
+            </p>
+        </div>
+        {% if data and selected_section and selected_period %}
+        <div class="d-flex gap-2 mt-3 mt-md-0">
+            <a href="{% url 'reports:export_consolidated_csv' selected_section.id selected_period.id %}" class="btn btn-success btn-sm fw-bold px-3">
+                <i class="bi bi-file-earmark-excel-fill me-1"></i>Descargar Excel (CSV)
+            </a>
+            <a href="{% url 'reports:section_bulletins_bulk' selected_section.id selected_period.id %}" target="_blank" class="btn btn-outline-primary btn-sm fw-bold px-3">
+                <i class="bi bi-printer-fill me-1"></i>Imprimir Todos los Boletines
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Filtros de Consulta -->
+    <div class="card border-0 shadow-sm rounded-3 mb-4">
+        <div class="card-body p-3">
+            <form method="get" action="{% url 'reports:consolidated' %}" class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label class="form-label small fw-bold text-muted mb-1">Grupo / Curso:</label>
+                    <select name="section_id" class="form-select form-select-sm" required>
+                        <option value="">-- Seleccione Sección --</option>
+                        {% for sec in sections %}
+                        <option value="{{ sec.id }}" {% if selected_section and selected_section.id == sec.id %}selected{% endif %}>
+                            {{ sec.name }} ({{ sec.grade_level.name }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label small fw-bold text-muted mb-1">Periodo Lectivo:</label>
+                    <select name="period_id" class="form-select form-select-sm" required>
+                        <option value="">-- Seleccione Periodo --</option>
+                        {% for per in periods %}
+                        <option value="{{ per.id }}" {% if selected_period and selected_period.id == per.id %}selected{% endif %}>
+                            {{ per.name }} ({{ per.percentage }}%)
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary btn-sm w-100 fw-bold py-2">
+                        <i class="bi bi-search me-1"></i>Consultar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if data %}
+    <!-- Sábana Consolidada -->
+    <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+            <h5 class="card-title fw-bold text-dark mb-0">
+                <i class="bi bi-table text-primary me-2"></i>Consolidado: {{ selected_section.name }} — {{ selected_period.name }}
+            </h5>
+            <span class="badge bg-light text-dark border">
+                Total Alumnos: <strong>{{ data.total_students }}</strong>
+            </span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle mb-0 text-center" style="font-size: 0.85rem;">
+                    <thead class="table-light text-muted small text-uppercase">
+                        <tr>
+                            <th style="width: 50px;">Pto</th>
+                            <th class="text-start ps-3" style="min-width: 200px;">Estudiante</th>
+                            {% for sub in data.subjects %}
+                            <th title="{{ sub.name }}" style="min-width: 80px;">
+                                {{ sub.code }}
+                            </th>
+                            {% endfor %}
+                            <th class="table-primary text-primary" style="width: 90px;">Promedio</th>
+                            <th style="width: 80px;">Reprob.</th>
+                            <th style="width: 90px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in data.rows %}
+                        <tr class="{% if row.failed_count > 0 %}table-danger-subtle{% endif %}">
+                            <td class="fw-bold font-monospace text-primary">
+                                {{ row.rank }}º
+                            </td>
+                            <td class="text-start ps-3">
+                                <div class="fw-bold text-dark small">{{ row.student.user.get_full_name|default:row.student.user.username }}</div>
+                                <small class="text-muted font-monospace" style="font-size: 0.72rem;">{{ row.student.student_code }}</small>
+                            </td>
+                            {% for score_item in row.scores_list %}
+                            <td>
+                                <span class="font-monospace fw-bold {% if not score_item.is_approved %}text-danger{% else %}text-dark{% endif %}">
+                                    {{ score_item.score|default:"1.00" }}
+                                </span>
+                            </td>
+                            {% endfor %}
+                            <td class="table-primary font-monospace fw-bold fs-6 {% if row.average >= 3.00 %}text-success{% else %}text-danger{% endif %}">
+                                {{ row.average }}
+                            </td>
+                            <td class="font-monospace fw-bold {% if row.failed_count > 0 %}text-danger{% else %}text-muted{% endif %}">
+                                {{ row.failed_count }}
+                            </td>
+                            <td>
+                                <a href="{% url 'reports:student_bulletin' row.student.id selected_period.id %}" target="_blank" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size: 0.75rem;" title="Ver Boletín Oficial">
+                                    <i class="bi bi-file-earmark-person"></i> Boletín
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="{{ data.subjects|length|add:5 }}" class="py-4 text-muted small">
+                                No se encontraron estudiantes matriculados activos en esta sección.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card border-0 shadow-sm rounded-3 py-5 text-center text-muted">
+        <div class="card-body">
+            <i class="bi bi-arrow-up-circle fs-1 text-primary mb-3 d-block"></i>
+            <h5 class="fw-bold text-dark">Seleccione un Grupo y Periodo Lectivo</h5>
+            <p class="small mb-0">Utilice el selector superior para cargar la matriz consolidada de calificaciones.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

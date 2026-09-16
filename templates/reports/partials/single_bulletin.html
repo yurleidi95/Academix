@@ -1,0 +1,176 @@
+<div class="bulletin-container">
+    <!-- Encabezado Institucional -->
+    <div class="institutional-header text-center">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div style="width: 70px;" class="text-start">
+                <i class="bi bi-mortarboard-fill fs-1 text-primary"></i>
+            </div>
+            <div class="flex-grow-1">
+                <h4 class="fw-bold mb-0 text-uppercase tracking-wide" style="color: #0f172a; letter-spacing: 1px;">
+                    COLEGIO INSTITUTO ACADEMIX
+                </h4>
+                <div class="text-muted small fw-semibold">
+                    Reconocimiento Oficial de Estudios — Resolución Ministerial No. 4589 de 2018<br>
+                    DANE: 111001002233 | NIT: 899.999.001-2 | Bogotá D.C., Colombia
+                </div>
+            </div>
+            <div style="width: 70px;" class="text-end">
+                <i class="bi bi-award-fill fs-1 text-warning"></i>
+            </div>
+        </div>
+        <div class="py-1 px-3 bg-dark text-white rounded-1 d-inline-block text-uppercase fw-bold" style="font-size: 0.78rem; letter-spacing: 1px;">
+            INFORME OFICIAL DE EVALUACIÓN Y RENDIMIENTO ESCOLAR (DECRETO 1290 DE 2009)
+        </div>
+    </div>
+
+    <!-- Metadatos del Estudiante y Periodo -->
+    <div class="metadata-box">
+        <div class="row g-2">
+            <div class="col-6 col-md-4">
+                <strong>Estudiante:</strong> {{ b.student.user.get_full_name|default:b.student.user.username }}
+            </div>
+            <div class="col-6 col-md-3">
+                <strong>Documento:</strong> {{ b.student.user.document_number|default:"Sin doc" }}
+            </div>
+            <div class="col-6 col-md-2">
+                <strong>Cód:</strong> {{ b.student.student_code }}
+            </div>
+            <div class="col-6 col-md-3 text-md-end">
+                <strong>Año Lectivo:</strong> {{ b.academic_year.year }}
+            </div>
+            <div class="col-6 col-md-4">
+                <strong>Grado y Grupo:</strong> {{ b.section.name }} ({{ b.section.grade_level.name }})
+            </div>
+            <div class="col-6 col-md-4">
+                <strong>Periodo Lectivo:</strong> {{ b.period.name }} ({{ b.period.percentage }}%)
+            </div>
+            <div class="col-12 col-md-4 text-md-end">
+                <strong>Director de Grupo:</strong> {{ b.group_director.user.get_full_name|default:"Prof. Titular" }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla Detallada de Calificaciones por Área -->
+    <div class="table-responsive mb-3">
+        <table class="table table-bordered table-bulletin align-middle mb-0">
+            <thead>
+                <tr class="text-center">
+                    <th class="text-start ps-2" style="width: 28%;">Áreas y Asignaturas / Docente</th>
+                    <th style="width: 6%;">I.H.</th>
+                    <th style="width: 28%;">Evaluaciones y Criterios Ponderados</th>
+                    <th style="width: 8%;">Faltas</th>
+                    <th style="width: 10%;">Nota Def.</th>
+                    <th style="width: 10%;">Desempeño</th>
+                    <th style="width: 10%;">Juicio / Obs.</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for area_data in b.bulletin_areas %}
+                <!-- Fila de Área de Conocimiento -->
+                <tr class="area-row">
+                    <td colspan="4" class="ps-2 text-uppercase font-monospace" style="font-size: 0.76rem;">
+                        <i class="bi bi-folder2-open me-1"></i>ÁREA: {{ area_data.area.name }}
+                    </td>
+                    <td class="text-center font-monospace fw-bold small text-primary">
+                        {{ area_data.area_average }}
+                    </td>
+                    <td colspan="2" class="small text-muted text-center">
+                        Promedio del Área
+                    </td>
+                </tr>
+
+                <!-- Asignaturas del Área -->
+                {% for sub_item in area_data.subjects %}
+                <tr>
+                    <td class="ps-3">
+                        <div class="fw-bold text-dark">{{ sub_item.subject.name }}</div>
+                        <small class="text-muted" style="font-size: 0.72rem;">
+                            Doc: {{ sub_item.teacher.user.get_full_name|default:"Docente Titular" }}
+                        </small>
+                    </td>
+                    <td class="text-center font-monospace small">
+                        {{ sub_item.subject.weekly_hours }}h
+                    </td>
+                    <td>
+                        <div style="font-size: 0.7rem;" class="text-muted">
+                            {% for c in sub_item.criteria %}
+                            <div class="d-flex justify-content-between">
+                                <span>{{ c.name }} ({{ c.percentage }}%):</span>
+                                <span class="font-monospace fw-bold {% if c.score < 3.00 %}text-danger{% else %}text-dark{% endif %}">{{ c.score }}</span>
+                            </div>
+                            {% empty %}
+                            <span class="fst-italic">Calificación directa de periodo</span>
+                            {% endfor %}
+                        </div>
+                    </td>
+                    <td class="text-center small">
+                        <span title="Faltas Injustificadas" class="{% if sub_item.unjustified_abs > 0 %}text-danger fw-bold{% endif %}">
+                            {{ sub_item.unjustified_abs }} FI
+                        </span><br>
+                        <span title="Faltas Justificadas" class="text-muted" style="font-size: 0.68rem;">
+                            {{ sub_item.justified_abs }} FJ
+                        </span>
+                    </td>
+                    <td class="text-center font-monospace fw-bold fs-6 {% if sub_item.is_approved %}text-success{% else %}text-danger{% endif %}">
+                        {{ sub_item.final_score }}
+                    </td>
+                    <td class="text-center">
+                        <span class="badge badge-perf {% if sub_item.is_approved %}bg-primary-subtle text-primary border border-primary{% else %}bg-danger-subtle text-danger border border-danger{% endif %}">
+                            {{ sub_item.performance_level }}
+                        </span>
+                    </td>
+                    <td class="small" style="font-size: 0.7rem;">
+                        {{ sub_item.feedback|default:"Logro superado satisfactoriamente."|truncatechars:45 }}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Cuadro de Resumen Estadístico y Puesto -->
+    <div class="row g-2 mb-3 align-items-center">
+        <div class="col-md-7">
+            <div class="border rounded-2 p-2 bg-light d-flex justify-content-around text-center small">
+                <div>
+                    <span class="text-muted d-block" style="font-size: 0.7rem;">Puesto en el Grupo:</span>
+                    <strong class="fs-5 text-primary">{{ b.student_rank }}º</strong> <small class="text-muted">/ {{ b.total_students_section }}</small>
+                </div>
+                <div class="border-start ps-3">
+                    <span class="text-muted d-block" style="font-size: 0.7rem;">Promedio del Periodo:</span>
+                    <strong class="fs-5 font-monospace {% if b.period_average >= 3.00 %}text-success{% else %}text-danger{% endif %}">{{ b.period_average }}</strong>
+                </div>
+                <div class="border-start ps-3">
+                    <span class="text-muted d-block" style="font-size: 0.7rem;">Asignaturas Reprobadas:</span>
+                    <strong class="fs-5 font-monospace {% if b.total_failed_count > 0 %}text-danger{% else %}text-success{% endif %}">{{ b.total_failed_count }}</strong>
+                </div>
+                <div class="border-start ps-3">
+                    <span class="text-muted d-block" style="font-size: 0.7rem;">Faltas Totales:</span>
+                    <strong class="fs-5 font-monospace text-dark">{{ b.total_absences_period }}</strong>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="border rounded-2 p-2 small text-muted" style="font-size: 0.68rem; line-height: 1.3;">
+                <strong>Escala Institucional Decreto 1290:</strong><br>
+                • <strong>Bajo:</strong> 1.00 a 2.99 (Reprobado)<br>
+                • <strong>Básico:</strong> 3.00 a 3.99 | <strong>Alto:</strong> 4.00 a 4.59 | <strong>Superior:</strong> 4.60 a 5.00
+            </div>
+        </div>
+    </div>
+
+    <!-- Bloque de Firmas Formales -->
+    <div class="row text-center mt-5 pt-2">
+        <div class="col-6">
+            <div class="signature-line"></div>
+            <strong class="d-block text-dark small">DRA. MARÍA RECTORA</strong>
+            <small class="text-muted" style="font-size: 0.72rem;">Rectora Institucional</small>
+        </div>
+        <div class="col-6">
+            <div class="signature-line"></div>
+            <strong class="d-block text-dark small">{{ b.group_director.user.get_full_name|default:"DIRECTOR(A) DE GRUPO"|upper }}</strong>
+            <small class="text-muted" style="font-size: 0.72rem;">Director(a) de Grupo</small>
+        </div>
+    </div>
+</div>

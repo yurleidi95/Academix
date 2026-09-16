@@ -1,0 +1,26 @@
+<div id="attendance-sheet-table-container" class="table-responsive bg-white rounded-3 border shadow-sm">
+    <table class="table table-hover align-middle mb-0">
+        <thead class="table-light small text-muted text-uppercase">
+            <tr>
+                <th style="width: 130px;">Código</th>
+                <th>Estudiante</th>
+                <th style="width: 260px;">Registro de Asistencia</th>
+                <th style="width: 170px;">Semáforo de Faltas</th>
+                <th>Desglose Acumulado</th>
+                <th class="text-end" style="width: 80px;">Soporte</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in enriched_records %}
+                {% include 'attendance/partials/student_row.html' with item=item session=session is_editable=is_editable %}
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center py-5 text-muted">
+                    <i class="bi bi-people display-6 d-block mb-2 text-secondary"></i>
+                    No hay estudiantes matriculados activos en este curso.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

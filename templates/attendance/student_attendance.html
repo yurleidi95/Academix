@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Mi Registro de Asistencia | ACADEMIX{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold text-dark mb-0">
+            <i class="bi bi-calendar2-check-fill text-success me-2"></i>Mi Registro de Asistencia
+        </h3>
+        <p class="text-muted small mb-0">
+            {% if enrollment %}
+            Grupo: <strong>{{ enrollment.course_section.name }}</strong> &bull; Año Lectivo: {{ current_year.year }}
+            {% else %}
+            Control de ausentismo y retardos
+            {% endif %}
+        </p>
+    </div>
+    <div>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
+            <i class="bi bi-arrow-left"></i>
+            <span>Volver al Panel</span>
+        </a>
+    </div>
+</div>
+
+<!-- Resumen de Asistencia por Asignatura -->
+<div class="row g-4 mb-4">
+    {% for item in attendance_by_subject %}
+    <div class="col-md-6 col-xl-4">
+        <div class="card ac-card p-3 h-100 shadow-sm border-0">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-monospace">
+                    {{ item.subject.code }}
+                </span>
+                <span class="badge {{ item.stats.semaphore_badge }}">
+                    {{ item.stats.semaphore_label }}
+                </span>
+            </div>
+            <h6 class="fw-bold text-dark mb-1">{{ item.subject.name }}</h6>
+            <small class="text-muted mb-3 d-block">{{ item.subject.area.name }}</small>
+
+            <div class="bg-light p-2 rounded-3 small mt-auto">
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted">Inasistencias:</span>
+                    <strong class="{% if item.stats.absence_percentage >= 20.0 %}text-danger{% elif item.stats.absence_percentage >= 10.0 %}text-warning{% else %}text-success{% endif %}">
+                        {{ item.stats.absence_percentage }}%
+                    </strong>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted">Faltas Injustificadas:</span>
+                    <span>{{ item.stats.unjustified_hours }} hora{{ item.stats.unjustified_hours|pluralize }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted">Faltas Justificadas:</span>
+                    <span>{{ item.stats.justified_hours }} hora{{ item.stats.justified_hours|pluralize }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted">Llegadas Tarde:</span>
+                    <span>{{ item.stats.late_count }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5 text-muted">
+        <i class="bi bi-calendar2-x fs-1 opacity-25 d-block mb-2"></i>
+        <p class="mb-0">No se registran sesiones de asistencia para este periodo lectivo.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Historial Detallado de Sesiones -->
+<div class="card ac-card p-4 shadow-sm border-0">
+    <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+        <i class="bi bi-clock-history text-primary"></i> Historial Reciente de Sesiones
+    </h5>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light small text-muted text-uppercase">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Asignatura</th>
+                    <th class="text-center">Horas</th>
+                    <th class="text-center">Estado Registrado</th>
+                    <th>Observación Docente</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rec in recent_records %}
+                <tr>
+                    <td class="fw-semibold">{{ rec.session.date|date:"d/m/Y" }}</td>
+                    <td>{{ rec.session.subject.name }}</td>
+                    <td class="text-center">{{ rec.session.hours_count }}</td>
+                    <td class="text-center">
+                        <span class="badge {{ rec.badge_class }}">
+                            {{ rec.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="small text-muted">{{ rec.remarks|default:"Sin observaciones" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted small">
+                        No hay llamadas de lista registradas recientemente.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

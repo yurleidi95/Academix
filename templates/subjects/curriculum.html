@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Malla Curricular y Asignaturas | ACADEMIX{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold text-dark mb-0">Malla Curricular y Asignaturas</h3>
+        <p class="text-muted small mb-0">Áreas fundamentales de conocimiento, asignaturas e intensidades horarias</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Listado de Áreas y Asignaturas Generales -->
+    <div class="col-lg-5">
+        <div class="card ac-card p-4 h-100">
+            <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                <i class="bi bi-book-half text-primary"></i> Áreas del Conocimiento
+            </h5>
+            <div class="accordion" id="accordionAreas">
+                {% for area in areas %}
+                <div class="accordion-item border-0 mb-2 rounded-3 shadow-sm overflow-hidden">
+                    <h2 class="accordion-header" id="headingArea{{ area.id }}">
+                        <button class="accordion-button collapsed py-2 px-3 fw-bold small bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseArea{{ area.id }}" aria-expanded="false">
+                            <i class="bi bi-folder2 text-secondary me-2"></i>{{ area.name }}
+                            <span class="badge bg-primary-subtle text-primary ms-auto me-2">{{ area.subjects.count }}</span>
+                        </button>
+                    </h2>
+                    <div id="collapseArea{{ area.id }}" class="accordion-collapse collapse" data-bs-parent="#accordionAreas">
+                        <div class="accordion-body p-2 bg-white small">
+                            <ul class="list-group list-group-flush">
+                                {% for subj in area.subjects.all %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-2 py-1">
+                                    <span>{{ subj.name }}</span>
+                                    <span class="badge bg-light text-muted font-monospace border">{{ subj.code }}</span>
+                                </li>
+                                {% empty %}
+                                <li class="list-group-item text-muted py-1 small">Sin asignaturas vinculadas.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted small">No hay áreas de conocimiento registradas.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Malla Curricular por Grado Escolar -->
+    <div class="col-lg-7">
+        <div class="card ac-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                    <i class="bi bi-clock-history text-success"></i> Intensidad Horaria por Grado
+                </h5>
+                <div class="d-flex gap-2">
+                    {% for grade in grades %}
+                    <a href="?grade={{ grade.id }}" class="btn btn-sm {% if grade == active_grade %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                        {{ grade.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="table-responsive bg-white rounded-3 border">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small text-muted text-uppercase">
+                        <tr>
+                            <th>Asignatura</th>
+                            <th>Área</th>
+                            <th class="text-center">Horas / Semana</th>
+                            <th class="text-end">Peso Área</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for gs in grade_subjects %}
+                        <tr>
+                            <td class="fw-bold text-dark small">
+                                {{ gs.subject.name }}
+                                <span class="badge bg-light text-muted font-monospace border ms-1">{{ gs.subject.code }}</span>
+                            </td>
+                            <td class="small text-muted">{{ gs.subject.area.name }}</td>
+                            <td class="text-center">
+                                <span class="badge bg-info-subtle text-info border border-info-subtle font-monospace">
+                                    {{ gs.weekly_hours }} hrs
+                                </span>
+                            </td>
+                            <td class="text-end font-monospace small fw-bold text-secondary">
+                                {{ gs.weight_percentage }}%
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-muted small">
+                                No se ha configurado la malla horaria para este grado.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

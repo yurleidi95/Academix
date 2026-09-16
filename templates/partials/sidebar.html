@@ -1,0 +1,224 @@
+<aside id="sidebar">
+    <a href="{% url 'dashboard' %}" class="sidebar-brand">
+        <i class="bi bi-mortarboard-fill"></i>
+        <span>ACADEMIX</span>
+    </a>
+
+    <div class="sidebar-user-badge">
+        <div class="sidebar-user-avatar">
+            {{ user.first_name|first|default:user.username|first|upper }}
+        </div>
+        <div class="overflow-hidden">
+            <div class="text-truncate fw-bold text-white small">{{ user.get_full_name|default:user.username }}</div>
+            <span class="badge {{ user.get_role_badge_class }}" style="font-size: 0.65rem;">
+                {{ user.get_role_display }}
+            </span>
+        </div>
+    </div>
+
+    <ul class="sidebar-menu">
+        <li class="sidebar-menu-header">Menú Principal</li>
+        
+        <li class="sidebar-item">
+            <a href="{% url 'dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <i class="bi bi-grid-1x2-fill"></i>
+                <span>Panel Principal</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="{% url 'alerts:activities' %}" class="sidebar-link {% if 'activities' in request.path %}active{% endif %}">
+                <i class="bi bi-calendar-event-fill text-info"></i>
+                <span>Actividades y Agenda</span>
+            </a>
+        </li>
+
+
+        <!-- Gestión Académica y Cursos (Sprint 2) -->
+        <li class="sidebar-menu-header">Estructura Académica</li>
+        
+        {% if user.is_admin_role or user.is_rector or user.is_secretary %}
+        <li class="sidebar-item">
+            <a href="{% url 'courses:academic_structure' %}" class="sidebar-link {% if 'courses' in request.path %}active{% endif %}">
+                <i class="bi bi-building"></i>
+                <span>Cursos y Grados</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="{% url 'subjects:curriculum' %}" class="sidebar-link {% if 'subjects' in request.path %}active{% endif %}">
+                <i class="bi bi-book-half"></i>
+                <span>Malla Curricular</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="{% url 'periods:list' %}" class="sidebar-link {% if 'periods' in request.path %}active{% endif %}">
+                <i class="bi bi-calendar-range"></i>
+                <span>Periodos Lectivos</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="{% url 'teachers:list' %}" class="sidebar-link {% if 'teachers' in request.path %}active{% endif %}">
+                <i class="bi bi-person-video3"></i>
+                <span>Cuerpo Docente</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="{% url 'students:list' %}" class="sidebar-link {% if 'students' in request.path %}active{% endif %}">
+                <i class="bi bi-mortarboard"></i>
+                <span>Matrículas y Alumnos</span>
+            </a>
+        </li>
+        {% endif %}
+
+        {% if user.is_teacher %}
+        <li class="sidebar-item">
+            <a href="{% url 'teachers:list' %}" class="sidebar-link {% if 'teachers' in request.path %}active{% endif %}">
+                <i class="bi bi-journal-bookmark-fill"></i>
+                <span>Mis Asignaciones</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="{% url 'subjects:curriculum' %}" class="sidebar-link {% if 'subjects' in request.path %}active{% endif %}">
+                <i class="bi bi-book-half"></i>
+                <span>Malla Curricular</span>
+            </a>
+        </li>
+        {% endif %}
+
+        <!-- Evaluación y Seguimiento Escolar (Sprint 3 y 4 Activos) -->
+        <li class="sidebar-menu-header">Evaluación y Aula</li>
+        
+        {% if user.is_teacher or user.is_admin_role or user.is_rector or user.is_secretary %}
+        <li class="sidebar-item">
+            <a href="{% url 'grades:index' %}" class="sidebar-link {% if 'grades' in request.path %}active{% endif %}">
+                <i class="bi bi-card-checklist text-primary"></i>
+                <span>Planilla de Notas</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="{% url 'attendance:index' %}" class="sidebar-link {% if 'attendance' in request.path %}active{% endif %}">
+                <i class="bi bi-calendar2-check-fill text-success"></i>
+                <span>Llamado de Lista</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="{% url 'homework:index' %}" class="sidebar-link {% if 'homework' in request.path %}active{% endif %}">
+                <i class="bi bi-folder-symlink-fill text-warning"></i>
+                <span>Tareas y Envíos</span>
+            </a>
+        </li>
+        {% endif %}
+
+        {% if user.is_student %}
+        <li class="sidebar-item">
+            <a href="{% url 'grades:index' %}" class="sidebar-link {% if 'grades' in request.path %}active{% endif %}">
+                <i class="bi bi-award-fill text-primary"></i>
+                <span>Mis Calificaciones</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="{% url 'attendance:index' %}" class="sidebar-link">
+                <i class="bi bi-calendar-check text-success"></i>
+                <span>Mis Asistencias</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="{% url 'homework:index' %}" class="sidebar-link {% if 'homework' in request.path %}active{% endif %}">
+                <i class="bi bi-folder-symlink-fill text-warning"></i>
+                <span>Mis Tareas</span>
+            </a>
+        </li>
+        {% endif %}
+
+        {% if user.is_parent %}
+        <li class="sidebar-item">
+            <a href="{% url 'grades:index' %}" class="sidebar-link">
+                <i class="bi bi-award text-primary"></i>
+                <span>Notas del Estudiante</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="{% url 'attendance:index' %}" class="sidebar-link">
+                <i class="bi bi-calendar2-check text-success"></i>
+                <span>Asistencia de Acudido</span>
+            </a>
+        </li>
+        {% endif %}
+
+        <!-- Reportes y Cierres (Sprint 5) -->
+        <li class="sidebar-menu-header">Reportes y Cierres</li>
+        <li class="sidebar-item">
+            <a href="{% url 'reports:index' %}" class="sidebar-link {% if 'reports' in request.path and not 'consolidated' in request.path and not 'honor' in request.path %}active{% endif %}">
+                <i class="bi bi-file-earmark-text-fill text-primary"></i>
+                <span>Boletines Oficiales</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="{% url 'reports:consolidated' %}" class="sidebar-link {% if 'consolidated' in request.path %}active{% endif %}">
+                <i class="bi bi-grid-3x3-gap text-success"></i>
+                <span>Sábanas de Notas</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="{% url 'reports:honor_roll' %}" class="sidebar-link {% if 'honor-roll' in request.path %}active{% endif %}">
+                <i class="bi bi-trophy-fill text-warning"></i>
+                <span>Cuadro de Honor</span>
+            </a>
+        </li>
+        {% if user.is_admin_role or user.is_rector %}
+        <li class="sidebar-item">
+            <a href="{% url 'rules:closing_manager' %}" class="sidebar-link {% if 'rules' in request.path %}active{% endif %}">
+                <i class="bi bi-shield-lock-fill text-danger"></i>
+                <span>Cierres y Promoción</span>
+            </a>
+        </li>
+        {% endif %}
+
+        <!-- Accesos para Administrador -->
+        {% if user.is_admin_role %}
+        <li class="sidebar-menu-header">Administración</li>
+        <li class="sidebar-item">
+            <a href="{% url 'audit:list' %}" class="sidebar-link {% if 'audit' in request.path %}active{% endif %}">
+                <i class="bi bi-shield-check"></i>
+                <span>Auditoría Inmutable</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="/admin/accounts/customuser/" class="sidebar-link">
+                <i class="bi bi-people-fill"></i>
+                <span>Gestión Usuarios</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="/admin/alerts/systemalert/" class="sidebar-link">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span>Semáforos y Alertas</span>
+            </a>
+        </li>
+        {% endif %}
+
+        <!-- Accesos para Rector -->
+        {% if user.is_rector %}
+        <li class="sidebar-menu-header">Supervisión Directiva</li>
+        <li class="sidebar-item">
+            <a href="{% url 'audit:list' %}" class="sidebar-link">
+                <i class="bi bi-journal-text"></i>
+                <span>Trazabilidad y Cierres</span>
+            </a>
+        </li>
+        {% endif %}
+
+        <li class="sidebar-menu-header">Cuenta</li>
+        <li class="sidebar-item">
+            <a href="{% url 'accounts:profile' %}" class="sidebar-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                <i class="bi bi-person-circle"></i>
+                <span>Mi Perfil</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="{% url 'accounts:logout' %}" class="sidebar-link text-danger">
+                <i class="bi bi-power"></i>
+                <span>Cerrar Sesión</span>
+            </a>
+        </li>
+    </ul>
+</aside>

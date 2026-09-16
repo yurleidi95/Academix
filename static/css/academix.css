@@ -1,0 +1,302 @@
+/* ==========================================================================
+   ACADEMIX - SISTEMA INTEGRAL DE GESTIÓN ACADÉMICA
+   Estilos Principales y Personalización UI/UX (Bootstrap 5.3 + HTMX)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --ac-primary: #1e3a8a;       /* Azul Institucional Escolar */
+    --ac-primary-dark: #0f172a;  /* Navy Profundo */
+    --ac-primary-light: #3b82f6; /* Azul Eléctrico */
+    --ac-secondary: #0d9488;     /* Teal / Menta Institucional */
+    --ac-accent: #6366f1;        /* Índigo */
+    --ac-bg: #f8fafc;            /* Fondo neutro limpio */
+    --ac-card-bg: #ffffff;       /* Fondo de tarjetas */
+    --ac-border: #e2e8f0;        /* Bordes sutiles */
+    --ac-text-main: #1e293b;     /* Texto de alto contraste */
+    --ac-text-muted: #64748b;    /* Texto secundario */
+    
+    /* Semaforización Institucional */
+    --ac-danger: #ef4444;        /* 🔴 Bloqueo */
+    --ac-warning: #f59e0b;       /* 🟡 Advertencia */
+    --ac-info: #0284c7;          /* 🔵 Información */
+    --ac-success: #10b981;       /* Éxito */
+
+    --sidebar-width: 260px;
+    --header-height: 64px;
+    --transition-speed: 0.25s;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: var(--ac-bg);
+    color: var(--ac-text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* ==========================================================================
+   LAYOUT: SIDEBAR & TOPBAR
+   ========================================================================== */
+
+#layout-wrapper {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+#sidebar {
+    width: var(--sidebar-width);
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+    color: #f1f5f9;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    transition: all var(--transition-speed) ease-in-out;
+    z-index: 1040;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-brand {
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    font-size: 1.25rem;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.sidebar-brand i {
+    color: #38bdf8;
+    margin-right: 0.75rem;
+    font-size: 1.4rem;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 1rem 0.75rem;
+    margin: 0;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.sidebar-menu-header {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #94a3b8;
+    padding: 0.75rem 0.75rem 0.35rem 0.75rem;
+    font-weight: 700;
+}
+
+.sidebar-item {
+    margin-bottom: 0.25rem;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    padding: 0.7rem 0.85rem;
+    color: #cbd5e1;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all var(--transition-speed) ease;
+}
+
+.sidebar-link i {
+    font-size: 1.15rem;
+    margin-right: 0.85rem;
+    width: 20px;
+    text-align: center;
+    color: #94a3b8;
+    transition: color var(--transition-speed) ease;
+}
+
+.sidebar-link:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.07);
+}
+
+.sidebar-link:hover i {
+    color: #38bdf8;
+}
+
+.sidebar-link.active {
+    background-color: var(--ac-primary-light);
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+}
+
+.sidebar-link.active i {
+    color: #ffffff;
+}
+
+.sidebar-user-badge {
+    padding: 1rem 1.25rem;
+    background: rgba(0, 0, 0, 0.25);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-user-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background-color: #334155;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #ffffff;
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+#main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.topbar {
+    height: var(--header-height);
+    background-color: var(--ac-card-bg);
+    border-bottom: 1px solid var(--ac-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+}
+
+.content-body {
+    padding: 1.5rem;
+    flex-grow: 1;
+}
+
+/* ==========================================================================
+   CARDS & DASHBOARD METRICS
+   ========================================================================== */
+
+.ac-card {
+    background-color: var(--ac-card-bg);
+    border: 1px solid var(--ac-border);
+    border-radius: 0.75rem;
+    box-shadow: var(--card-shadow);
+    transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+    overflow: hidden;
+}
+
+.ac-card:hover {
+    box-shadow: var(--card-shadow-hover);
+}
+
+.metric-card {
+    border-left: 4px solid var(--ac-primary);
+    padding: 1.25rem;
+}
+
+.metric-card.border-success { border-left-color: var(--ac-success) !important; }
+.metric-card.border-warning { border-left-color: var(--ac-warning) !important; }
+.metric-card.border-danger { border-left-color: var(--ac-danger) !important; }
+.metric-card.border-info { border-left-color: var(--ac-info) !important; }
+
+.metric-icon-box {
+    width: 50px;
+    height: 50px;
+    border-radius: 0.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+/* ==========================================================================
+   SEMAFORIZACIÓN Y ALERTAS
+   ========================================================================== */
+
+.alert-block-modal {
+    border-top: 5px solid var(--ac-danger);
+}
+
+.badge-role {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0.65rem;
+    border-radius: 20px;
+}
+
+/* ==========================================================================
+   HTMX FEEDBACK & INDICATORS
+   ========================================================================== */
+
+.htmx-indicator {
+    opacity: 0;
+    transition: opacity 200ms ease-in;
+    pointer-events: none;
+}
+
+.htmx-request .htmx-indicator {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.htmx-request.htmx-indicator {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Pulsación sutil al reemplazar elementos */
+@keyframes htmxHighlight {
+    from { background-color: rgba(59, 130, 246, 0.15); }
+    to { background-color: transparent; }
+}
+
+.htmx-swapped {
+    animation: htmxHighlight 1s ease-out;
+}
+
+/* Toast Container */
+#toast-container {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 1080;
+    min-width: 320px;
+}
+
+/* Login Page Theme */
+.login-bg {
+    min-height: 100vh;
+    background: radial-gradient(circle at top right, #1e3a8a 0%, #0f172a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.login-card {
+    background: #ffffff;
+    border-radius: 1.25rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    max-width: 440px;
+    width: 100%;
+}

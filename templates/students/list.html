@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% block title %}Expedientes Estudiantiles y Matrículas | ACADEMIX{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold text-dark mb-0">Expedientes Estudiantiles y Matrículas</h3>
+        <p class="text-muted small mb-0">Gestión de matrículas escolares, asignación a grupos y datos de acudiente</p>
+    </div>
+    <div class="d-flex gap-2">
+        {% if user.is_admin_role or user.is_rector or user.is_secretary %}
+        <button class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#createStudentModal">
+            <i class="bi bi-person-plus-fill"></i>
+            <span>Nuevo Alumno</span>
+        </button>
+        <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#enrollStudentModal">
+            <i class="bi bi-clipboard-plus"></i>
+            <span>Matricular Existente</span>
+        </button>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Filtros de búsqueda -->
+
+<div class="card ac-card p-3 mb-4">
+    <form method="GET" class="row g-3">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                <input type="text" name="q" class="form-control" placeholder="Buscar por nombre, apellido o código de estudiante..." value="{{ query }}">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <select name="section" class="form-select" onchange="this.form.submit()">
+                <option value="">-- Todos los grupos --</option>
+                {% for sec in sections %}
+                <option value="{{ sec.id }}" {% if selected_section_id == sec.id|stringformat:"s" %}selected{% endif %}>{{ sec.name }} (Grado {{ sec.grade_level.name }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'students:list' %}" class="btn btn-outline-secondary w-100">Limpiar</a>
+        </div>
+    </form>
+</div>
+
+<!-- Tabla de Matrículas -->
+<div class="table-responsive bg-white rounded-3 border shadow-sm">
+    <table class="table table-hover align-middle mb-0">
+        <thead class="table-light small text-muted text-uppercase">
+            <tr>
+                <th>Código</th>
+                <th>Estudiante</th>
+                <th>Grupo Escolar</th>
+                <th>Acudiente / Contacto</th>
+                <th>Fecha Matrícula</th>
+                <th class="text-end">Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for enr in enrollments %}
+            <tr>
+                <td class="small font-monospace fw-bold text-primary">{{ enr.student.student_code }}</td>
+                <td>
+                    <div class="fw-bold text-dark small">{{ enr.student.user.get_full_name|default:enr.student.user.username }}</div>
+                    <small class="text-muted">Doc: {{ enr.student.user.document_number|default:"Sin doc" }} &bull; RH: {{ enr.student.blood_type }}</small>
+                </td>
+                <td>
+                    <span class="badge bg-primary-subtle text-primary fw-bold">{{ enr.course_section.name }}</span>
+                    <small class="text-muted d-block" style="font-size: 0.7rem;">Grado {{ enr.course_section.grade_level.name }}</small>
+                </td>
+                <td>
+                    {% if enr.student.parent %}
+                        <div class="small fw-semibold text-dark">{{ enr.student.parent.get_full_name|default:enr.student.parent.username }}</div>
+                        <small class="text-muted">Tel: {{ enr.student.parent.phone|default:"Sin teléfono" }}</small>
+                    {% else %}
+                        <span class="badge bg-secondary-subtle text-secondary small">Sin acudiente asignado</span>
+                    {% endif %}
+                </td>
+                <td class="small text-muted font-monospace">{{ enr.enrollment_date|date:"d/m/Y" }}</td>
+                <td class="text-end">
+                    <span class="badge bg-success-subtle text-success border border-success-subtle">
+                        {{ enr.get_status_display }}
+                    </span>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center py-5 text-muted">
+                    <i class="bi bi-people display-6 d-block mb-2 text-secondary"></i>
+                    No se encontraron estudiantes matriculados con los criterios de búsqueda.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal para Matricular Estudiante -->
+<div class="modal fade" id="enrollStudentModal" tabindex="-1" aria-labelledby="enrollStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <form method="POST" action="{% url 'students:enroll' %}">
+                {% csrf_token %}
+                <input type="hidden" name="academic_year_id" value="{{ current_year.id }}">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold" id="enrollStudentModalLabel">
+                        <i class="bi bi-mortarboard-fill text-primary me-2"></i>Matricular Estudiante en Grupo
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Estudiante Disponible</label>
+                        <select name="user_id" class="form-select" required>
+                            {% for u in available_users %}
+                            <option value="{{ u.id }}">{{ u.get_full_name|default:u.username }} (Doc: {{ u.document_number|default:"Sin doc" }})</option>
+                            {% empty %}
+                            <option disabled selected>Todos los estudiantes activos ya cuentan con matrícula</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Grupo Escolar Destino</label>
+                        <select name="section_id" class="form-select" required>
+                            {% for s in sections %}
+                            <option value="{{ s.id }}">{{ s.name }} (Grado {{ s.grade_level.name }}) - Cupos: {{ s.enrolled_count }}/{{ s.capacity }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Código / Folio Estudiantil (Opcional)</label>
+                        <input type="text" name="student_code" class="form-control" placeholder="Ej. EST-2026-0045">
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary btn-sm fw-bold">Confirmar Matrícula</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Registrar Nuevo Alumno -->
+<div class="modal fade" id="createStudentModal" tabindex="-1" aria-labelledby="createStudentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <form method="POST" action="{% url 'students:create' %}">
+                {% csrf_token %}
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold" id="createStudentModalLabel">
+                        <i class="bi bi-person-plus-fill me-2"></i>Registrar Nuevo Alumno
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-semibold text-secondary">Nombres *</label>
+                            <input type="text" name="first_name" class="form-control" placeholder="Ej: Camilo" required>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-semibold text-secondary">Apellidos *</label>
+                            <input type="text" name="last_name" class="form-control" placeholder="Ej: Rodríguez" required>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-4">
+                            <label class="form-label small fw-semibold text-secondary">Tipo Doc. *</label>
+                            <select name="document_type" class="form-select">
+                                <option value="TI" selected>T.I.</option>
+                                <option value="RC">R.C.</option>
+                                <option value="CC">C.C.</option>
+                                <option value="CE">C.E.</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-8">
+                            <label class="form-label small fw-semibold text-secondary">Número de Documento *</label>
+                            <input type="text" name="document_number" class="form-control" placeholder="Ej: 1098765432" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Grupo / Salón a Matricular *</label>
+                        <select name="section_id" class="form-select" required>
+                            <option value="" disabled selected>-- Seleccione el grupo destino --</option>
+                            {% for s in sections %}
+                            <option value="{{ s.id }}">{{ s.name }} (Grado {{ s.grade_level.name }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-semibold text-secondary">Código Estudiantil (Opcional)</label>
+                            <input type="text" name="student_code" class="form-control" placeholder="Auto-generado si vacío">
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label small fw-semibold text-secondary">Teléfono de Contacto</label>
+                            <input type="text" name="phone" class="form-control" placeholder="Ej: 3101234567">
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label small fw-semibold text-secondary">Correo Institucional (Opcional)</label>
+                        <input type="email" name="email" class="form-control" placeholder="Auto-generado si vacío">
+                        <div class="form-text small">La contraseña inicial del estudiante será su número de documento.</div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary btn-sm fw-bold">
+                        <i class="bi bi-check-circle-fill me-1"></i>Registrar y Matricular
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

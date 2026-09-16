@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel Principal | ACADEMIX{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold text-dark mb-0">Panel de Control</h3>
+        <p class="text-muted small mb-0">Bienvenido(a), <strong>{{ user.get_full_name|default:user.username }}</strong> &bull; Rol: <span class="badge {{ user.get_role_badge_class }}">{{ user.get_role_display }}</span></p>
+    </div>
+    <div class="d-flex gap-2">
+        {% if user.is_admin_role or user.is_rector %}
+        <a href="{% url 'audit:list' %}" class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1">
+            <i class="bi bi-shield-check"></i>
+            <span>Ver Auditoría</span>
+        </a>
+        {% endif %}
+        <a href="{% url 'accounts:profile' %}" class="btn btn-light btn-sm border d-flex align-items-center gap-1">
+            <i class="bi bi-person"></i>
+            <span>Mi Perfil</span>
+        </a>
+    </div>
+</div>
+
+{% if user.role == 'ADMIN' %}
+    {% include 'dashboard/partials/admin_dashboard.html' %}
+{% elif user.role == 'RECTOR' %}
+    {% include 'dashboard/partials/rector_dashboard.html' %}
+{% elif user.role == 'SECRETARIA' %}
+    {% include 'dashboard/partials/secretary_dashboard.html' %}
+{% elif user.role == 'TEACHER' %}
+    {% include 'dashboard/partials/teacher_dashboard.html' %}
+{% elif user.role == 'STUDENT' %}
+    {% include 'dashboard/partials/student_dashboard.html' %}
+{% elif user.role == 'PARENT' %}
+    {% include 'dashboard/partials/parent_dashboard.html' %}
+{% else %}
+    {% include 'dashboard/partials/admin_dashboard.html' %}
+{% endif %}
+
+{% endblock %}

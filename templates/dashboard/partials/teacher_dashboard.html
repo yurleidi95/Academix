@@ -1,0 +1,168 @@
+<!-- Dashboard Docente — Panel de Aula y Evaluación -->
+{% if stats.my_assignments_count is not None %}
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="ac-card metric-card border-primary">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-semibold">MIS ASIGNACIONES</div>
+                    <div class="fs-3 fw-bold text-dark mt-1">{{ stats.my_assignments_count }}</div>
+                    <span class="badge bg-primary-subtle text-primary mt-1 small">
+                        <i class="bi bi-book me-1"></i>Asignaturas activas
+                    </span>
+                </div>
+                <div class="metric-icon-box bg-primary-subtle text-primary"><i class="bi bi-journal-bookmark-fill"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="ac-card metric-card border-success">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-semibold">MIS GRUPOS</div>
+                    <div class="fs-3 fw-bold text-dark mt-1">{{ stats.my_sections_count }}</div>
+                    <span class="badge bg-success-subtle text-success mt-1 small">
+                        <i class="bi bi-people-fill me-1"></i>{{ stats.enrolled_in_my_sections }} estudiante{{ stats.enrolled_in_my_sections|pluralize }}
+                    </span>
+                </div>
+                <div class="metric-icon-box bg-success-subtle text-success"><i class="bi bi-people-fill"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="ac-card metric-card border-warning">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-semibold">PERIODO ACTIVO</div>
+                    <div class="fs-4 fw-bold text-dark mt-1">
+                        {% if stats.active_period %}{{ stats.active_period.name }}{% else %}—{% endif %}
+                    </div>
+                    <span class="badge bg-warning-subtle text-warning mt-1 small">
+                        {% if stats.active_period %}{{ stats.active_period.percentage }}% del año{% else %}Sin periodo activo{% endif %}
+                    </span>
+                </div>
+                <div class="metric-icon-box bg-warning-subtle text-warning"><i class="bi bi-calendar-range"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="ac-card metric-card border-info">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-semibold">ALERTAS SISTEMA</div>
+                    <div class="fs-3 fw-bold text-dark mt-1">{{ stats.active_alerts }}</div>
+                    <span class="badge bg-info-subtle text-info mt-1 small">
+                        <i class="bi bi-bell me-1"></i>Semáforos activos
+                    </span>
+                </div>
+                <div class="metric-icon-box bg-info-subtle text-info"><i class="bi bi-bell-fill"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Acciones del Docente -->
+    <div class="col-lg-4">
+        <div class="card ac-card p-4 h-100">
+            <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                <i class="bi bi-lightning-charge-fill text-warning"></i> Acciones Rápidas
+            </h5>
+            <div class="d-grid gap-2">
+                <a href="{% url 'grades:index' %}" class="btn btn-primary text-start d-flex align-items-center justify-content-between p-3 rounded-3">
+                    <div>
+                        <div class="fw-bold"><i class="bi bi-card-checklist me-2"></i>Registrar Notas</div>
+                        <small class="opacity-75">Matriz interactiva de calificaciones</small>
+                    </div>
+                    <i class="bi bi-arrow-right-circle-fill fs-5"></i>
+                </a>
+                <a href="{% url 'attendance:index' %}" class="btn btn-success text-start d-flex align-items-center justify-content-between p-3 rounded-3">
+                    <div>
+                        <div class="fw-bold"><i class="bi bi-calendar2-check-fill me-2"></i>Llamado de Lista</div>
+                        <small class="opacity-75">Registro de asistencia y faltas</small>
+                    </div>
+                    <i class="bi bi-arrow-right-circle-fill fs-5"></i>
+                </a>
+                <a href="{% url 'homework:index' %}" class="btn btn-warning text-start d-flex align-items-center justify-content-between p-3 rounded-3">
+                    <div>
+                        <div class="fw-bold"><i class="bi bi-folder-symlink-fill me-2"></i>Tareas y Entregas</div>
+                        <small class="opacity-75">Asignar y calificar trabajos</small>
+                    </div>
+                    <i class="bi bi-arrow-right-circle-fill fs-5"></i>
+                </a>
+                <a href="{% url 'reports:index' %}" class="btn btn-outline-info text-start d-flex align-items-center justify-content-between p-3 rounded-3">
+                    <div>
+                        <div class="fw-bold"><i class="bi bi-file-earmark-text me-2 text-info"></i>Ver Boletines</div>
+                        <small class="text-muted">Reportes de mis grupos</small>
+                    </div>
+                    <i class="bi bi-arrow-right-circle-fill text-info fs-5"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mis Asignaciones -->
+    <div class="col-lg-8">
+        <div class="card ac-card p-4 h-100">
+            <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                <i class="bi bi-journal-bookmark-fill text-primary"></i> Mis Asignaciones Activas
+            </h5>
+            {% if stats.my_assignments_list %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle small mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Asignatura</th>
+                            <th>Grupo</th>
+                            <th>Grado</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for assignment in stats.my_assignments_list %}
+                        <tr>
+                            <td>
+                                <div class="fw-semibold">{{ assignment.subject.name }}</div>
+                                <small class="text-muted">{{ assignment.subject.code }}</small>
+                            </td>
+                            <td><span class="badge bg-primary-subtle text-primary">{{ assignment.course_section.name }}</span></td>
+                            <td class="text-muted">{{ assignment.course_section.grade_level.name }}</td>
+                            <td class="text-center">
+                                <a href="{% url 'grades:matrix' %}?section_id={{ assignment.course_section.id }}&subject_id={{ assignment.subject.id }}{% if stats.active_period %}&period_id={{ stats.active_period.id }}{% endif %}"
+                                   class="btn btn-sm btn-outline-primary me-1" title="Ver notas">
+                                    <i class="bi bi-card-checklist"></i>
+                                </a>
+                                <a href="{% url 'attendance:index' %}?section_id={{ assignment.course_section.id }}&subject_id={{ assignment.subject.id }}"
+                                   class="btn btn-sm btn-outline-success" title="Asistencia">
+                                    <i class="bi bi-calendar2-check"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-journal-x fs-1 d-block mb-2 opacity-25"></i>
+                <p class="mb-0">No tienes asignaciones académicas activas para el año en curso.</p>
+                <small>Contacta a la Secretaría para que te asignen cursos y asignaturas.</small>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- Docente sin perfil creado aún -->
+<div class="alert alert-warning d-flex align-items-center gap-3 p-4 rounded-3">
+    <i class="bi bi-person-x-fill fs-1 text-warning"></i>
+    <div>
+        <h5 class="fw-bold mb-1">Perfil Docente Incompleto</h5>
+        <p class="mb-2">Tu cuenta tiene el rol de Docente, pero aún no tiene un perfil institucional creado con especialidad y asignaciones.</p>
+        <a href="{% url 'teachers:list' %}" class="btn btn-warning btn-sm">
+            <i class="bi bi-person-plus-fill me-1"></i>Completar Perfil Docente
+        </a>
+    </div>
+</div>
+{% endif %}

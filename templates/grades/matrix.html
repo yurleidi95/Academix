@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Matriz de Calificaciones | {{ section.name }} - {{ subject.name }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <h3 class="fw-bold text-dark mb-0">{{ section.name }} &bull; {{ subject.name }}</h3>
+            <span class="badge {{ period.status_badge_class }}">
+                {{ period.name }} ({{ period.get_status_display }})
+            </span>
+        </div>
+        <p class="text-muted small mb-0">
+            <i class="bi bi-mortarboard-fill me-1 text-primary"></i>Planilla Oficial de Notas &bull; Año: {{ section.academic_year.year }} &bull; Ponderación de Periodo: <strong>{{ period.percentage }}%</strong>
+        </p>
+    </div>
+    <div class="d-flex gap-2">
+        {% if not is_editable %}
+        <span class="badge bg-danger p-2"><i class="bi bi-lock-fill me-1"></i>Periodo Cerrado - Modo Solo Lectura</span>
+        {% endif %}
+        <a href="{% url 'grades:index' %}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
+            <i class="bi bi-arrow-left"></i>
+            <span>Cambiar Grupo/Periodo</span>
+        </a>
+    </div>
+</div>
+
+<!-- Escala Oficial de Valoración Nacional (Decreto 1290) -->
+<div class="card ac-card p-3 mb-4 bg-light border-0">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 small">
+        <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-info-circle-fill text-primary fs-5"></i>
+            <strong>Escala Institucional (Decreto 1290):</strong>
+        </div>
+        <div class="d-flex align-items-center gap-3 flex-wrap font-monospace">
+            <span class="badge bg-danger text-white">Bajo (< 3.00 ó < 6.00)</span>
+            <span class="badge bg-warning text-dark">Básico (3.00-3.99 ó 6.00-7.99)</span>
+            <span class="badge bg-primary text-white">Alto (4.00-4.59 ó 8.00-9.19)</span>
+            <span class="badge bg-success text-white">Superior (4.60-5.00 ó 9.20-10.00)</span>
+        </div>
+        <div class="text-muted small">
+            <em>* Escalas: 0 a 5 ó 0 a 10 — Autoguardado reactivo al editar nota</em>
+        </div>
+    </div>
+</div>
+
+<!-- Matriz de Notas -->
+<div class="table-responsive bg-white rounded-3 border shadow-sm">
+    <table class="table table-hover align-middle mb-0">
+        <thead class="table-light small text-muted text-uppercase">
+            <tr>
+                <th style="width: 130px;">Código</th>
+                <th>Estudiante</th>
+                {% for crit in criteria %}
+                <th class="text-center" style="min-width: 130px;">
+                    <div>{{ crit.name }}</div>
+                    <span class="badge bg-primary-subtle text-primary font-monospace" style="font-size: 0.7rem;">
+                        {{ crit.percentage }}%
+                    </span>
+                </th>
+                {% endfor %}
+                <th class="text-center text-primary" style="width: 130px;">
+                    <div>Definitiva</div>
+                    <span class="badge bg-light text-secondary border" style="font-size: 0.7rem;">100%</span>
+                </th>
+                <th class="text-center" style="width: 140px;">Desempeño</th>
+                <th class="text-end" style="width: 50px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in matrix_rows %}
+                {% include 'grades/partials/grade_row.html' with row=row section=section subject=subject period=period criteria=criteria is_editable=is_editable %}
+            {% empty %}
+            <tr>
+                <td colspan="{{ criteria.count|add:'5' }}" class="text-center py-5 text-muted">
+                    <i class="bi bi-people display-6 d-block mb-2 text-secondary"></i>
+                    No hay estudiantes matriculados activos en este curso.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+<div class="table-responsive bg-white rounded-3 border shadow-sm">
+    <table class="table table-hover align-middle mb-0">
+        <thead class="table-light small text-muted text-uppercase">
+            <tr>
+                <th>Periodo</th>
+                <th>Año Lectivo</th>
+                <th>Fechas (Inicio - Fin)</th>
+                <th class="text-center">Ponderación Anual</th>
+                <th>Estado Actual</th>
+                {% if user.is_admin_role or user.is_rector %}
+                <th class="text-end">Acción de Control</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for period in periods %}
+            <tr>
+                <td class="fw-bold text-dark">
+                    <i class="bi bi-calendar-range text-primary me-2"></i>{{ period.name }}
+                </td>
+                <td class="small text-muted font-monospace">{{ period.academic_year.year }}</td>
+                <td class="small text-muted">
+                    {{ period.start_date|date:"d M Y" }} &rarr; {{ period.end_date|date:"d M Y" }}
+                </td>
+                <td class="text-center">
+                    <span class="badge bg-primary-subtle text-primary font-monospace fw-bold">
+                        {{ period.percentage }}%
+                    </span>
+                </td>
+                <td>
+                    <span class="badge {{ period.status_badge_class }}">
+                        {{ period.get_status_display }}
+                    </span>
+                </td>
+                {% if user.is_admin_role or user.is_rector %}
+                <td class="text-end">
+                    <div class="btn-group btn-group-sm">
+                        {% if period.status != 'ACTIVE' %}
+                        <button class="btn btn-outline-success" 
+                                hx-post="{% url 'periods:update_status' period.id %}" 
+                                hx-vals='{"status": "ACTIVE", "reason": "Apertura operativa de periodo"}'
+                                hx-target="#periods-table-container"
+                                hx-swap="innerHTML"
+                                title="Abrir Periodo">
+                            <i class="bi bi-unlock-fill me-1"></i> Abrir
+                        </button>
+                        {% endif %}
+                        {% if period.status != 'CLOSED' %}
+                        <button class="btn btn-outline-warning" 
+                                hx-post="{% url 'periods:update_status' period.id %}" 
+                                hx-vals='{"status": "CLOSED", "reason": "Cierre de periodo académico"}'
+                                hx-target="#periods-table-container"
+                                hx-swap="innerHTML"
+                                title="Cerrar Periodo">
+                            <i class="bi bi-lock-fill me-1"></i> Cerrar
+                        </button>
+                        {% endif %}
+                        {% if period.status != 'LOCKED' %}
+                        <button class="btn btn-outline-danger" 
+                                hx-post="{% url 'periods:update_status' period.id %}" 
+                                hx-vals='{"status": "LOCKED", "reason": "Bloqueo estricto de periodo"}'
+                                hx-target="#periods-table-container"
+                                hx-swap="innerHTML"
+                                title="Bloquear Periodo">
+                            <i class="bi bi-shield-lock-fill me-1"></i> Bloquear
+                        </button>
+                        {% endif %}
+                    </div>
+                </td>
+                {% endif %}
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center py-5 text-muted">
+                    <i class="bi bi-calendar-x display-6 d-block mb-2 text-secondary"></i>
+                    No hay periodos configurados para el año lectivo actual.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

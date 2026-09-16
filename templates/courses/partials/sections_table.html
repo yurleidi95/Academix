@@ -1,0 +1,59 @@
+<div class="table-responsive bg-white rounded-3 border shadow-sm">
+    <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+            <tr class="small text-muted text-uppercase">
+                <th>Grupo / Curso</th>
+                <th>Grado Escolar</th>
+                <th>Año Lectivo</th>
+                <th>Director(a) de Grupo</th>
+                <th>Aula</th>
+                <th>Cupo / Matriculados</th>
+                <th class="text-end">Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for section in sections %}
+            <tr>
+                <td class="fw-bold text-dark">
+                    <i class="bi bi-collection-fill text-primary me-2"></i>{{ section.name }}
+                </td>
+                <td>
+                    <span class="badge bg-light text-dark border">{{ section.grade_level.name }}</span>
+                    <small class="text-muted d-block" style="font-size: 0.7rem;">{{ section.grade_level.get_level_stage_display }}</small>
+                </td>
+                <td class="small text-muted font-monospace">{{ section.academic_year.year }}</td>
+                <td>
+                    {% if section.homeroom_teacher %}
+                        <div class="small fw-semibold text-dark">{{ section.homeroom_teacher.get_full_name|default:section.homeroom_teacher.username }}</div>
+                    {% else %}
+                        <span class="badge bg-secondary-subtle text-secondary small">Por Asignar</span>
+                    {% endif %}
+                </td>
+                <td class="small text-muted">{{ section.classroom|default:"Sin asignar" }}</td>
+                <td>
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="progress flex-grow-1" style="height: 6px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{ section.enrolled_count }}%;" aria-valuenow="{{ section.enrolled_count }}" aria-valuemin="0" aria-valuemax="{{ section.capacity }}"></div>
+                        </div>
+                        <span class="small font-monospace text-muted">{{ section.enrolled_count }}/{{ section.capacity }}</span>
+                    </div>
+                </td>
+                <td class="text-end">
+                    {% if section.is_active %}
+                        <span class="badge bg-success-subtle text-success border border-success-subtle">Activo</span>
+                    {% else %}
+                        <span class="badge bg-secondary-subtle text-secondary">Inactivo</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center py-5 text-muted">
+                    <i class="bi bi-inbox display-6 d-block mb-2 text-secondary"></i>
+                    No se encontraron grupos o secciones configuradas con el filtro indicado.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

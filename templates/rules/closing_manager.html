@@ -1,0 +1,310 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestión de Cierres Académicos y Promoción — ACADEMIX{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+    <!-- Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom">
+        <div>
+            <h1 class="h3 fw-bold text-dark mb-1">
+                <i class="bi bi-shield-lock-fill text-primary me-2"></i>Gestión de Cierres Académicos y Promoción
+            </h1>
+            <p class="text-muted small mb-0">
+                Supervisión directiva de periodos lectivos, bloqueo de edición y dictamen de promoción escolar (Decreto 1290).
+            </p>
+        </div>
+        <div class="d-flex align-items-center gap-2 mt-3 mt-md-0">
+            {% if current_year %}
+            <span class="badge bg-primary fs-6 px-3 py-2">
+                <i class="bi bi-calendar-check me-1"></i> Año Lectivo: {{ current_year.year }} ({{ current_year.get_status_display }})
+            </span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <!-- Reglas de Promoción Institucionales -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-3 h-100">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="card-title fw-bold text-dark mb-0 d-flex align-items-center">
+                        <i class="bi bi-sliders text-primary me-2"></i>Reglas Institucionales (Decreto 1290)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small">
+                        Parámetros cuantitativos y de asistencia con los que el motor académico dictamina la aprobación y promoción escolar.
+                    </p>
+                    <ul class="list-group list-group-flush small">
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                            <span class="text-muted"><i class="bi bi-check2-circle text-success me-1"></i> Calificación Mínima Aprobatoria:</span>
+                            <span class="fw-bold font-monospace fs-6 text-dark">{{ rule.min_passing_grade|default:"3.00" }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                            <span class="text-muted"><i class="bi bi-exclamation-triangle text-warning me-1"></i> Máx. Asignaturas Reprobadas Permitidas:</span>
+                            <span class="fw-bold font-monospace fs-6 text-dark">{{ rule.max_failed_subjects|default:"2" }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                            <span class="text-muted"><i class="bi bi-person-x text-danger me-1"></i> Límite de Inasistencias (Pérdida):</span>
+                            <span class="fw-bold font-monospace fs-6 text-danger">{{ rule.max_absence_percentage|default:"20.00" }}%</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-2">
+                            <span class="text-muted"><i class="bi bi-people text-primary me-1"></i> Alumnos Matriculados Activos:</span>
+                            <span class="fw-bold font-monospace fs-6 text-primary">{{ total_active_students }}</span>
+                        </li>
+                    </ul>
+
+                    <div class="alert alert-info border-0 mt-3 p-2 small mb-0">
+                        <i class="bi bi-info-circle me-1"></i> Un estudiante reprueba el año si pierde <strong>3 o más materias</strong> o si sus inasistencias acumuladas superan el <strong>20.00%</strong>.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Periodos Lectivos y Bloqueo -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-3 h-100">
+                <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                    <h5 class="card-title fw-bold text-dark mb-0 d-flex align-items-center">
+                        <i class="bi bi-calendar3-range text-success me-2"></i>Estado de Periodos Lectivos
+                    </h5>
+                    <span class="badge bg-light text-muted border">Año {{ current_year.year }}</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light text-muted small text-uppercase">
+                                <tr>
+                                    <th class="ps-3">Periodo</th>
+                                    <th>Fechas de Vigencia</th>
+                                    <th class="text-center">Peso Anual</th>
+                                    <th class="text-center">Estado</th>
+                                    <th class="text-end pe-3">Acciones Directivas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for period in periods %}
+                                <tr>
+                                    <td class="ps-3 fw-bold text-dark">
+                                        {{ period.name }}
+                                    </td>
+                                    <td class="small text-muted">
+                                        <i class="bi bi-calendar-event me-1"></i>{{ period.start_date|date:"d/m/Y" }} al {{ period.end_date|date:"d/m/Y" }}
+                                    </td>
+                                    <td class="text-center font-monospace fw-bold small text-primary">
+                                        {{ period.percentage }}%
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge {{ period.status_badge_class }} px-3 py-2 small">
+                                            {{ period.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end pe-3">
+                                        {% if period.status == 'ACTIVE' %}
+                                        <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#closePeriodModal-{{ period.id }}">
+                                            <i class="bi bi-lock-fill me-1"></i>Cerrar Periodo
+                                        </button>
+                                        {% elif period.status == 'CLOSED' %}
+                                        <button type="button" class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#reopenPeriodModal-{{ period.id }}">
+                                            <i class="bi bi-unlock-fill me-1"></i>Reabrir con Justificación
+                                        </button>
+                                        {% else %}
+                                        <span class="badge bg-secondary small"><i class="bi bi-shield-lock me-1"></i>Bloqueado</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+
+                                <!-- Modal Cerrar Periodo -->
+                                <div class="modal fade" id="closePeriodModal-{{ period.id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content border-0 shadow">
+                                            <form method="post" action="{% url 'rules:close_period' period.id %}">
+                                                {% csrf_token %}
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title fs-6 fw-bold">
+                                                        <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar Cierre: {{ period.name }}
+                                                    </h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body p-4">
+                                                    <p class="text-dark small">
+                                                        Al cerrar el periodo lectivo, <strong>ningún docente podrá modificar o ingresar calificaciones ni registros de asistencia</strong> para este corte escolar.
+                                                    </p>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold small text-muted">Motivo / Observación del Cierre:</label>
+                                                        <input type="text" name="reason" class="form-control" value="Cierre formal de periodo lectivo" required>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer bg-light">
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                                                    <button type="submit" class="btn btn-danger btn-sm fw-bold">
+                                                        <i class="bi bi-lock-fill me-1"></i>Proceder con el Cierre
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal Reabrir Periodo -->
+                                <div class="modal fade" id="reopenPeriodModal-{{ period.id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content border-0 shadow">
+                                            <form method="post" action="{% url 'rules:reopen_period' period.id %}">
+                                                {% csrf_token %}
+                                                <div class="modal-header bg-warning text-dark">
+                                                    <h5 class="modal-title fs-6 fw-bold">
+                                                        <i class="bi bi-unlock-fill me-2"></i>Reapertura Extraordinaria: {{ period.name }}
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body p-4">
+                                                    <div class="alert alert-warning border-0 small">
+                                                        <i class="bi bi-exclamation-circle-fill me-1"></i> Esta acción es de estricta supervisión directiva y <strong>quedará registrada de manera inmutable en la bitácora de auditoría forense</strong>.
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold small text-dark">Justificación Obligatoria (mínimo 10 caracteres):</label>
+                                                        <textarea name="reason" class="form-control" rows="3" placeholder="Indique la justificación formal o solicitud directiva para reabrir..." required></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer bg-light">
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                                                    <button type="submit" class="btn btn-warning btn-sm fw-bold">
+                                                        <i class="bi bi-check2 me-1"></i>Autorizar Reapertura
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted small">No hay periodos lectivos configurados.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cierre Definitivo de Año Escolar -->
+    <div class="card border-0 shadow-sm rounded-3 mb-4 border-start border-4 border-danger">
+        <div class="card-body p-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                <div class="mb-3 mb-md-0">
+                    <h4 class="fw-bold text-danger mb-1">
+                        <i class="bi bi-mortarboard-fill me-2"></i>Cierre Definitivo del Año Escolar {{ current_year.year }}
+                    </h4>
+                    <p class="text-muted small mb-0">
+                        Proceso atómico que calcula los consolidados anuales, dictamina la promoción de cada alumno (Promovido / No Promovido) y archiva el año lectivo.
+                    </p>
+                </div>
+                <div>
+                    {% if current_year.status != 'CLOSED' %}
+                    <button type="button" class="btn btn-danger fw-bold py-2 px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#closeYearModal">
+                        <i class="bi bi-lock-fill me-1"></i>Ejecutar Cierre Definitivo de Año
+                    </button>
+                    {% else %}
+                    <span class="badge bg-secondary fs-6 px-3 py-2">
+                        <i class="bi bi-archive-fill me-1"></i> Año Lectivo Concluido y Archivado
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Cierre Anual -->
+    {% if current_year.status != 'CLOSED' %}
+    <div class="modal fade" id="closeYearModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-0 shadow">
+                <form method="post" action="{% url 'rules:execute_year_closing' current_year.id %}">
+                    {% csrf_token %}
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title fs-6 fw-bold">
+                            <i class="bi bi-exclamation-octagon-fill me-2"></i>Confirmación Crítica: Cierre Anual {{ current_year.year }}
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="alert alert-danger border-0 p-3 small mb-3">
+                            <strong>ADVERTENCIA IRREVERSIBLE:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Se calcularán las definitivas anuales de todos los estudiantes matriculados activos.</li>
+                                <li>Se actualizará el estado formal de cada matrícula escolar a <strong>PROMOVIDO</strong> o <strong>NO PROMOVIDO</strong> según el Decreto 1290.</li>
+                                <li>Se <strong>bloquearán permanentemente</strong> todos los periodos lectivos contra cualquier tipo de edición futura.</li>
+                                <li>El año lectivo se marcará como concluido y archivado.</li>
+                            </ul>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-dark">Acta / Observaciones Finales del Cierre:</label>
+                            <textarea name="observations" class="form-control" rows="3" placeholder="Indique el número de acta del consejo directivo u observaciones finales..." required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger btn-sm fw-bold">
+                            <i class="bi bi-shield-lock-fill me-1"></i>Confirmar y Ejecutar Cierre Definitivo
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Historial de Cierres Académicos -->
+    <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-header bg-white py-3 border-0">
+            <h5 class="card-title fw-bold text-dark mb-0 d-flex align-items-center">
+                <i class="bi bi-clock-history text-secondary me-2"></i>Bitácora de Cierres Realizados
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light text-muted small text-uppercase">
+                        <tr>
+                            <th class="ps-3">Tipo de Cierre</th>
+                            <th>Periodo / Año</th>
+                            <th>Responsable</th>
+                            <th>Evaluados</th>
+                            <th>Promovidos</th>
+                            <th>No Promovidos</th>
+                            <th>Fecha y Hora</th>
+                            <th class="pe-3">Observaciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for l in logs %}
+                        <tr class="small">
+                            <td class="ps-3 fw-bold text-dark">
+                                <span class="badge {% if l.closing_type == 'YEAR' %}bg-danger{% else %}bg-info text-dark{% endif %}">
+                                    {{ l.get_closing_type_display }}
+                                </span>
+                            </td>
+                            <td>{{ l.academic_period.name|default:l.academic_year.year }}</td>
+                            <td>{{ l.closed_by.get_full_name|default:l.closed_by.username }}</td>
+                            <td class="font-monospace fw-bold">{{ l.total_students_evaluated }}</td>
+                            <td class="font-monospace fw-bold text-success">{{ l.total_promoted }}</td>
+                            <td class="font-monospace fw-bold text-danger">{{ l.total_failed }}</td>
+                            <td class="text-muted">{{ l.closed_at|date:"d/m/Y H:i" }}</td>
+                            <td class="pe-3 text-muted">{{ l.observations|truncatechars:50 }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center py-4 text-muted small">No se han registrado cierres formales aún.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

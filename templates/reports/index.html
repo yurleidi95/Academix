@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block title %}Centro de Reportes y Boletines — ACADEMIX{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+    <!-- Encabezado -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom">
+        <div>
+            <h1 class="h3 fw-bold text-dark mb-1">
+                <i class="bi bi-file-earmark-bar-graph-fill text-primary me-2"></i>Centro de Reportes y Boletines Oficiales
+            </h1>
+            <p class="text-muted small mb-0">
+                Emisión de boletines periódicos, sábanas consolidadas y cuadros de honor institucional (Decreto 1290).
+            </p>
+        </div>
+        <div>
+            <span class="badge bg-primary fs-6 px-3 py-2">
+                <i class="bi bi-calendar-check me-1"></i> Año Lectivo: {{ current_year.year }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Tarjetas de Acceso a Reportes -->
+    <div class="row g-4 mb-4">
+        <!-- 1. Emisión de Boletines -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-3 h-100 border-top border-4 border-primary">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-3 bg-primary-subtle text-primary p-3 me-3">
+                            <i class="bi bi-printer-fill fs-3"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold text-dark mb-0">Boletines Oficiales</h5>
+                            <small class="text-muted">Informe por alumno o por curso</small>
+                        </div>
+                    </div>
+                    <p class="text-muted small mb-4 flex-grow-1">
+                        Genere e imprima los informes oficiales de valoración periódica con formato institucional para descarga en PDF, firmas y escala nacional.
+                    </p>
+
+                    <!-- Formulario Rápido de Emisión -->
+                    <form method="get" action="{% url 'reports:consolidated' %}" class="bg-light p-3 rounded-3 mb-3">
+                        <label class="form-label small fw-bold text-dark mb-1">Seleccione Grupo y Periodo:</label>
+                        <div class="mb-2">
+                            <select id="bulk_section" class="form-select form-select-sm">
+                                {% for sec in sections %}
+                                <option value="{{ sec.id }}">{{ sec.name }} ({{ sec.grade_level.name }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <select id="bulk_period" class="form-select form-select-sm">
+                                {% for per in periods %}
+                                <option value="{{ per.id }}" {% if per.id == active_period.id %}selected{% endif %}>{{ per.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-sm w-100 fw-bold" onclick="openBulkBulletins()">
+                            <i class="bi bi-collection me-1"></i>Generar Boletines de Todo el Curso
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Sábana Consolidada -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-3 h-100 border-top border-4 border-success">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-3 bg-success-subtle text-success p-3 me-3">
+                            <i class="bi bi-grid-3x3-gap-fill fs-3"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold text-dark mb-0">Sábanas Consolidadas</h5>
+                            <small class="text-muted">Matriz grupal de calificaciones</small>
+                        </div>
+                    </div>
+                    <p class="text-muted small mb-4 flex-grow-1">
+                        Visualice en una sola tabla la totalidad de notas de todas las asignaturas por curso, puestos, promedios ponderados y exporte directamente a CSV/Excel.
+                    </p>
+                    <a href="{% url 'reports:consolidated' %}" class="btn btn-success btn-sm w-100 fw-bold py-2 mt-auto">
+                        <i class="bi bi-table me-1"></i>Abrir Sábana de Notas
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Cuadro de Honor y Estadísticas -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-3 h-100 border-top border-4 border-warning">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="rounded-3 bg-warning-subtle text-warning p-3 me-3">
+                            <i class="bi bi-trophy-fill fs-3"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold text-dark mb-0">Cuadro de Honor</h5>
+                            <small class="text-muted">Ranking y analítica académica</small>
+                        </div>
+                    </div>
+                    <p class="text-muted small mb-4 flex-grow-1">
+                        Consulte los 5 mejores promedios del grupo, índices de aprobación, asignaturas críticas con alta reprobación y estadísticas de supervisión directiva.
+                    </p>
+                    <a href="{% url 'reports:honor_roll' %}" class="btn btn-warning text-dark btn-sm w-100 fw-bold py-2 mt-auto">
+                        <i class="bi bi-award-fill me-1"></i>Ver Cuadro de Honor
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guía Institucional del Decreto 1290 -->
+    <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-header bg-white py-3 border-0">
+            <h5 class="card-title fw-bold text-dark mb-0">
+                <i class="bi bi-info-circle-fill text-primary me-2"></i>Escala de Valoración Nacional (Decreto 1290 de 2009)
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row g-3 text-center">
+                <div class="col-sm-6 col-md-3">
+                    <div class="p-3 rounded-3 bg-danger-subtle text-danger border border-danger">
+                        <div class="fs-5 fw-bold">DESEMPEÑO BAJO</div>
+                        <div class="font-monospace fs-6 fw-bold">1.00 a 2.99</div>
+                        <small class="d-block mt-1">Reprobatorio (No Aprobado)</small>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <div class="p-3 rounded-3 bg-warning-subtle text-dark border border-warning">
+                        <div class="fs-5 fw-bold">DESEMPEÑO BÁSICO</div>
+                        <div class="font-monospace fs-6 fw-bold">3.00 a 3.99</div>
+                        <small class="d-block mt-1">Superación de logros mínimos</small>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <div class="p-3 rounded-3 bg-primary-subtle text-primary border border-primary">
+                        <div class="fs-5 fw-bold">DESEMPEÑO ALTO</div>
+                        <div class="font-monospace fs-6 fw-bold">4.00 a 4.59</div>
+                        <small class="d-block mt-1">Superación destacada de logros</small>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <div class="p-3 rounded-3 bg-success-subtle text-success border border-success">
+                        <div class="fs-5 fw-bold">DESEMPEÑO SUPERIOR</div>
+                        <div class="font-monospace fs-6 fw-bold">4.60 a 5.00</div>
+                        <small class="d-block mt-1">Rendimiento excepcional y sin reprobación</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openBulkBulletins() {
+    const sec = document.getElementById('bulk_section').value;
+    const per = document.getElementById('bulk_period').value;
+    if (sec && per) {
+        window.open(`/reports/bulletins/bulk/${sec}/${per}/`, '_blank');
+    }
+}
+</script>
+{% endblock %}

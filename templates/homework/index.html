@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+
+{% block title %}Buzón de Tareas y Actividades | ACADEMIX{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold text-dark mb-0">Tareas y Actividades Escolares</h3>
+        <p class="text-muted small mb-0">Asignación, recepción de archivos adjuntos, plazos y retroalimentación docente</p>
+    </div>
+    <div>
+        {% if user.is_teacher or user.is_admin_role %}
+        <button class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#createHomeworkModal">
+            <i class="bi bi-plus-circle"></i>
+            <span>Nueva Tarea Escolar</span>
+        </button>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Listado de Tareas -->
+<div class="row g-4">
+    {% for hw in homeworks %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card ac-card h-100 p-3 d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-monospace">
+                    {{ hw.subject.name }} &bull; {{ hw.course_section.name }}
+                </span>
+                {% if hw.is_expired %}
+                    <span class="badge bg-danger-subtle text-danger">Vencida</span>
+                {% else %}
+                    <span class="badge bg-success-subtle text-success">Activa</span>
+                {% endif %}
+            </div>
+
+            <h5 class="fw-bold text-dark mb-2">{{ hw.title }}</h5>
+            <p class="small text-muted flex-grow-1">{{ hw.description|truncatewords:25 }}</p>
+
+            <div class="border-top pt-2 mt-2 small">
+                <div class="d-flex justify-content-between text-muted mb-1">
+                    <span><i class="bi bi-clock me-1"></i>Entrega:</span>
+                    <strong>{{ hw.due_date|date:"d/m/Y H:i" }}</strong>
+                </div>
+                <div class="d-flex justify-content-between text-muted">
+                    <span><i class="bi bi-person me-1"></i>Docente:</span>
+                    <span>Prof. {{ hw.teacher.user.last_name }}</span>
+                </div>
+            </div>
+
+            {% if hw.attachment %}
+            <div class="mt-2 pt-2 border-top">
+                <a href="{{ hw.attachment.url }}" target="_blank" class="btn btn-outline-secondary btn-sm w-100 small py-1">
+                    <i class="bi bi-paperclip me-1"></i> Descargar Guía Adjunta
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Acciones según rol -->
+            <div class="mt-3 pt-2 border-top">
+                {% if user.is_teacher or user.is_admin_role %}
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="small text-muted">Entregas: <strong>{{ hw.submission_count }}</strong></span>
+                        <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#submissionsCollapse{{ hw.id }}">
+                            <i class="bi bi-eye me-1"></i> Ver Entregas
+                        </button>
+                    </div>
+
+                    <!-- Desplegable de entregas para el docente -->
+                    <div class="collapse mt-3" id="submissionsCollapse{{ hw.id }}">
+                        <div class="card card-body bg-light p-2 small border-0">
+                            <h6 class="fw-bold mb-2 small">Entregas Recibidas:</h6>
+                            {% for sub in hw.submissions.all %}
+                            <div class="p-2 mb-2 bg-white rounded border">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <strong class="text-dark">{{ sub.student.user.get_full_name }}</strong>
+                                    <span class="badge {{ sub.badge_class }}">{{ sub.get_status_display }}</span>
+                                </div>
+                                {% if sub.submission_text %}
+                                <p class="text-muted mb-1" style="font-size: 0.75rem;">{{ sub.submission_text }}</p>
+                                {% endif %}
+                                {% if sub.attachment %}
+                                <a href="{{ sub.attachment.url }}" target="_blank" class="d-block small text-primary mb-1">
+                                    <i class="bi bi-file-earmark-arrow-down me-1"></i> Ver Trabajo Adjunto
+                                </a>
+                                {% endif %}
+
+                                <!-- Formulario de Calificación Docente -->
+                                <form method="POST" action="{% url 'homework:grade' sub.id %}" class="mt-2 pt-2 border-top">
+                                    {% csrf_token %}
+                                    <div class="row g-1">
+                                        <div class="col-4">
+                                            <input type="number" step="0.01" min="1.00" max="5.00" name="score" class="form-control form-control-sm font-monospace fw-bold" placeholder="Nota" value="{{ sub.score|default:'' }}" required>
+                                        </div>
+                                        <div class="col-8">
+                                            <input type="text" name="feedback" class="form-control form-control-sm" placeholder="Comentarios..." value="{{ sub.teacher_feedback|default:'' }}">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-sm btn-primary w-100 mt-1 py-0">Calificar</button>
+                                </form>
+                            </div>
+                            {% empty %}
+                            <span class="text-muted small">Aún no hay entregas registradas.</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                {% elif user.is_student %}
+                    {% if hw.my_submission %}
+                        <!-- Estado de entrega completada -->
+                        <div class="p-2 bg-success-subtle rounded border border-success-subtle mb-2">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-bold text-success small">
+                                    <i class="bi bi-check-circle-fill me-1"></i>{{ hw.my_submission.get_status_display }}
+                                </span>
+                                <small class="text-muted" style="font-size: 0.7rem;">{{ hw.my_submission.submitted_at|date:"d/m/Y H:i" }}</small>
+                            </div>
+                            {% if hw.my_submission.score is not None %}
+                            <div class="d-flex justify-content-between align-items-center border-top pt-1 mt-1">
+                                <span class="small text-dark fw-semibold">Calificación:</span>
+                                <span class="badge {% if hw.my_submission.score < 3.0 %}bg-danger{% else %}bg-success{% endif %} fs-6">
+                                    {{ hw.my_submission.score }}
+                                </span>
+                            </div>
+                            {% if hw.my_submission.teacher_feedback %}
+                            <div class="small text-muted mt-1" style="font-size: 0.75rem;">
+                                <strong>Profesor:</strong> <em>{{ hw.my_submission.teacher_feedback }}</em>
+                            </div>
+                            {% endif %}
+                            {% else %}
+                            <div class="small text-muted mt-1" style="font-size: 0.75rem;">
+                                <i class="bi bi-hourglass-split me-1"></i>Pendiente de revisión del docente.
+                            </div>
+                            {% endif %}
+
+                            {% if hw.my_submission.attachment %}
+                            <a href="{{ hw.my_submission.attachment.url }}" target="_blank" class="d-block small text-primary mt-1 text-decoration-none">
+                                <i class="bi bi-file-earmark-check me-1"></i>Ver archivo entregado
+                            </a>
+                            {% endif %}
+                        </div>
+
+                        <!-- Botón para actualizar entrega si no ha vencido -->
+                        {% if not hw.is_expired %}
+                        <button class="btn btn-outline-primary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#submitHomeworkModal{{ hw.id }}">
+                            <i class="bi bi-pencil-square me-1"></i> Reenviar / Modificar Entrega
+                        </button>
+                        {% endif %}
+
+                    {% else %}
+                        <!-- Tarea pendiente por entregar -->
+                        <div class="d-grid">
+                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#submitHomeworkModal{{ hw.id }}">
+                                <i class="bi bi-upload me-1"></i> Subir Trabajo / Entrega
+                            </button>
+                        </div>
+                    {% endif %}
+
+                    <!-- Modal de entrega para el alumno -->
+                    <div class="modal fade" id="submitHomeworkModal{{ hw.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content border-0 shadow">
+                                <form method="POST" action="{% url 'homework:submit' hw.id %}" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title fw-bold">
+                                            <i class="bi bi-upload me-2"></i>Entregar Tarea: {{ hw.title }}
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                    </div>
+                                    <div class="modal-body p-4">
+                                        <div class="mb-3">
+                                            <label class="form-label small fw-semibold text-secondary">Comentarios o Respuesta Escrita</label>
+                                            <textarea name="submission_text" class="form-control" rows="3" placeholder="Escriba su respuesta, desarrollo o comentarios sobre la actividad...">{% if hw.my_submission %}{{ hw.my_submission.submission_text|default:'' }}{% endif %}</textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label small fw-semibold text-secondary">Archivo Adjunto (PDF, Word, Imagen, etc.)</label>
+                                            <input type="file" name="attachment" class="form-control">
+                                            <div class="form-text small">Puede adjuntar un archivo o enviar su respuesta directamente en el cuadro de texto.</div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary btn-sm fw-bold">
+                                            <i class="bi bi-send-fill me-1"></i>Confirmar Entrega
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5 text-muted">
+        <i class="bi bi-folder2-open display-4 text-secondary mb-2 d-block"></i>
+        No hay tareas o actividades registradas para este periodo lectivo.
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Modal para Crear Nueva Tarea Escolar -->
+{% if user.is_teacher or user.is_admin_role %}
+<div class="modal fade" id="createHomeworkModal" tabindex="-1" aria-labelledby="createHomeworkModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <form method="POST" action="{% url 'homework:create' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title fw-bold" id="createHomeworkModalLabel">
+                        <i class="bi bi-plus-circle text-primary me-2"></i>Asignar Nueva Tarea
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Título de la Actividad</label>
+                        <input type="text" name="title" class="form-control" placeholder="Ej. Taller #2: Ecuaciones Lineales" required>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold text-secondary">Curso / Grupo</label>
+                            <select name="section_id" class="form-select" required>
+                                {% for s in sections %}
+                                <option value="{{ s.id }}">{{ s.name }} (Grado {{ s.grade_level.name }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold text-secondary">Asignatura</label>
+                            <select name="subject_id" class="form-select" required>
+                                {% for subj in subjects %}
+                                <option value="{{ subj.id }}">{{ subj.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Fecha y Hora Límite de Entrega</label>
+                        <input type="datetime-local" name="due_date" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Instrucciones Detalladas</label>
+                        <textarea name="description" class="form-control" rows="4" placeholder="Describa los objetivos, pasos a seguir y criterios de evaluación..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-secondary">Archivo Guía Adjunto (Opcional)</label>
+                        <input type="file" name="attachment" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary btn-sm fw-bold">Publicar Tarea</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

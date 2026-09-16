@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Control de Asistencia Escolar | ACADEMIX{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold text-dark mb-0">Control Diario de Asistencia</h3>
+        <p class="text-muted small mb-0">Llamado de lista interactivo por grupo, asignatura y semaforización de faltas</p>
+    </div>
+    <div>
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2">
+            <i class="bi bi-calendar2-check me-1"></i> {{ current_year.name|default:"Año Escolar 2026" }}
+        </span>
+    </div>
+</div>
+
+<div class="row g-4 justify-content-center">
+    <div class="col-lg-8">
+        <div class="card ac-card p-4 p-md-5">
+            <h4 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                <i class="bi bi-ui-checks-grid text-primary"></i> Seleccionar Jornada de Asistencia
+            </h4>
+            <p class="text-muted small mb-4">
+                Elija el grupo escolar, la asignatura correspondiente y la fecha para abrir la planilla con autoguardado en línea.
+            </p>
+
+            <form method="GET" action="{% url 'attendance:sheet' %}">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold text-secondary">Grupo / Sección Escolar</label>
+                        <select name="section_id" id="select-section" class="form-select form-select-lg" required>
+                            <option value="" disabled selected>-- Seleccione un curso --</option>
+                            {% for section in sections %}
+                            <option value="{{ section.id }}">{{ section.name }} (Grado {{ section.grade_level.name }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold text-secondary">Asignatura</label>
+                        <select name="subject_id" id="select-subject" class="form-select form-select-lg" required>
+                            <option value="" disabled selected>-- Seleccione la asignatura --</option>
+                            {% for asg in assignments %}
+                            <option value="{{ asg.subject.id }}">{{ asg.subject.name }} ({{ asg.course_section.name }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label small fw-semibold text-secondary">Fecha de la Sesión</label>
+                        <input type="date" name="date" class="form-control form-control-lg" value="{{ today }}" required>
+                    </div>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg fw-bold d-flex align-items-center justify-content-center gap-2 shadow-sm">
+                        <i class="bi bi-clipboard-check-fill"></i>
+                        <span>Abrir Planilla de Llamado de Lista</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
