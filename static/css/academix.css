@@ -402,6 +402,18 @@ body {
     color: #7c3aed !important;
 }
 
+.border-purple {
+    border-color: #a78bfa !important;
+}
+
+.border-purple-subtle {
+    border-color: #ddd6fe !important;
+}
+
+.shadow-xs {
+    box-shadow: 0 1px 3px rgba(124, 58, 237, 0.08);
+}
+
 /* ==========================================================================
    COLORES VIBRANTES Y ARMONIZACIÓN GLOBAL DE BOTONES Y COMPONENTES
    ========================================================================== */
