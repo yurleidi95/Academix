@@ -7,4 +7,5 @@ urlpatterns = [
     path('academic-structure/', views.academic_structure_view, name='academic_structure'),
     path('sections/partial/', views.sections_partial, name='sections_partial'),
     path('sections/create/', views.create_section_view, name='create_section'),
+    path('institution-settings/', views.institution_settings_view, name='institution_settings'),
 ]

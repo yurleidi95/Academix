@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}Tareas de Acudido | ACADEMIX{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold text-dark mb-0">
+            <i class="bi bi-folder-check text-primary me-2"></i>Tareas y Actividades del Estudiante
+        </h3>
+        <p class="text-muted small mb-0">
+            Seguimiento de trabajos asignados, estados de entrega y calificaciones obtenidas
+        </p>
+    </div>
+    {% if children|length > 1 %}
+    <div>
+        <form method="GET" class="d-flex align-items-center gap-2">
+            <label class="small fw-bold text-muted text-nowrap">Estudiante:</label>
+            <select name="student_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                {% for ch in children %}
+                <option value="{{ ch.id }}" {% if student.id == ch.id %}selected{% endif %}>
+                    {{ ch.user.get_full_name|default:ch.user.username }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+    {% endif %}
+</div>
+
+<div class="alert alert-info border-0 shadow-sm d-flex align-items-center gap-2 mb-4 py-2">
+    <i class="bi bi-info-circle-fill fs-5"></i>
+    <span class="small">
+        <strong>Modo Solo Consulta:</strong> Esta vista le permite supervisar las tareas y evaluaciones de su hijo/a. No se permite realizar modificaciones ni envíos desde la cuenta de acudiente.
+    </span>
+</div>
+
+{% if student %}
+<!-- Información del Estudiante -->
+<div class="card ac-card border-0 shadow-sm mb-4">
+    <div class="card-body p-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-3">
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-5 shadow-sm" style="width: 44px; height: 44px;">
+                {{ student.user.first_name|first|upper }}{{ student.user.last_name|first|upper }}
+            </div>
+            <div>
+                <h6 class="fw-bold text-dark mb-0">{{ student.user.get_full_name|default:student.user.username }}</h6>
+                <span class="text-muted small">
+                    Cód: <strong>{{ student.student_code }}</strong> &bull; 
+                    Curso: <strong>{{ enrollment.course_section.name|default:"Sin grupo activo" }}</strong>
+                </span>
+            </div>
+        </div>
+        <div>
+            <a href="{% url 'students:observations' student.id %}" class="btn btn-outline-primary btn-sm shadow-sm">
+                <i class="bi bi-journal-text me-1"></i> Ver Observador del Alumno
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Listado de Tareas del Estudiante -->
+<div class="row g-4">
+    {% for hw in homeworks %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card ac-card h-100 border-0 shadow-sm p-4 d-flex flex-column justify-content-between">
+            <div>
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-monospace">
+                        {{ hw.subject.name }}
+                    </span>
+                    {% if hw.child_submission and hw.child_submission.status == 'GRADED' %}
+                        <span class="badge bg-success text-white">Calificado</span>
+                    {% elif hw.child_submission %}
+                        <span class="badge bg-info text-dark">Entregado</span>
+                    {% elif hw.is_expired %}
+                        <span class="badge bg-danger text-white">Plazo Vencido</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">Pendiente</span>
+                    {% endif %}
+                </div>
+
+                <h5 class="fw-bold text-dark mb-2">{{ hw.title }}</h5>
+                <p class="small text-muted mb-3">{{ hw.description|truncatewords:25 }}</p>
+
+                <div class="border-top pt-2 mt-2 small text-muted">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span><i class="bi bi-clock me-1"></i>Fecha límite:</span>
+                        <strong class="text-dark">{{ hw.due_date|date:"d/m/Y H:i" }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span><i class="bi bi-person me-1"></i>Docente:</span>
+                        <span>Prof. {{ hw.teacher.user.last_name }}</span>
+                    </div>
+                </div>
+
+                {% if hw.attachment %}
+                <div class="mb-3">
+                    <a href="{{ hw.attachment.url }}" target="_blank" class="btn btn-outline-secondary btn-sm w-100 py-1 small">
+                        <i class="bi bi-paperclip me-1"></i> Descargar Guía de la Tarea
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Estado de Calificación para el Padre -->
+            <div class="border-top pt-3 mt-2">
+                {% if hw.child_submission %}
+                    {% if hw.child_submission.score is not None %}
+                    <div class="p-2 bg-success-subtle rounded border border-success-subtle text-center mb-2">
+                        <span class="small text-dark fw-semibold d-block">Nota Obtenida:</span>
+                        <span class="fs-4 fw-bold text-success font-monospace">{{ hw.child_submission.score }}</span>
+                        {% if hw.child_submission.teacher_feedback %}
+                        <div class="border-top border-success-subtle pt-1 mt-1 text-muted small" style="font-size: 0.75rem;">
+                            <strong>Comentario del Docente:</strong> {{ hw.child_submission.teacher_feedback }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="p-2 bg-light rounded text-center small text-muted">
+                        <i class="bi bi-check2-circle text-primary me-1"></i> Trabajo entregado por el estudiante. Pendiente de calificación.
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <div class="p-2 bg-light rounded text-center small text-danger">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> Aún no registra entrega de este trabajo.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="card ac-card border-0 shadow-sm p-5 text-center">
+            <i class="bi bi-check-all display-4 text-success mb-2"></i>
+            <h5 class="fw-bold text-dark">No hay tareas pendientes en este momento</h5>
+            <p class="text-muted small">El estudiante está al día con las actividades de su curso.</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

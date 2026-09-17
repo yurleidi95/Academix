@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% block title %}Planilla de Tareas - {{ section.name }} | ACADEMIX{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1 small">
+                <li class="breadcrumb-item"><a href="{% url 'homework:index' %}">Módulo de Tareas</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ section.name }}</li>
+            </ol>
+        </nav>
+        <h3 class="fw-bold text-dark mb-0">
+            <i class="bi bi-grid-3x3-gap-fill text-primary me-2"></i>Planilla de Trabajos y Calificaciones: {{ section.name }}
+        </h3>
+        <p class="text-muted small mb-0">
+            Nivel: <strong>{{ section.grade_level.name }}</strong> &bull; 
+            Director: <strong>{{ section.homeroom_teacher.get_full_name|default:"No asignado" }}</strong> &bull; 
+            Periodo: <strong>{{ active_period.name|default:"General" }}</strong>
+        </p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-primary btn-sm shadow-sm d-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#createHomeworkModal">
+            <i class="bi bi-plus-circle"></i>
+            <span>Nueva Tarea / Trabajo</span>
+        </button>
+        <a href="{% url 'homework:index' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Volver a Cursos
+        </a>
+    </div>
+</div>
+
+<!-- Filtro de Asignaturas / Materias del Curso -->
+<div class="card ac-card p-3 mb-4 border-0 shadow-sm">
+    <form method="GET" class="row g-3 align-items-center">
+        <div class="col-md-5">
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light fw-bold"><i class="bi bi-funnel me-1"></i>Filtrar por Materia:</span>
+                <select name="subject_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="">-- Todas las Asignaturas del Curso --</option>
+                    {% for subj in subjects %}
+                    <option value="{{ subj.id }}" {% if selected_subject_id == subj.id|stringformat:"s" %}selected{% endif %}>
+                        {{ subj.name }} ({{ subj.code }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        {% if selected_subject_id %}
+        <div class="col-md-2">
+            <a href="{% url 'homework:course_matrix' section.id %}" class="btn btn-outline-secondary btn-sm">Quitar Filtro</a>
+        </div>
+        {% endif %}
+        <div class="col-md text-end text-muted small">
+            <span>Total de Estudiantes: <strong>{{ matrix_rows|length }}</strong></span> &bull; 
+            <span>Tareas Asignadas: <strong>{{ homeworks|length }}</strong></span>
+        </div>
+    </form>
+</div>
+
+<!-- Matriz de Calificación: Alumnos en Filas y Trabajos al Lado -->
+{% if homeworks %}
+<form method="POST" action="{% url 'homework:bulk_grade' section.id %}" id="bulkGradeForm">
+    {% csrf_token %}
+    <div class="card ac-card border-0 shadow-sm overflow-hidden mb-4">
+        <div class="table-responsive" style="max-height: 75vh;">
+            <table class="table table-hover align-middle mb-0 border">
+                <thead class="table-dark sticky-top" style="z-index: 10;">
+                    <tr>
+                        <th style="min-width: 250px; width: 260px; background-color: #1e293b; color: white;" class="ps-3">
+                            <i class="bi bi-people-fill me-1 text-info"></i> Estudiante (Alumnos en Filas)
+                        </th>
+                        {% for hw in homeworks %}
+                        <th style="min-width: 260px; max-width: 320px; background-color: #1e293b; color: white;">
+                            <div class="d-flex justify-content-between align-items-start gap-1">
+                                <div>
+                                    <span class="badge bg-primary text-white mb-1 font-monospace" style="font-size: 0.68rem;">
+                                        {{ hw.subject.code }}
+                                    </span>
+                                    <div class="fw-bold text-truncate" style="max-width: 200px;" title="{{ hw.title }}">{{ hw.title }}</div>
+                                    <div class="text-secondary small" style="font-size: 0.7rem;">
+                                        <i class="bi bi-clock me-1"></i>Límite: {{ hw.due_date|date:"d/m/Y H:i" }}
+                                    </div>
+                                </div>
+                                {% if hw.attachment %}
+                                <a href="{{ hw.attachment.url }}" target="_blank" class="btn btn-outline-light btn-sm py-0 px-1" title="Descargar Guía Adjunta">
+                                    <i class="bi bi-file-earmark-arrow-down"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in matrix_rows %}
+                    <tr>
+                        <!-- Columna de Estudiante (Fila) -->
+                        <td class="ps-3 bg-white border-end shadow-sm" style="position: sticky; left: 0; z-index: 5;">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center fw-bold small" style="width: 34px; height: 34px; min-width: 34px;">
+                                    {{ row.student.user.first_name|first|upper }}{{ row.student.user.last_name|first|upper }}
+                                </div>
+                                <div class="overflow-hidden">
+                                    <div class="fw-bold text-dark small text-truncate" title="{{ row.student.user.get_full_name }}">
+                                        {{ row.student.user.last_name }}, {{ row.student.user.first_name }}
+                                    </div>
+                                    <div class="font-monospace text-muted" style="font-size: 0.72rem;">
+                                        {{ row.student.student_code }}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Columnas de Trabajos al Lado -->
+                        {% for item in row.items %}
+                        <td class="p-2 border-end">
+                            {% include 'homework/partials/grade_cell.html' with item=item student=row.student section=section %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="{{ homeworks|length|add:1 }}" class="text-center py-5 text-muted">
+                            No hay estudiantes matriculados activos en este curso.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- Botón Único de Calificación Colectiva al Final de la Lista -->
+        <div class="card-footer bg-light p-3 border-top d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <div class="bg-warning-subtle text-warning-emphasis p-2 rounded border border-warning-subtle">
+                    <i class="bi bi-shield-lock-fill fs-5"></i>
+                </div>
+                <div>
+                    <span class="fw-bold text-dark small d-block">Aviso de Inmutabilidad Estricta</span>
+                    <span class="text-muted small" style="font-size: 0.8rem;">
+                        Al presionar el botón, las calificaciones registradas quedarán <strong>bloqueadas permanentemente</strong> y no podrán ser modificadas por ningún usuario.
+                    </span>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg px-4 shadow py-2 fw-bold d-flex align-items-center gap-2" id="btnSubmitBulkGrades">
+                <i class="bi bi-check2-all fs-4"></i>
+                <span>Actualizar y Guardar Calificaciones Colectivas</span>
+            </button>
+        </div>
+    </div>
+</form>
+{% else %}
+<div class="card ac-card border-0 shadow-sm p-5 text-center mb-4">
+    <i class="bi bi-folder-x display-4 text-muted mb-3"></i>
+    <h5 class="fw-bold text-dark mb-1">Aún no hay tareas ni trabajos asignados a este curso</h5>
+    <p class="text-muted small mb-3">Haga clic en el botón a continuación para publicar el primer trabajo y comenzar a calificar a los alumnos.</p>
+    <div>
+        <button class="btn btn-primary btn-sm px-4 shadow-sm" data-bs-toggle="modal" data-bs-target="#createHomeworkModal">
+            <i class="bi bi-plus-circle me-1"></i> Asignar Primera Tarea a {{ section.name }}
+        </button>
+    </div>
+</div>
+{% endif %}
+
+<!-- Modal para Crear Tarea en este Curso -->
+<div class="modal fade" id="createHomeworkModal" tabindex="-1" aria-labelledby="createHomeworkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'homework:create' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="section_id" value="{{ section.id }}">
+
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title fw-bold" id="createHomeworkModalLabel">
+                        <i class="bi bi-journal-plus me-2"></i>Asignar Nueva Tarea / Trabajo a {{ section.name }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Asignatura / Materia</label>
+                            <select name="subject_id" class="form-select form-select-sm" required>
+                                {% for s in subjects %}
+                                <option value="{{ s.id }}" {% if selected_subject_id == s.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ s.name }} ({{ s.code }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold">Fecha y Hora Límite de Entrega</label>
+                            <input type="datetime-local" name="due_date" class="form-control form-control-sm" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Título de la Actividad / Trabajo</label>
+                        <input type="text" name="title" class="form-control form-control-sm" placeholder="Ej: Taller 1 - Análisis de funciones y gráficas" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Instrucciones y Requisitos</label>
+                        <textarea name="description" rows="4" class="form-control form-control-sm" placeholder="Describa claramente las pautas de entrega, criterios de evaluación y pasos a seguir..." required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold">Guía o Material Adjunto (PDF / Word / Imágenes) - Opcional</label>
+                        <input type="file" name="attachment" class="form-control form-control-sm">
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary btn-sm px-4">
+                        <i class="bi bi-send-fill me-1"></i> Publicar Trabajo para el Curso
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

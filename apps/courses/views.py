@@ -87,3 +87,55 @@ def create_section_view(request):
             messages.error(request, f'Error al crear grupo: {str(e)}')
 
     return redirect('courses:academic_structure')
+
+
+@login_required
+def institution_settings_view(request):
+    """
+    Panel de configuración institucional y adaptación de terminología.
+    Permite parametrizar ACADEMIX para Colegios, Universidades, Institutos Técnicos (SENA) o Academias.
+    Accesible para Administrador y Rector.
+    """
+    if not (request.user.is_admin_role or request.user.is_rector):
+        messages.error(request, 'No tiene permisos para modificar los parámetros institucionales.')
+        return redirect('dashboard')
+
+    from .models import InstitutionSetting
+    settings_obj = InstitutionSetting.get_settings()
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+
+        if action == 'apply_preset':
+            preset = request.POST.get('preset')
+            if preset in dict(InstitutionSetting.InstitutionType.choices):
+                settings_obj.apply_preset(preset)
+                messages.success(request, f'Configuración adaptada exitosamente al modo: {settings_obj.get_institution_type_display()}')
+            else:
+                messages.error(request, 'Preset no válido.')
+        else:
+            # Actualización manual detallada
+            settings_obj.institution_name = request.POST.get('institution_name', settings_obj.institution_name).strip()
+            settings_obj.slogan = request.POST.get('slogan', settings_obj.slogan).strip()
+            settings_obj.institution_type = request.POST.get('institution_type', settings_obj.institution_type)
+            settings_obj.term_student = request.POST.get('term_student', settings_obj.term_student).strip()
+            settings_obj.term_students = request.POST.get('term_students', settings_obj.term_students).strip()
+            settings_obj.term_teacher = request.POST.get('term_teacher', settings_obj.term_teacher).strip()
+            settings_obj.term_teachers = request.POST.get('term_teachers', settings_obj.term_teachers).strip()
+            settings_obj.term_grade = request.POST.get('term_grade', settings_obj.term_grade).strip()
+            settings_obj.term_section = request.POST.get('term_section', settings_obj.term_section).strip()
+            settings_obj.term_sections = request.POST.get('term_sections', settings_obj.term_sections).strip()
+            settings_obj.term_subject = request.POST.get('term_subject', settings_obj.term_subject).strip()
+            settings_obj.term_subjects = request.POST.get('term_subjects', settings_obj.term_subjects).strip()
+            settings_obj.term_director = request.POST.get('term_director', settings_obj.term_director).strip()
+            settings_obj.save()
+            messages.success(request, 'Parámetros institucionales actualizados correctamente.')
+
+        return redirect('courses:institution_settings')
+
+    context = {
+        'inst_settings': settings_obj,
+        'institution_types': InstitutionSetting.InstitutionType.choices,
+    }
+    return render(request, 'courses/institution_settings.html', context)
+

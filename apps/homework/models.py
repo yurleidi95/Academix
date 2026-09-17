@@ -105,6 +105,10 @@ class HomeworkSubmission(models.Model):
         default=Status.SUBMITTED,
         verbose_name='Estado'
     )
+    is_locked = models.BooleanField(
+        default=False,
+        verbose_name='¿Calificación Bloqueada / Inmutable?'
+    )
 
     class Meta:
         verbose_name = 'Entrega de Tarea'

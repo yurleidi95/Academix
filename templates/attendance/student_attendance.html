@@ -42,22 +42,18 @@
 
             <div class="bg-light p-2 rounded-3 small mt-auto">
                 <div class="d-flex justify-content-between mb-1">
-                    <span class="text-muted">Inasistencias:</span>
-                    <strong class="{% if item.stats.absence_percentage >= 20.0 %}text-danger{% elif item.stats.absence_percentage >= 10.0 %}text-warning{% else %}text-success{% endif %}">
-                        {{ item.stats.absence_percentage }}%
-                    </strong>
-                </div>
-                <div class="d-flex justify-content-between mb-1">
-                    <span class="text-muted">Faltas Injustificadas:</span>
-                    <span>{{ item.stats.unjustified_hours }} hora{{ item.stats.unjustified_hours|pluralize }}</span>
+                    <span class="text-muted">Presentes:</span>
+                    <span class="text-success fw-bold">{{ item.stats.present_count }}</span>
                 </div>
                 <div class="d-flex justify-content-between mb-1">
                     <span class="text-muted">Faltas Justificadas:</span>
-                    <span>{{ item.stats.justified_hours }} hora{{ item.stats.justified_hours|pluralize }}</span>
+                    <span class="text-info fw-bold">{{ item.stats.justified_hours }}h</span>
                 </div>
                 <div class="d-flex justify-content-between">
-                    <span class="text-muted">Llegadas Tarde:</span>
-                    <span>{{ item.stats.late_count }}</span>
+                    <span class="text-muted">% Inasistencia:</span>
+                    <strong class="{% if item.stats.absence_percentage >= 20.0 %}text-danger{% elif item.stats.absence_percentage >= 10.0 %}text-warning{% else %}text-success{% endif %}">
+                        {{ item.stats.absence_percentage }}%
+                    </strong>
                 </div>
             </div>
         </div>
@@ -70,7 +66,7 @@
     {% endfor %}
 </div>
 
-<!-- Historial Detallado de Sesiones -->
+<!-- Historial Detallado de Sesiones con botón de Justificar -->
 <div class="card ac-card p-4 shadow-sm border-0">
     <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
         <i class="bi bi-clock-history text-primary"></i> Historial Reciente de Sesiones
@@ -82,22 +78,60 @@
                     <th>Fecha</th>
                     <th>Asignatura</th>
                     <th class="text-center">Horas</th>
-                    <th class="text-center">Estado Registrado</th>
-                    <th>Observación Docente</th>
+                    <th class="text-center">Estado</th>
+                    <th class="text-end">Acción</th>
                 </tr>
             </thead>
             <tbody>
                 {% for rec in recent_records %}
                 <tr>
                     <td class="fw-semibold">{{ rec.session.date|date:"d/m/Y" }}</td>
-                    <td>{{ rec.session.subject.name }}</td>
-                    <td class="text-center">{{ rec.session.hours_count }}</td>
-                    <td class="text-center">
-                        <span class="badge {{ rec.badge_class }}">
-                            {{ rec.get_status_display }}
-                        </span>
+                    <td>
+                        <div class="fw-semibold small">{{ rec.session.subject.name }}</div>
+                        <small class="text-muted font-monospace">{{ rec.session.subject.code }}</small>
                     </td>
-                    <td class="small text-muted">{{ rec.remarks|default:"Sin observaciones" }}</td>
+                    <td class="text-center">{{ rec.session.hours_count }}h</td>
+                    <td class="text-center">
+                        {% if rec.status == 'PRESENT' %}
+                            <span class="badge bg-success text-white py-2 px-3">
+                                <i class="bi bi-check-lg me-1"></i>Presente
+                            </span>
+                        {% elif rec.status == 'JUSTIFIED' %}
+                            <span class="badge bg-info text-dark py-2 px-3">
+                                <i class="bi bi-file-earmark-medical me-1"></i>Justificada
+                            </span>
+                            {% if rec.justification %}
+                            <div class="small text-muted mt-1 fst-italic">"{{ rec.justification|truncatechars:60 }}"</div>
+                            {% endif %}
+                        {% else %}
+                            <span class="badge bg-danger text-white py-2 px-3 fw-bold">
+                                ✕ Falta
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        {# Solo mostrar botón si la falta no es PRESENT ni JUSTIFIED y el periodo está editable #}
+                        {% if rec.status != 'PRESENT' and rec.status != 'JUSTIFIED' %}
+                        {% if rec.session.academic_period.is_editable %}
+                        <button type="button"
+                            class="btn btn-warning btn-sm shadow-sm"
+                            title="Enviar justificación de esta falta"
+                            data-bs-toggle="modal"
+                            data-bs-target="#justifyModal"
+                            data-record-id="{{ rec.id }}"
+                            data-subject="{{ rec.session.subject.name }}"
+                            data-fecha="{{ rec.session.date|date:'d/m/Y' }}">
+                            <i class="bi bi-file-earmark-plus me-1"></i>Justificar
+                        </button>
+                        {% else %}
+                        <span class="text-muted small">Periodo cerrado</span>
+                        {% endif %}
+                        {% elif rec.status == 'JUSTIFIED' %}
+                        <span class="text-info small"><i class="bi bi-check-circle-fill me-1"></i>Enviada</span>
+                        {% else %}
+                        <span class="text-muted small">-</span>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>
@@ -110,4 +144,89 @@
         </table>
     </div>
 </div>
+
+<!-- Modal: Enviar Justificación de Falta -->
+<div class="modal fade" id="justifyModal" tabindex="-1" aria-labelledby="justifyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="backdrop-filter:blur(2px);">
+            <form method="POST" id="justifyForm" action="" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title fw-bold" id="justifyModalLabel">
+                        <i class="bi bi-file-earmark-medical-fill me-2"></i>Justificar Falta
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body p-4">
+
+                    <!-- Info de la sesión -->
+                    <div class="alert alert-light border border-warning-subtle py-2 px-3 mb-3 small">
+                        <div class="fw-semibold text-dark" id="modalSubjectName"></div>
+                        <div class="text-muted" id="modalFecha"></div>
+                    </div>
+
+                    <!-- Motivo -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small text-dark">
+                            <i class="bi bi-chat-left-text me-1 text-warning"></i>
+                            Motivo de la ausencia <span class="text-danger">*</span>
+                        </label>
+                        <textarea
+                            name="justification"
+                            class="form-control"
+                            rows="4"
+                            placeholder="Ej: Cita médica, incapacidad, calamidad doméstica... Describa el motivo con detalle."
+                            required
+                            maxlength="500"></textarea>
+                        <div class="form-text small">Mínimo 10 caracteres. Máximo 500.</div>
+                    </div>
+
+                    <!-- Adjunto (opcional) -->
+                    <div class="mb-2">
+                        <label class="form-label fw-semibold small text-dark">
+                            <i class="bi bi-paperclip me-1 text-secondary"></i>
+                            Adjuntar soporte (excusa médica, etc.) — Opcional
+                        </label>
+                        <input type="file"
+                            name="justification_file"
+                            class="form-control form-control-sm"
+                            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+                        <div class="form-text small">Formatos: PDF, JPG, PNG, DOC. Tamaño máximo: 5 MB.</div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">
+                        <i class="bi bi-arrow-left me-1"></i>Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-warning btn-sm fw-bold text-dark">
+                        <i class="bi bi-send-fill me-1"></i>Enviar Justificación
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Inyectar datos al modal de justificación
+document.addEventListener('DOMContentLoaded', function () {
+    var modal = document.getElementById('justifyModal');
+    if (modal) {
+        modal.addEventListener('show.bs.modal', function (event) {
+            var btn = event.relatedTarget;
+            var recordId  = btn.getAttribute('data-record-id');
+            var subject   = btn.getAttribute('data-subject');
+            var fecha     = btn.getAttribute('data-fecha');
+
+            document.getElementById('modalSubjectName').textContent = subject;
+            document.getElementById('modalFecha').textContent = 'Fecha de la clase: ' + fecha;
+            document.getElementById('justifyForm').action = '/attendance/record/' + recordId + '/justify/';
+
+            // Limpiar textarea y file input al abrir
+            modal.querySelector('textarea[name="justification"]').value = '';
+            modal.querySelector('input[type="file"]').value = '';
+        });
+    }
+});
+</script>
 {% endblock %}

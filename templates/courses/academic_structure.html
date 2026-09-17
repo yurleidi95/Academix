@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 
 {% block title %}Estructura Académica y Cursos | ACADEMIX{% endblock %}
 
@@ -85,7 +85,7 @@
 <!-- Modal para Crear Nuevo Grupo / Sección -->
 <div class="modal fade" id="createSectionModal" tabindex="-1" aria-labelledby="createSectionModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content border-0 shadow">
+        <div class="modal-content border-0 shadow" style="backdrop-filter:blur(2px);">
             <form method="POST" action="{% url 'courses:create_section' %}">
                 {% csrf_token %}
                 <div class="modal-header bg-light">
@@ -146,3 +146,4 @@
     </div>
 </div>
 {% endblock %}
+

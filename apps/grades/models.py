@@ -97,6 +97,10 @@ class GradeRecord(models.Model):
         related_name='assigned_grades',
         verbose_name='Calificado por'
     )
+    is_locked = models.BooleanField(
+        default=False,
+        verbose_name='¿Nota Bloqueada / Inmutable?'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

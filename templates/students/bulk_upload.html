@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}Carga Masiva de Estudiantes por Curso | ACADEMIX{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1 small">
+                <li class="breadcrumb-item"><a href="{% url 'students:list' %}">Estudiantes</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Carga Masiva</li>
+            </ol>
+        </nav>
+        <h3 class="fw-bold text-dark mb-0">
+            <i class="bi bi-file-earmark-spreadsheet text-success me-2"></i>Carga Masiva de Estudiantes por Curso
+        </h3>
+        <p class="text-muted small mb-0">
+            Importe de una sola vez la lista completa de alumnos para un curso mediante archivo CSV o pegando directamente desde Excel.
+        </p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'students:download_template' %}" class="btn btn-outline-success btn-sm d-flex align-items-center gap-1 shadow-sm">
+            <i class="bi bi-download"></i>
+            <span>Descargar Plantilla CSV</span>
+        </a>
+        <a href="{% url 'students:list' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Volver al Listado
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card ac-card border-0 shadow-sm">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-upload text-primary me-2"></i>Formulario de Importación
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small">
+                            <span class="text-danger">*</span> Seleccione el Curso / Grupo / Ficha Destino:
+                        </label>
+                        <select name="section_id" class="form-select form-select-lg" required>
+                            <option value="">-- Seleccione el Curso --</option>
+                            {% for sec in sections %}
+                            <option value="{{ sec.id }}" {% if selected_section_id == sec.id|stringformat:"s" %}selected{% endif %}>
+                                {{ sec.name }} ({{ sec.grade_level.name }} &bull; Año: {{ sec.academic_year.year }}) - {{ sec.enrolled_count }} matriculados
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text small">Todos los estudiantes importados quedarán formalmente matriculados en este grupo.</div>
+                    </div>
+
+                    <ul class="nav nav-pills mb-3" id="importTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active btn-sm" id="csv-file-tab" data-bs-toggle="pill" data-bs-target="#csv-file-pane" type="button" role="tab">
+                                <i class="bi bi-file-earmark-arrow-up me-1"></i> Opción A: Subir Archivo CSV
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link btn-sm" id="csv-text-tab" data-bs-toggle="pill" data-bs-target="#csv-text-pane" type="button" role="tab">
+                                <i class="bi bi-clipboard2-plus me-1"></i> Opción B: Pegar Lista Copiada de Excel
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content border rounded p-3 bg-light mb-4" id="importTabContent">
+                        <!-- Opción A: Subir archivo CSV -->
+                        <div class="tab-pane fade show active" id="csv-file-pane" role="tabpanel">
+                            <label class="form-label small fw-bold">Seleccione el archivo .csv estructurado:</label>
+                            <input type="file" name="csv_file" accept=".csv,text/csv" class="form-control">
+                            <div class="form-text small mt-2">
+                                Soporta codificación UTF-8 y ANSI (Windows). Delimitadores automáticos: coma (,), punto y coma (;), tabulación.
+                            </div>
+                        </div>
+
+                        <!-- Opción B: Pegar texto -->
+                        <div class="tab-pane fade" id="csv-text-pane" role="tabpanel">
+                            <label class="form-label small fw-bold">Pegue aquí las filas copiadas de Excel o Google Sheets:</label>
+                            <textarea name="raw_data" rows="8" class="form-control font-monospace small" placeholder="1023456789	TI	Carlos Andrés	Gómez Pérez	carlos@ejemplo.com	3101234567	EST-101
+1098765432	TI	María José	Rodríguez Silva	maria@ejemplo.com	3159876543	EST-102"></textarea>
+                            <div class="form-text small mt-2">
+                                Puede seleccionar las celdas en su archivo Excel, presionar <strong>Ctrl + C</strong> y pegarlas aquí directamente con <strong>Ctrl + V</strong>.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{% url 'students:list' %}" class="btn btn-secondary btn-sm">Cancelar</a>
+                        <button type="submit" class="btn btn-primary btn-sm px-4 shadow-sm">
+                            <i class="bi bi-cloud-arrow-up-fill me-1"></i> Iniciar Importación y Matrícula Masiva
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guía y Estructura de Columnas -->
+    <div class="col-lg-4">
+        <div class="card ac-card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h6 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-info-circle text-primary me-2"></i>Estructura de la Lista
+                </h6>
+            </div>
+            <div class="card-body p-3 small text-muted">
+                <p class="mb-2">El archivo o texto pegado debe contener las siguientes columnas en orden:</p>
+                <ol class="ps-3 mb-3">
+                    <li><strong>Documento:</strong> Cédula, Tarjeta de Identidad, etc. (Obligatorio)</li>
+                    <li><strong>Tipo Doc:</strong> <code>TI</code>, <code>CC</code>, <code>CE</code>, <code>RC</code> (Por defecto TI)</li>
+                    <li><strong>Nombres:</strong> Primer y segundo nombre</li>
+                    <li><strong>Apellidos:</strong> Apellidos del estudiante</li>
+                    <li><strong>Email:</strong> Correo electrónico (opcional, si falta se genera institucional)</li>
+                    <li><strong>Teléfono:</strong> Celular o teléfono (opcional)</li>
+                    <li><strong>Código:</strong> Código de folio institucional (opcional)</li>
+                </ol>
+
+                <div class="p-2 bg-warning-subtle rounded border border-warning-subtle mb-3">
+                    <strong class="text-warning-emphasis d-block mb-1">
+                        <i class="bi bi-shield-lock me-1"></i>Credenciales Automáticas:
+                    </strong>
+                    El sistema generará el usuario con el formato <code>est_documento</code> y su contraseña inicial será el mismo número de documento.
+                </div>
+
+                <a href="{% url 'students:download_template' %}" class="btn btn-success btn-sm w-100 shadow-sm">
+                    <i class="bi bi-file-earmark-arrow-down me-1"></i> Descargar Plantilla Oficial CSV
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

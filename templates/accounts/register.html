@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+
+{% block title %}Registro de Usuario | ACADEMIX{% endblock %}
+
+{% block auth_content %}
+<div class="login-bg py-5">
+    <div class="login-card p-4 p-sm-5 shadow-lg animate__animated animate__fadeIn" style="max-width: 580px; width: 100%;">
+        <div class="text-center mb-4">
+            <div class="d-inline-flex p-3 rounded-circle bg-primary-subtle text-primary mb-2 shadow-sm">
+                <i class="bi bi-person-plus-fill display-6"></i>
+            </div>
+            <h3 class="fw-bold text-dark mb-1">Registro en ACADEMIX</h3>
+            <p class="text-muted small mb-0">Seleccione su rol y complete sus datos para acceder al sistema</p>
+        </div>
+
+        <form method="POST" action="{% url 'accounts:register' %}" class="needs-validation">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger py-2 px-3 small d-flex align-items-center mb-3 border-danger-subtle shadow-sm" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2 fs-6 text-danger"></i>
+                <div>
+                    {% for error in form.non_field_errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- 1. Selección de Rol Obligatoria -->
+            <div class="mb-3 p-3 bg-light rounded border border-primary-subtle shadow-sm">
+                <label for="reg-role-select" class="form-label small fw-bold text-dark d-flex align-items-center gap-1 mb-2">
+                    <i class="bi bi-shield-check text-primary"></i> <span class="text-danger">*</span> Rol a Registrar en la Institución:
+                </label>
+                {{ form.role }}
+                <div class="form-text small mt-1" id="role-help-text" style="font-size: 0.75rem;">
+                    Alumnos recibirán un ID ÚNICO generado automáticamente.
+                </div>
+            </div>
+
+            <!-- Aviso para Alumnos (Asignación de ID Único) -->
+            <div class="alert alert-primary py-2 px-3 small mb-3 border-0 shadow-sm" id="student-notice" style="display: none;">
+                <i class="bi bi-info-circle-fill me-1"></i>
+                <strong>ID ÚNICO Automático:</strong> Al registrarse como alumno, el sistema le generará y asignará su <strong>ID ÚNICO</strong> exclusivo de acceso.
+            </div>
+
+            <!-- Campo Obligatorio para Padre de Familia: ID ÚNICO del Alumno -->
+            <div class="mb-3 p-3 bg-warning-subtle rounded border border-warning shadow-sm" id="parent-student-id-wrapper" style="display: none;">
+                <label for="reg-student-id-input" class="form-label small fw-bold text-dark d-flex align-items-center gap-1 mb-1">
+                    <i class="bi bi-person-badge text-warning-emphasis"></i> <span class="text-danger">*</span> ID ÚNICO del Alumno a Representar:
+                </label>
+                {{ form.student_id_target }}
+                <div class="form-text small mt-1" style="font-size: 0.72rem;">
+                    Obligatorio para acudientes. Ingrese el código o ID único de su hijo/a (ej: ALU-2026-1001).
+                </div>
+                {% if form.student_id_target.errors %}
+                    <div class="text-danger small mt-1">{{ form.student_id_target.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <div class="row g-2 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label small fw-bold text-secondary">Nombres:</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        <div class="text-danger small">{{ form.first_name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small fw-bold text-secondary">Apellidos:</label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        <div class="text-danger small">{{ form.last_name.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row g-2 mb-3">
+                <div class="col-md-5">
+                    <label class="form-label small fw-bold text-secondary">Tipo Doc:</label>
+                    {{ form.document_type }}
+                </div>
+                <div class="col-md-7">
+                    <label class="form-label small fw-bold text-secondary">Número de Documento:</label>
+                    {{ form.document_number }}
+                    {% if form.document_number.errors %}
+                        <div class="text-danger small">{{ form.document_number.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row g-2 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label small fw-bold text-secondary">Nombre de Usuario:</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="text-danger small">{{ form.username.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small fw-bold text-secondary">Email (Opcional):</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <div class="text-danger small">{{ form.email.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row g-2 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label small fw-bold text-secondary">Contraseña:</label>
+                    {{ form.password }}
+                    {% if form.password.errors %}
+                        <div class="text-danger small">{{ form.password.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label small fw-bold text-secondary">Confirmar Contraseña:</label>
+                    {{ form.confirm_password }}
+                    {% if form.confirm_password.errors %}
+                        <div class="text-danger small">{{ form.confirm_password.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-primary btn-lg fw-bold d-flex align-items-center justify-content-center gap-2 shadow">
+                    <i class="bi bi-check-circle-fill fs-5"></i>
+                    <span>Registrarse y Crear Cuenta</span>
+                </button>
+            </div>
+
+            <div class="text-center mt-3 pt-3 border-top">
+                <span class="text-muted small">¿Ya tienes una cuenta registrada?</span>
+                <a href="{% url 'accounts:login' %}" class="small fw-bold text-primary text-decoration-none ms-1">
+                    <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesión
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+(function() {
+    function updateRegisterFields() {
+        const roleSelect = document.getElementById('reg-role-select');
+        const studentNotice = document.getElementById('student-notice');
+        const parentStudentWrapper = document.getElementById('parent-student-id-wrapper');
+        const studentIdInput = document.getElementById('reg-student-id-input');
+        const helpText = document.getElementById('role-help-text');
+
+        if (!roleSelect) return;
+        const role = roleSelect.value;
+
+        if (role === 'STUDENT') {
+            if (studentNotice) studentNotice.style.display = 'block';
+            if (parentStudentWrapper) parentStudentWrapper.style.display = 'none';
+            if (studentIdInput) studentIdInput.required = false;
+            if (helpText) helpText.innerText = "Se generará y asignará automáticamente un ID ÚNICO para el alumno.";
+        } else if (role === 'PARENT') {
+            if (studentNotice) studentNotice.style.display = 'none';
+            if (parentStudentWrapper) parentStudentWrapper.style.display = 'block';
+            if (studentIdInput) studentIdInput.required = true;
+            if (helpText) helpText.innerText = "El ID ÚNICO del alumno a cargo es OBLIGATORIO para registrar el acudiente.";
+        } else {
+            if (studentNotice) studentNotice.style.display = 'none';
+            if (parentStudentWrapper) parentStudentWrapper.style.display = 'none';
+            if (studentIdInput) studentIdInput.required = false;
+            if (helpText) helpText.innerText = "Registro con usuario y contraseña institucional.";
+        }
+    }
+
+    const roleSelect = document.getElementById('reg-role-select');
+    if (roleSelect) {
+        roleSelect.addEventListener('change', updateRegisterFields);
+        updateRegisterFields();
+    }
+})();
+</script>
+{% endblock %}

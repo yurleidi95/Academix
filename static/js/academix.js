@@ -34,6 +34,55 @@ document.addEventListener('DOMContentLoaded', function () {
             createToast(data.message, data.level || 'info');
         }
     });
+
+    // 5. Efecto de Desenfoque y Enfoque al Interactuar con Formularios y Módulos
+    const overlay = document.getElementById('ac-focus-overlay');
+    let currentElevated = null;
+
+    function activateFocusBlur(element) {
+        if (!overlay || !element) return;
+        if (currentElevated && currentElevated !== element) {
+            currentElevated.classList.remove('ac-focus-elevated');
+        }
+        currentElevated = element;
+        element.classList.add('ac-focus-elevated');
+        overlay.classList.add('active');
+    }
+
+    function deactivateFocusBlur() {
+        if (currentElevated) {
+            currentElevated.classList.remove('ac-focus-elevated');
+            currentElevated = null;
+        }
+        if (overlay) {
+            overlay.classList.remove('active');
+        }
+    }
+
+    if (overlay) {
+        overlay.addEventListener('click', deactivateFocusBlur);
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') deactivateFocusBlur();
+        });
+    }
+
+    // Auto-activación al enfocar en formularios o tablas de calificación interactiva
+    document.addEventListener('focusin', function (e) {
+        const target = e.target;
+        if (target.matches('#bulkGradeForm input, #bulkGradeForm select, .ac-focus-form input, .ac-focus-form select, .ac-focus-form textarea')) {
+            const card = target.closest('.ac-card') || target.closest('form');
+            if (card) activateFocusBlur(card);
+        }
+    });
+
+    document.addEventListener('click', function (e) {
+        const target = e.target;
+        if (overlay && overlay.classList.contains('active')) {
+            if (!target.closest('.ac-focus-elevated') && !target.closest('.modal')) {
+                deactivateFocusBlur();
+            }
+        }
+    });
 });
 
 /**

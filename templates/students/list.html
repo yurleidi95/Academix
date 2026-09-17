@@ -9,14 +9,16 @@
         <p class="text-muted small mb-0">Gestión de matrículas escolares, asignación a grupos y datos de acudiente</p>
     </div>
     <div class="d-flex gap-2">
+        {% if user.is_admin_role or user.is_rector or user.is_secretary or user.is_teacher %}
+        <a href="{% url 'students:bulk_upload' %}" class="btn btn-success btn-sm d-flex align-items-center gap-1 shadow-sm">
+            <i class="bi bi-file-earmark-spreadsheet"></i>
+            <span>Carga Masiva de Lista</span>
+        </a>
+        {% endif %}
         {% if user.is_admin_role or user.is_rector or user.is_secretary %}
         <button class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#createStudentModal">
             <i class="bi bi-person-plus-fill"></i>
             <span>Nuevo Alumno</span>
-        </button>
-        <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#enrollStudentModal">
-            <i class="bi bi-clipboard-plus"></i>
-            <span>Matricular Existente</span>
         </button>
         {% endif %}
     </div>
@@ -56,7 +58,8 @@
                 <th>Grupo Escolar</th>
                 <th>Acudiente / Contacto</th>
                 <th>Fecha Matrícula</th>
-                <th class="text-end">Estado</th>
+                <th>Estado</th>
+                <th class="text-end">Observaciones</th>
             </tr>
         </thead>
         <tbody>
@@ -80,10 +83,48 @@
                     {% endif %}
                 </td>
                 <td class="small text-muted font-monospace">{{ enr.enrollment_date|date:"d/m/Y" }}</td>
-                <td class="text-end">
+                <td>
+                    {% if enr.status == 'ACTIVE' %}
                     <span class="badge bg-success-subtle text-success border border-success-subtle">
                         {{ enr.get_status_display }}
                     </span>
+                    {% elif enr.status == 'PENDING' %}
+                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">
+                        ⏳ Pendiente de Aprobación
+                    </span>
+                    {% else %}
+                    <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle">
+                        {{ enr.get_status_display }}
+                    </span>
+                    {% endif %}
+                </td>
+                <td class="text-end">
+                    <div class="d-flex gap-1 justify-content-end flex-wrap">
+                        <a href="{% url 'students:observations' enr.student.id %}" class="btn btn-outline-primary btn-sm py-1 px-2 shadow-sm" title="Observaciones del estudiante">
+                            <i class="bi bi-journal-text"></i>
+                        </a>
+                        {% if enr.status == 'PENDING' and user.is_secretary or enr.status == 'PENDING' and user.is_admin_role or enr.status == 'PENDING' and user.is_rector %}
+                        <form method="POST" action="{% url 'students:confirm_enrollment' enr.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-sm py-1 px-2 shadow-sm" title="Confirmar Matrícula" onclick="return confirm('\u00bfConfirmar la matrícula de este estudiante?')">
+                                <i class="bi bi-check-circle-fill me-1"></i>Confirmar
+                            </button>
+                        </form>
+                        {% endif %}
+                        {% if user.is_admin_role or user.is_rector or user.is_secretary %}
+                        {% if enr.status == 'ACTIVE' or enr.status == 'PENDING' %}
+                        <button type="button"
+                            class="btn btn-danger btn-sm py-1 px-2 shadow-sm"
+                            title="Cancelar Matrícula"
+                            data-bs-toggle="modal"
+                            data-bs-target="#cancelEnrollModal"
+                            data-enr-id="{{ enr.id }}"
+                            data-student-name="{{ enr.student.user.get_full_name|default:enr.student.user.username }}">
+                            <i class="bi bi-x-circle-fill"></i>
+                        </button>
+                        {% endif %}
+                        {% endif %}
+                    </div>
                 </td>
             </tr>
             {% empty %}
@@ -98,56 +139,67 @@
     </table>
 </div>
 
-<!-- Modal para Matricular Estudiante -->
-<div class="modal fade" id="enrollStudentModal" tabindex="-1" aria-labelledby="enrollStudentModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content border-0 shadow">
-            <form method="POST" action="{% url 'students:enroll' %}">
+
+<!-- Modal de Confirmación: Cancelar Matrícula -->
+<div class="modal fade" id="cancelEnrollModal" tabindex="-1" aria-labelledby="cancelEnrollModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow" style="backdrop-filter:blur(2px);">
+            <form method="POST" id="cancelEnrollForm" action="">
                 {% csrf_token %}
-                <input type="hidden" name="academic_year_id" value="{{ current_year.id }}">
-                <div class="modal-header bg-light">
-                    <h5 class="modal-title fw-bold" id="enrollStudentModalLabel">
-                        <i class="bi bi-mortarboard-fill text-primary me-2"></i>Matricular Estudiante en Grupo
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title fw-bold" id="cancelEnrollModalLabel">
+                        <i class="bi bi-x-circle-fill me-2"></i>Cancelar Matrícula
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Estudiante Disponible</label>
-                        <select name="user_id" class="form-select" required>
-                            {% for u in available_users %}
-                            <option value="{{ u.id }}">{{ u.get_full_name|default:u.username }} (Doc: {{ u.document_number|default:"Sin doc" }})</option>
-                            {% empty %}
-                            <option disabled selected>Todos los estudiantes activos ya cuentan con matrícula</option>
-                            {% endfor %}
-                        </select>
+                <div class="modal-body p-4">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="rounded-circle bg-danger-subtle d-flex align-items-center justify-content-center" style="width:48px;height:48px;flex-shrink:0;">
+                            <i class="bi bi-person-x-fill text-danger fs-4"></i>
+                        </div>
+                        <div>
+                            <p class="mb-1 fw-semibold text-dark">Esta acción cancelará la matrícula de:</p>
+                            <p class="mb-0 fs-6 fw-bold text-danger" id="cancelStudentName"></p>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Grupo Escolar Destino</label>
-                        <select name="section_id" class="form-select" required>
-                            {% for s in sections %}
-                            <option value="{{ s.id }}">{{ s.name }} (Grado {{ s.grade_level.name }}) - Cupos: {{ s.enrolled_count }}/{{ s.capacity }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Código / Folio Estudiantil (Opcional)</label>
-                        <input type="text" name="student_code" class="form-control" placeholder="Ej. EST-2026-0045">
+                    <div class="alert alert-warning py-2 px-3 small border-warning-subtle mb-0">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                        El estudiante quedará en estado <strong>Retirado</strong>. Esta acción queda registrada en la auditoría del sistema.
                     </div>
                 </div>
                 <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary btn-sm fw-bold">Confirmar Matrícula</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">
+                        <i class="bi bi-arrow-left me-1"></i>Volver
+                    </button>
+                    <button type="submit" class="btn btn-danger btn-sm fw-bold">
+                        <i class="bi bi-x-circle-fill me-1"></i>Sí, Cancelar Matrícula
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+<script>
+// Inyectar datos al modal de cancelación de matrícula
+document.addEventListener('DOMContentLoaded', function () {
+    var cancelModal = document.getElementById('cancelEnrollModal');
+    if (cancelModal) {
+        cancelModal.addEventListener('show.bs.modal', function (event) {
+            var btn = event.relatedTarget;
+            var enrId = btn.getAttribute('data-enr-id');
+            var studentName = btn.getAttribute('data-student-name');
+            document.getElementById('cancelStudentName').textContent = studentName;
+            document.getElementById('cancelEnrollForm').action = '/students/enrollment/' + enrId + '/cancel/';
+        });
+    }
+});
+</script>
+
 <!-- Modal para Registrar Nuevo Alumno -->
 <div class="modal fade" id="createStudentModal" tabindex="-1" aria-labelledby="createStudentModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
+        <div class="modal-content border-0 shadow" style="backdrop-filter:blur(2px);">
             <form method="POST" action="{% url 'students:create' %}">
                 {% csrf_token %}
                 <div class="modal-header bg-primary text-white">

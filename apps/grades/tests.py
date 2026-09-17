@@ -85,7 +85,7 @@ class GradesTests(TestCase):
 
     def test_score_range_validation(self):
         with self.assertRaises(ValidationError):
-            save_or_update_grade(self.student_profile, self.section, self.subject, self.period, self.criteria[0], '5.50')
+            save_or_update_grade(self.student_profile, self.section, self.subject, self.period, self.criteria[0], '10.50')
 
     def test_closed_period_blocks_grading(self):
         self.period.status = AcademicPeriod.Status.CLOSED

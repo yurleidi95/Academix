@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+
+{% block title %}Adaptabilidad Institucional | ACADEMIX{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h3 class="fw-bold text-dark mb-1">
+            <i class="bi bi-sliders2 text-primary me-2"></i>Adaptabilidad Institucional
+        </h3>
+        <p class="text-muted small mb-0">
+            Configure ACADEMIX para que se adapte al modelo y terminología de su institución (Colegio, Universidad, SENA / Técnico, Academia).
+        </p>
+    </div>
+    <div>
+        <a href="{% url 'courses:academic_structure' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> Volver a Estructura
+        </a>
+    </div>
+</div>
+
+<!-- Selector Rápido de Presets -->
+<div class="card ac-card border-0 shadow-sm mb-4">
+    <div class="card-body p-4">
+        <h5 class="fw-bold text-dark mb-2">
+            <i class="bi bi-magic me-2 text-warning"></i>Modos Preconfigurados con 1 Clic
+        </h5>
+        <p class="text-muted small mb-3">
+            Haga clic en cualquiera de estos perfiles para ajustar automáticamente todos los nombres y roles de la plataforma al entorno educativo correspondiente:
+        </p>
+
+        <div class="row g-3">
+            <!-- Preset Colegio -->
+            <div class="col-md-3">
+                <div class="p-3 rounded border {% if inst_settings.institution_type == 'COLEGIO' %}border-primary bg-primary-subtle shadow-sm{% else %}bg-light{% endif %} text-center h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <i class="bi bi-backpack4-fill fs-2 text-primary mb-2 d-block"></i>
+                        <h6 class="fw-bold text-dark mb-1">Colegio / Escuela</h6>
+                        <p class="small text-muted mb-2" style="font-size: 0.78rem;">
+                            Básica Primaria, Secundaria y Media. Términos: Estudiante, Docente, Grado, Curso, Asignatura, Rector(a).
+                        </p>
+                    </div>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="apply_preset">
+                        <input type="hidden" name="preset" value="COLEGIO">
+                        <button type="submit" class="btn btn-sm {% if inst_settings.institution_type == 'COLEGIO' %}btn-primary{% else %}btn-outline-primary{% endif %} w-100">
+                            {% if inst_settings.institution_type == 'COLEGIO' %}<i class="bi bi-check-circle me-1"></i>Activo{% else %}Activar Modo Colegio{% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Preset Universidad -->
+            <div class="col-md-3">
+                <div class="p-3 rounded border {% if inst_settings.institution_type == 'UNIVERSIDAD' %}border-primary bg-primary-subtle shadow-sm{% else %}bg-light{% endif %} text-center h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <i class="bi bi-mortarboard-fill fs-2 text-success mb-2 d-block"></i>
+                        <h6 class="fw-bold text-dark mb-1">Universidad / Superior</h6>
+                        <p class="small text-muted mb-2" style="font-size: 0.78rem;">
+                            Pregrado y Posgrado. Términos: Estudiante, Profesor(a), Semestre, Grupo, Materia, Decano(a).
+                        </p>
+                    </div>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="apply_preset">
+                        <input type="hidden" name="preset" value="UNIVERSIDAD">
+                        <button type="submit" class="btn btn-sm {% if inst_settings.institution_type == 'UNIVERSIDAD' %}btn-success text-white{% else %}btn-outline-success{% endif %} w-100">
+                            {% if inst_settings.institution_type == 'UNIVERSIDAD' %}<i class="bi bi-check-circle me-1"></i>Activo{% else %}Activar Modo Universidad{% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Preset SENA / Técnico -->
+            <div class="col-md-3">
+                <div class="p-3 rounded border {% if inst_settings.institution_type == 'SENA_TECNICO' %}border-primary bg-primary-subtle shadow-sm{% else %}bg-light{% endif %} text-center h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <i class="bi bi-gear-wide-connected fs-2 text-warning mb-2 d-block"></i>
+                        <h6 class="fw-bold text-dark mb-1">Técnico / SENA</h6>
+                        <p class="small text-muted mb-2" style="font-size: 0.78rem;">
+                            Formación Técnica y Tecnológica. Términos: Aprendiz, Instructor(a), Trimestre, Ficha, Competencia / Módulo.
+                        </p>
+                    </div>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="apply_preset">
+                        <input type="hidden" name="preset" value="SENA_TECNICO">
+                        <button type="submit" class="btn btn-sm {% if inst_settings.institution_type == 'SENA_TECNICO' %}btn-warning text-dark fw-bold{% else %}btn-outline-warning text-dark{% endif %} w-100">
+                            {% if inst_settings.institution_type == 'SENA_TECNICO' %}<i class="bi bi-check-circle me-1"></i>Activo{% else %}Activar Modo SENA / Técnico{% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Preset Academia / Educación Continua -->
+            <div class="col-md-3">
+                <div class="p-3 rounded border {% if inst_settings.institution_type == 'ACADEMIA' %}border-primary bg-primary-subtle shadow-sm{% else %}bg-light{% endif %} text-center h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <i class="bi bi-palette-fill fs-2 text-info mb-2 d-block"></i>
+                        <h6 class="fw-bold text-dark mb-1">Academia / Cursos</h6>
+                        <p class="small text-muted mb-2" style="font-size: 0.78rem;">
+                            Idiomas, Artes, Diplomados. Términos: Alumno(a), Tutor(a), Nivel, Grupo/Clase, Módulo/Taller, Director(a).
+                        </p>
+                    </div>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="apply_preset">
+                        <input type="hidden" name="preset" value="ACADEMIA">
+                        <button type="submit" class="btn btn-sm {% if inst_settings.institution_type == 'ACADEMIA' %}btn-info text-white{% else %}btn-outline-info{% endif %} w-100">
+                            {% if inst_settings.institution_type == 'ACADEMIA' %}<i class="bi bi-check-circle me-1"></i>Activo{% else %}Activar Modo Academia{% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Formulario Detallado de Personalización de Terminología -->
+<div class="card ac-card border-0 shadow-sm">
+    <div class="card-header bg-white py-3 border-bottom">
+        <h5 class="fw-bold text-dark mb-0">
+            <i class="bi bi-pencil-square text-primary me-2"></i>Personalización Fina de Términos y Etiquetas
+        </h5>
+        <p class="text-muted small mb-0">Puede ajustar con total libertad cada término para que coincida exactamente con su vocabulario institucional.</p>
+    </div>
+    <div class="card-body p-4">
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="save_custom">
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small">Nombre Oficial de la Institución</label>
+                    <input type="text" name="institution_name" class="form-control" value="{{ inst_settings.institution_name }}" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold small">Lema o Subtítulo Institucional</label>
+                    <input type="text" name="slogan" class="form-control" value="{{ inst_settings.slogan }}">
+                </div>
+            </div>
+
+            <h6 class="fw-bold text-primary border-bottom pb-2 mb-3">Términos que se verán en toda la interfaz:</h6>
+
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Alumno (Singular)</label>
+                    <input type="text" name="term_student" class="form-control form-control-sm" value="{{ inst_settings.term_student }}" required>
+                    <div class="form-text" style="font-size: 0.72rem;">Ej: Estudiante, Aprendiz, Alumno.</div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Alumnos (Plural)</label>
+                    <input type="text" name="term_students" class="form-control form-control-sm" value="{{ inst_settings.term_students }}" required>
+                    <div class="form-text" style="font-size: 0.72rem;">Ej: Estudiantes, Aprendices, Alumnos.</div>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Profesor (Singular)</label>
+                    <input type="text" name="term_teacher" class="form-control form-control-sm" value="{{ inst_settings.term_teacher }}" required>
+                    <div class="form-text" style="font-size: 0.72rem;">Ej: Docente, Instructor, Profesor.</div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Profesores (Plural)</label>
+                    <input type="text" name="term_teachers" class="form-control form-control-sm" value="{{ inst_settings.term_teachers }}" required>
+                    <div class="form-text" style="font-size: 0.72rem;">Ej: Docentes, Instructores, Profesores.</div>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Nivel Académico</label>
+                    <input type="text" name="term_grade" class="form-control form-control-sm" value="{{ inst_settings.term_grade }}" required>
+                    <div class="form-text" style="font-size: 0.72rem;">Ej: Grado, Semestre, Nivel, Trimestre.</div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Grupo / Clase (Singular)</label>
+                    <input type="text" name="term_section" class="form-control form-control-sm" value="{{ inst_settings.term_section }}" required>
+                    <div class="form-text" style="font-size: 0.72rem;">Ej: Curso, Grupo, Ficha, Salón.</div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Grupos / Clases (Plural)</label>
+                    <input type="text" name="term_sections" class="form-control form-control-sm" value="{{ inst_settings.term_sections }}" required>
+                    <div class="form-text" style="font-size: 0.72rem;">Ej: Cursos, Grupos, Fichas.</div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Materia / Asignatura</label>
+                    <input type="text" name="term_subject" class="form-control form-control-sm" value="{{ inst_settings.term_subject }}" required>
+                    <div class="form-text" style="font-size: 0.72rem;">Ej: Asignatura, Materia, Competencia, Módulo.</div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Materias (Plural)</label>
+                    <input type="text" name="term_subjects" class="form-control form-control-sm" value="{{ inst_settings.term_subjects }}" required>
+                    <div class="form-text" style="font-size: 0.72rem;">Ej: Asignaturas, Materias, Competencias.</div>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold">Cargo de Dirección</label>
+                    <input type="text" name="term_director" class="form-control form-control-sm" value="{{ inst_settings.term_director }}" required>
+                    <div class="form-text" style="font-size: 0.72rem;">Ej: Rector(a), Decano(a), Subdirector(a).</div>
+                </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-top text-end">
+                <button type="submit" class="btn btn-primary px-4 shadow-sm">
+                    <i class="bi bi-save me-1"></i> Guardar Cambios de Terminología
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -30,13 +30,14 @@ def calculate_student_absence_stats(student_profile, subject, academic_period):
         return {
             'total_sessions': 0,
             'total_hours': 0,
+            'present_count': 0,
             'unjustified_hours': 0,
             'justified_hours': 0,
             'late_count': 0,
             'absence_percentage': Decimal('0.00'),
             'semaphore': 'GREEN',
             'semaphore_badge': 'bg-success text-white',
-            'semaphore_label': '🟢 Normal (<10%)',
+            'semaphore_label': 'Normal',
             'is_blocked': False,
         }
 
@@ -72,9 +73,12 @@ def calculate_student_absence_stats(student_profile, subject, academic_period):
         label = '🟢 Normal'
         is_blocked = False
 
+    present_count = sum(1 for r in records if r.status == AttendanceRecord.Status.PRESENT)
+
     return {
         'total_sessions': total_sessions,
         'total_hours': total_hours,
+        'present_count': present_count,
         'unjustified_hours': unjustified_hours,
         'justified_hours': justified_hours,
         'late_count': late_count,
@@ -120,7 +124,7 @@ def get_or_create_attendance_session(course_section, subject, session_date, reco
         AttendanceRecord.objects.get_or_create(
             session=session,
             student=student,
-            defaults={'status': AttendanceRecord.Status.PRESENT}
+            defaults={'status': AttendanceRecord.Status.UNJUSTIFIED}
         )
 
     return session

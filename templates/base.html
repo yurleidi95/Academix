@@ -58,6 +58,9 @@
         {% block auth_content %}{% endblock %}
     {% endif %}
 
+    <!-- Capa Global para Efecto de Desenfoque al Interactuar (Backdrop Blur) -->
+    <div id="ac-focus-overlay"></div>
+
     <!-- Contenedor Global de Notificaciones y Toasts -->
     {% include 'partials/toasts.html' %}
 

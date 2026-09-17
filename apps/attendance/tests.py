@@ -60,7 +60,7 @@ class AttendanceTests(TestCase):
         self.assertEqual(session.records.count(), 1)
         record = session.records.first()
         self.assertEqual(record.student, self.student_profile)
-        self.assertEqual(record.status, AttendanceRecord.Status.PRESENT)
+        self.assertEqual(record.status, AttendanceRecord.Status.UNJUSTIFIED)
 
     def test_update_attendance_and_absence_calculation(self):
         session1 = get_or_create_attendance_session(self.section, self.subject, date(2026, 2, 10))

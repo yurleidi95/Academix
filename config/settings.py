@@ -45,7 +45,6 @@ for _host in ['localhost', '127.0.0.1'] + _local_ips:
 
 # APLICACIONES INSTALADAS
 DJANGO_APPS = [
-    'jazzmin',  # Debe ir antes de django.contrib.admin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -107,6 +106,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.courses.context_processors.institution_context',
             ],
         },
     },
@@ -194,80 +194,6 @@ LOGOUT_REDIRECT_URL = 'accounts:login'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ==============================================================================
-# CONFIGURACIÓN DE JAZZMIN (TEMA DEL PANEL DE ADMINISTRACIÓN)
-# ==============================================================================
-JAZZMIN_SETTINGS = {
-    "site_title": "ACADEMIX Admin",
-    "site_header": "ACADEMIX",
-    "site_brand": "ACADEMIX",
-    "site_logo_classes": "img-circle",
-    "welcome_sign": "Bienvenido al Panel de Administración de ACADEMIX",
-    "copyright": "ACADEMIX - Gestión Académica Integral",
-    "search_model": ["accounts.CustomUser"],
-    "user_avatar": None,
-    "topmenu_links": [
-        {"name": "Inicio", "url": "admin:index", "permissions": ["auth.view_user"]},
-        {"name": "Plataforma Web", "url": "/"},
-    ],
-    "show_sidebar": True,
-    "navigation_expanded": True,
-    "hide_apps": [],
-    "hide_models": [],
-    "icons": {
-        "accounts.CustomUser": "fas fa-users-cog",
-        "accounts.UserProfile": "fas fa-id-card",
-        "accounts.StudentProfile": "fas fa-user-graduate",
-        "accounts.TeacherProfile": "fas fa-chalkboard-teacher",
-        "accounts.ParentProfile": "fas fa-user-friends",
-        "courses.Grade": "fas fa-layer-group",
-        "courses.Course": "fas fa-school",
-        "subjects.Subject": "fas fa-book-open",
-        "subjects.KnowledgeArea": "fas fa-graduation-cap",
-        "periods.Period": "fas fa-clock",
-        "students.Student": "fas fa-user-graduate",
-        "students.Enrollment": "fas fa-user-check",
-        "teachers.Teacher": "fas fa-chalkboard-teacher",
-        "teachers.TeacherAssignment": "fas fa-clipboard-list",
-        "attendance.AttendanceRecord": "fas fa-calendar-check",
-        "grades.Grade": "fas fa-award",
-        "homework.Homework": "fas fa-tasks",
-        "audit.AuditLog": "fas fa-shield-alt",
-    },
-    "default_icon_parents": "fas fa-chevron-circle-right",
-    "default_icon_children": "fas fa-circle",
-    "changeform_format": "horizontal_tabs",
-}
-
-JAZZMIN_UI_TWEAKS = {
-    "navbar_small_text": False,
-    "footer_small_text": False,
-    "body_small_text": False,
-    "brand_small_text": False,
-    "brand_colour": "navbar-primary",
-    "accent": "accent-primary",
-    "navbar": "navbar-dark navbar-primary",
-    "no_navbar_border": False,
-    "navbar_fixed": False,
-    "layout_boxed": False,
-    "footer_fixed": False,
-    "sidebar_fixed": True,
-    "sidebar": "sidebar-dark-primary",
-    "sidebar_nav_small_text": False,
-    "sidebar_disable_expand": False,
-    "sidebar_nav_child_indent": True,
-    "sidebar_nav_compact_style": False,
-    "sidebar_nav_legacy_style": False,
-    "sidebar_nav_flat_style": False,
-    "theme": "default",
-    "default_theme_mode": "light",
-    "button_classes": {
-        "primary": "btn-primary",
-        "secondary": "btn-secondary",
-        "info": "btn-info",
-        "warning": "btn-warning",
-        "danger": "btn-danger",
-        "success": "btn-success"
-    }
-}
-
+# CONFIGURACIÓN DE CORREO ELECTRÓNICO INSTITUCIONAL
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'notificaciones@academix.edu.co'

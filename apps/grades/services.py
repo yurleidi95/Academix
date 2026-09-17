@@ -137,8 +137,11 @@ def save_or_update_grade(student, course_section, subject, academic_period, crit
         subject=subject,
         academic_period=academic_period,
         criterion=criterion,
-        defaults={'score': score_dec, 'feedback': feedback, 'graded_by': user}
+        defaults={'score': score_dec, 'feedback': feedback, 'graded_by': user, 'is_locked': True}
     )
+
+    if not created and record.is_locked:
+        raise ValidationError("Esta calificación ya fue actualizada y no puede ser modificada por ningún usuario.")
 
     old_score = None if created else record.score
     if not created:
@@ -146,6 +149,7 @@ def save_or_update_grade(student, course_section, subject, academic_period, crit
         if feedback is not None:
             record.feedback = feedback
         record.graded_by = user
+        record.is_locked = True
         record.save()
 
     # Auditoría inmutable de la nota

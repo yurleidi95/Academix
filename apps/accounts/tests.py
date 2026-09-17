@@ -29,7 +29,8 @@ class AccountsModelTests(TestCase):
         client = Client()
         response = client.post(reverse('accounts:login'), {
             'username': 'profesor1',
-            'password': 'SecurePassword123!'
+            'password': 'SecurePassword123!',
+            'role': CustomUser.Role.TEACHER
         })
         self.assertEqual(response.status_code, 302)
         self.assertIn('/dashboard/', response.url)

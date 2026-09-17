@@ -11,31 +11,33 @@
         <form class="d-inline-flex gap-1" hx-post="{% url 'attendance:update_record' item.record.id %}" hx-trigger="change" hx-target="#student-row-{{ item.student.id }}" hx-swap="outerHTML">
             {% csrf_token %}
             <div class="btn-group btn-group-sm" role="group" aria-label="Asistencia de {{ item.student.user.username }}">
+                <!-- Solo: Presente y Falta Justificada -->
                 <input type="radio" class="btn-check" name="status" id="btn-p-{{ item.record.id }}" value="PRESENT" autocomplete="off" {% if item.record.status == 'PRESENT' %}checked{% endif %}>
                 <label class="btn btn-outline-success" for="btn-p-{{ item.record.id }}" title="Presente">
                     <i class="bi bi-check-lg"></i> P
-                </label>
-
-                <input type="radio" class="btn-check" name="status" id="btn-l-{{ item.record.id }}" value="LATE" autocomplete="off" {% if item.record.status == 'LATE' %}checked{% endif %}>
-                <label class="btn btn-outline-warning" for="btn-l-{{ item.record.id }}" title="Tardanza / Retardo">
-                    <i class="bi bi-clock-history"></i> T
                 </label>
 
                 <input type="radio" class="btn-check" name="status" id="btn-j-{{ item.record.id }}" value="JUSTIFIED" autocomplete="off" {% if item.record.status == 'JUSTIFIED' %}checked{% endif %}>
                 <label class="btn btn-outline-info" for="btn-j-{{ item.record.id }}" title="Falta Justificada">
                     <i class="bi bi-file-earmark-medical"></i> FJ
                 </label>
-
-                <input type="radio" class="btn-check" name="status" id="btn-u-{{ item.record.id }}" value="UNJUSTIFIED" autocomplete="off" {% if item.record.status == 'UNJUSTIFIED' %}checked{% endif %}>
-                <label class="btn btn-outline-danger" for="btn-u-{{ item.record.id }}" title="Falta Injustificada">
-                    <i class="bi bi-x-lg"></i> FI
-                </label>
             </div>
         </form>
         {% else %}
-        <span class="badge {{ item.record.badge_class }} py-2 px-3">
-            {{ item.record.get_status_display }}
-        </span>
+        {# Solo lectura: P o FJ → badge; cualquier otro estado → X roja #}
+        {% if item.record.status == 'PRESENT' %}
+            <span class="badge bg-success text-white py-2 px-3">✔ Presente</span>
+        {% elif item.record.status == 'JUSTIFIED' %}
+            <span class="badge bg-info text-dark py-2 px-3">FJ Justificada</span>
+        {% else %}
+            <span class="badge bg-danger text-white py-2 px-3 fw-bold" title="{{ item.record.get_status_display }}">✕</span>
+        {% endif %}
+        {% endif %}
+        {# Si el estado activo no es P ni FJ, mostrar X en modo edición también #}
+        {% if is_editable %}
+        {% if item.record.status != 'PRESENT' and item.record.status != 'JUSTIFIED' %}
+        <span class="badge bg-danger text-white ms-1 fw-bold" title="Falta sin registrar (ni Presente ni Justificada)">✕</span>
+        {% endif %}
         {% endif %}
     </td>
     <td>
@@ -46,11 +48,17 @@
             {{ item.stats.semaphore_label }}
         </small>
     </td>
+    <!-- Desglose: solo Presente y Falta Justificada -->
     <td>
-        <div class="small text-muted font-monospace">
-            <span class="text-danger fw-bold">{{ item.stats.unjustified_hours }}h FI</span> &bull; 
-            <span class="text-warning fw-bold">{{ item.stats.late_count }} T</span> &bull; 
-            <span class="text-info fw-bold">{{ item.stats.justified_hours }}h FJ</span>
+        <div class="small font-monospace d-flex flex-column gap-1">
+            <span class="text-success fw-bold">
+                <i class="bi bi-check-circle-fill me-1"></i>
+                Presente: {{ item.stats.present_count }}
+            </span>
+            <span class="text-info fw-bold">
+                <i class="bi bi-file-earmark-medical-fill me-1"></i>
+                F. Justificada: {{ item.stats.justified_hours }}h
+            </span>
         </div>
         <small class="text-secondary" style="font-size: 0.65rem;">de {{ item.stats.total_hours }}h totales</small>
     </td>

@@ -15,18 +15,28 @@
             <i class="bi bi-calendar3 me-1 text-primary"></i>Fecha: <strong>{{ session_date|date:"d/m/Y" }}</strong> &bull; Grado: {{ section.grade_level.name }} &bull; Registrado por: {{ session.recorded_by.get_full_name|default:session.recorded_by.username|default:"Docente" }}
         </p>
     </div>
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 flex-wrap">
         {% if is_editable %}
-        <button class="btn btn-success btn-sm d-flex align-items-center gap-1 shadow-sm" 
-                hx-post="{% url 'attendance:mark_all_present' session.id %}" 
-                hx-target="#attendance-sheet-table-container" 
+        <!-- Formulario de guardado masivo de la planilla -->
+        <form method="POST" action="{% url 'attendance:save_session' session.id %}" id="saveAttendanceForm">
+            {% csrf_token %}
+            <!-- Los estados se envían como hidden inputs desde JS al guardar -->
+            <div id="attendance-hidden-inputs"></div>
+            <button type="submit" class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm" id="saveAttendanceBtn" title="Guardar todos los registros de asistencia del día">
+                <i class="bi bi-floppy-fill fs-6"></i>
+                <span>Guardar Lista del Día</span>
+            </button>
+        </form>
+        <button class="btn btn-success btn-sm d-flex align-items-center gap-1 shadow-sm"
+                hx-post="{% url 'attendance:mark_all_present' session.id %}"
+                hx-target="#attendance-sheet-table-container"
                 hx-swap="outerHTML"
                 title="Marcar todos los estudiantes de la lista como presentes">
             <i class="bi bi-check-all fs-6"></i>
-            <span>Marcar Todos Presentes</span>
+            <span>Todos Presentes</span>
         </button>
         {% else %}
-        <span class="badge bg-danger p-2"><i class="bi bi-lock-fill me-1"></i>Periodo Cerrado - Modo Solo Lectura</span>
+        <span class="badge bg-danger p-2"><i class="bi bi-lock-fill me-1"></i>Periodo Cerrado - Solo Lectura</span>
         {% endif %}
         <a href="{% url 'attendance:index' %}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
             <i class="bi bi-arrow-left"></i>
@@ -35,34 +45,67 @@
     </div>
 </div>
 
-<!-- Leyenda del Semáforo Institucional de Faltas -->
+<!-- Leyenda simplificada -->
 <div class="card ac-card p-3 mb-4 bg-light border-0">
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 small">
         <div class="d-flex align-items-center gap-2">
             <i class="bi bi-info-circle-fill text-primary fs-5"></i>
-            <strong>Semáforo de Faltas (Decreto 1290):</strong>
+            <strong>Convenciones del llamado de lista:</strong>
         </div>
-        <div class="d-flex align-items-center gap-3 flex-wrap">
-            <span class="d-flex align-items-center gap-1">
-                <span class="badge bg-success text-white">🟢 &lt; 10%</span>
-                <span class="text-muted">Asistencia Normal</span>
+        <div class="d-flex align-items-center gap-4 flex-wrap">
+            <span class="d-flex align-items-center gap-2">
+                <span class="badge bg-success text-white px-3 py-2"><i class="bi bi-check-lg me-1"></i>P</span>
+                <span class="text-muted fw-semibold">Presente</span>
             </span>
-            <span class="d-flex align-items-center gap-1">
-                <span class="badge bg-warning text-dark">🟡 10% - 19.9%</span>
-                <span class="text-muted">Advertencia Preventiva</span>
+            <span class="d-flex align-items-center gap-2">
+                <span class="badge bg-info text-dark px-3 py-2"><i class="bi bi-file-earmark-medical me-1"></i>FJ</span>
+                <span class="text-muted fw-semibold">Falta Justificada</span>
             </span>
-            <span class="d-flex align-items-center gap-1">
-                <span class="badge bg-danger text-white">🔴 &ge; 20%</span>
-                <span class="text-muted">Riesgo de Pérdida / Bloqueo</span>
+            <span class="d-flex align-items-center gap-2">
+                <span class="badge bg-danger text-white px-3 py-2 fw-bold">✕</span>
+                <span class="text-muted fw-semibold">Sin marcar / Ausente</span>
             </span>
-        </div>
-        <div class="text-muted small">
-            <em>Convenciones: P (Presente) &bull; T (Tardanza) &bull; FJ (Falta Justificada) &bull; FI (Falta Injustificada)</em>
         </div>
     </div>
 </div>
 
 <!-- Planilla de Llamado de Lista Interactiva HTMX -->
 {% include 'attendance/partials/sheet_table.html' with enriched_records=enriched_records session=session is_editable=is_editable %}
+
+{% if is_editable %}
+<!-- Indicador de guardado -->
+<div class="d-flex justify-content-end mt-3">
+    <button form="saveAttendanceForm" type="submit" class="btn btn-primary btn-lg shadow d-flex align-items-center gap-2">
+        <i class="bi bi-floppy-fill fs-5"></i>
+        <span>Guardar Lista del Día</span>
+    </button>
+</div>
+
+<script>
+// Al enviar el formulario de guardado, recolectar todos los radios seleccionados
+document.addEventListener('DOMContentLoaded', function () {
+    var form = document.getElementById('saveAttendanceForm');
+    if (!form) return;
+
+    form.addEventListener('submit', function () {
+        var hiddenContainer = document.getElementById('attendance-hidden-inputs');
+        hiddenContainer.innerHTML = '';
+
+        // Recolectar todos los radio buttons marcados en la planilla
+        var radios = document.querySelectorAll('input[type="radio"][name="status"]:checked');
+        radios.forEach(function (radio) {
+            // El id del radio es btn-p-{record_id} o btn-j-{record_id}
+            // Extraer el record_id del id del input
+            var recordId = radio.id.replace('btn-p-', '').replace('btn-j-', '');
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'attendance_' + recordId;
+            input.value = radio.value;
+            hiddenContainer.appendChild(input);
+        });
+    });
+});
+</script>
+{% endif %}
 
 {% endblock %}

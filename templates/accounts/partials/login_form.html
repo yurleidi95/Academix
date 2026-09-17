@@ -1,9 +1,9 @@
-<form method="POST" action="{% url 'accounts:login' %}" hx-post="{% url 'accounts:login' %}" hx-target="#login-form-container" hx-swap="innerHTML" class="needs-validation">
+<form method="POST" action="{% url 'accounts:login' %}" class="needs-validation">
     {% csrf_token %}
 
     {% if form.non_field_errors %}
-    <div class="alert alert-danger py-2 px-3 small d-flex align-items-center mb-3" role="alert">
-        <i class="bi bi-exclamation-circle-fill me-2 fs-6"></i>
+    <div class="alert alert-danger py-2 px-3 small d-flex align-items-center mb-3 shadow-sm border-danger-subtle" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2 fs-6 text-danger"></i>
         <div>
             {% for error in form.non_field_errors %}
                 <span>{{ error }}</span>
@@ -12,9 +12,35 @@
     </div>
     {% endif %}
 
+    <!-- 1. Selector de Rol Obligatorio -->
     <div class="mb-3">
-        <label for="{{ form.username.id_for_label }}" class="form-label small fw-semibold text-secondary">
-            <i class="bi bi-person me-1"></i> Usuario o Identificación
+        <label for="login-role-select" class="form-label small fw-bold text-dark d-flex align-items-center gap-1">
+            <i class="bi bi-shield-lock-fill text-primary"></i> Seleccione su Rol en el Sistema:
+        </label>
+        {{ form.role }}
+        <div class="form-text small" style="font-size: 0.75rem;">
+            Especifique si ingresa como Profesor, Alumno, Padre de Familia o Secretaria.
+        </div>
+    </div>
+
+    <!-- 2. Campo de ID ÚNICO del Alumno (Dinámico según rol) -->
+    <div class="mb-3" id="student-id-wrapper">
+        <label for="login-student-id-input" class="form-label small fw-bold text-dark d-flex align-items-center gap-1">
+            <i class="bi bi-person-badge-fill text-info"></i> ID ÚNICO del Alumno: <span class="text-danger">*</span>
+        </label>
+        {{ form.student_id }}
+        <div class="form-text text-primary small" style="font-size: 0.72rem;">
+            Obligatorio para Alumnos y Padres de Familia (ej: ALU-2026-1001).
+        </div>
+        {% if form.student_id.errors %}
+            <div class="text-danger small mt-1">{{ form.student_id.errors.0 }}</div>
+        {% endif %}
+    </div>
+
+    <!-- 3. Campo de Usuario / Identificación (Para Profesor, Secretaria y Padre) -->
+    <div class="mb-3" id="username-wrapper">
+        <label for="login-username-input" class="form-label small fw-bold text-secondary">
+            <i class="bi bi-person me-1"></i> Usuario o Documento:
         </label>
         {{ form.username }}
         {% if form.username.errors %}
@@ -22,10 +48,11 @@
         {% endif %}
     </div>
 
+    <!-- 4. Contraseña -->
     <div class="mb-3">
         <div class="d-flex justify-content-between align-items-center">
-            <label for="{{ form.password.id_for_label }}" class="form-label small fw-semibold text-secondary">
-                <i class="bi bi-lock me-1"></i> Contraseña
+            <label for="login-password-input" class="form-label small fw-bold text-secondary">
+                <i class="bi bi-lock-fill me-1"></i> Contraseña:
             </label>
         </div>
         {{ form.password }}
@@ -35,11 +62,57 @@
     </div>
 
     <div class="d-grid mt-4">
-        <button type="submit" class="btn btn-primary btn-lg fw-bold d-flex align-items-center justify-content-center gap-2 shadow-sm">
-            <span>Iniciar Sesión</span>
-            <div class="htmx-indicator spinner-border spinner-border-sm text-light" role="status">
-                <span class="visually-hidden">Validando...</span>
-            </div>
+        <button type="submit" class="btn btn-primary btn-lg fw-bold d-flex align-items-center justify-content-center gap-2 shadow">
+            <i class="bi bi-box-arrow-in-right fs-5"></i>
+            <span>Ingresar al Sistema</span>
         </button>
     </div>
+
+    <div class="text-center mt-3 pt-3 border-top">
+        <span class="text-muted small">¿No tienes una cuenta aún?</span>
+        <a href="{% url 'accounts:register' %}" class="small fw-bold text-primary text-decoration-none ms-1">
+            <i class="bi bi-person-plus me-1"></i>Registrarse Aquí
+        </a>
+    </div>
 </form>
+
+<script>
+(function() {
+    function updateLoginFields() {
+        const roleSelect = document.getElementById('login-role-select');
+        const studentWrapper = document.getElementById('student-id-wrapper');
+        const userWrapper = document.getElementById('username-wrapper');
+        const studentInput = document.getElementById('login-student-id-input');
+        const userInput = document.getElementById('login-username-input');
+
+        if (!roleSelect) return;
+        const role = roleSelect.value;
+
+        if (role === 'STUDENT') {
+            // Para el alumno, su ID ÚNICO es su identificador directo
+            if (studentWrapper) studentWrapper.style.display = 'block';
+            if (userWrapper) userWrapper.style.display = 'none';
+            if (studentInput) studentInput.required = true;
+            if (userInput) userInput.required = false;
+        } else if (role === 'PARENT') {
+            // Para el padre, requiere el ID ÚNICO del alumno y su usuario
+            if (studentWrapper) studentWrapper.style.display = 'block';
+            if (userWrapper) userWrapper.style.display = 'block';
+            if (studentInput) studentInput.required = true;
+            if (userInput) userInput.required = true;
+        } else {
+            // Profesor y Secretaria usan usuario
+            if (studentWrapper) studentWrapper.style.display = 'none';
+            if (userWrapper) userWrapper.style.display = 'block';
+            if (studentInput) studentInput.required = false;
+            if (userInput) userInput.required = true;
+        }
+    }
+
+    const roleSelect = document.getElementById('login-role-select');
+    if (roleSelect) {
+        roleSelect.addEventListener('change', updateLoginFields);
+        updateLoginFields();
+    }
+})();
+</script>

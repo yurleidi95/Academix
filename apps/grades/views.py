@@ -92,6 +92,74 @@ def grades_index_view(request):
             'student': student,
         })
 
+    # 1.1 Modo Padre de Familia (Solo Lectura Estricto)
+    if request.user.is_parent:
+        children = StudentProfile.objects.filter(parent=request.user).select_related('user')
+        child_id = request.GET.get('student_id')
+        student = children.filter(id=child_id).first() if child_id else children.first()
+        enrollment = Enrollment.objects.filter(
+            student=student,
+            academic_year=current_year,
+            status=Enrollment.Status.ACTIVE
+        ).select_related('course_section__grade_level').first() if student else None
+
+        grades_data = []
+        if enrollment and active_period:
+            section = enrollment.course_section
+            from apps.subjects.models import Subject
+            criteria_subjs = EvaluationCriterion.objects.filter(
+                course_section=section,
+                academic_period=active_period
+            ).values_list('subject_id', flat=True).distinct()
+            subjects = Subject.objects.filter(id__in=criteria_subjs)
+            if not subjects.exists():
+                subjects = Subject.objects.all()
+
+            for subj in subjects:
+                criteria = EvaluationCriterion.objects.filter(
+                    course_section=section,
+                    subject=subj,
+                    academic_period=active_period
+                ).order_by('order')
+
+                scores_list = []
+                for crit in criteria:
+                    rec = GradeRecord.objects.filter(
+                        student=student,
+                        course_section=section,
+                        subject=subj,
+                        academic_period=active_period,
+                        criterion=crit
+                    ).first()
+                    scores_list.append({
+                        'criterion': crit,
+                        'score': rec.score if rec else None,
+                        'feedback': rec.feedback if rec else None
+                    })
+
+                final_grade = PeriodFinalGrade.objects.filter(
+                    student=student,
+                    course_section=section,
+                    subject=subj,
+                    academic_period=active_period
+                ).first()
+
+                grades_data.append({
+                    'subject': subj,
+                    'scores': scores_list,
+                    'final_grade': final_grade,
+                })
+
+        return render(request, 'grades/student_grades.html', {
+            'enrollment': enrollment,
+            'active_period': active_period,
+            'current_year': current_year,
+            'grades_data': grades_data,
+            'student': student,
+            'children': children,
+            'is_parent': True,
+        })
+
     # 2. Modo Docente / Directivo / Secretaría: Selector de asignación
     if request.user.is_teacher and hasattr(request.user, 'teacher_profile'):
         assignments = TeachingAssignment.objects.filter(
@@ -117,11 +185,11 @@ def grades_index_view(request):
 def grades_matrix_view(request):
     """
     Matriz interactiva de calificaciones para una asignatura, grupo y periodo.
-    Estudiantes tienen prohibido el acceso a la matriz global.
+    Estudiantes y padres tienen prohibido el acceso a la matriz global.
     Secretaría tiene acceso de solo lectura (no editable).
     Docentes solo pueden editar sus propias asignaciones.
     """
-    if request.user.is_student:
+    if request.user.is_student or request.user.is_parent:
         messages.error(request, 'No está autorizado para consultar planillas globales de otros estudiantes.')
         return redirect('grades:index')
 

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 
 {% block title %}Gestión de Cierres Académicos y Promoción — ACADEMIX{% endblock %}
 
@@ -118,7 +118,7 @@
                                 <!-- Modal Cerrar Periodo -->
                                 <div class="modal fade" id="closePeriodModal-{{ period.id }}" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog">
-                                        <div class="modal-content border-0 shadow">
+                                        <div class="modal-content border-0 shadow" style="backdrop-filter:blur(2px);">
                                             <form method="post" action="{% url 'rules:close_period' period.id %}">
                                                 {% csrf_token %}
                                                 <div class="modal-header bg-danger text-white">
@@ -150,7 +150,7 @@
                                 <!-- Modal Reabrir Periodo -->
                                 <div class="modal fade" id="reopenPeriodModal-{{ period.id }}" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog">
-                                        <div class="modal-content border-0 shadow">
+                                        <div class="modal-content border-0 shadow" style="backdrop-filter:blur(2px);">
                                             <form method="post" action="{% url 'rules:reopen_period' period.id %}">
                                                 {% csrf_token %}
                                                 <div class="modal-header bg-warning text-dark">
@@ -222,7 +222,7 @@
     {% if current_year.status != 'CLOSED' %}
     <div class="modal fade" id="closeYearModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content border-0 shadow">
+            <div class="modal-content border-0 shadow" style="backdrop-filter:blur(2px);">
                 <form method="post" action="{% url 'rules:execute_year_closing' current_year.id %}">
                     {% csrf_token %}
                     <div class="modal-header bg-danger text-white">
@@ -308,3 +308,4 @@
     </div>
 </div>
 {% endblock %}
+

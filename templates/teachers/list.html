@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 
 {% block title %}Cuerpo Docente y Asignaciones | ACADEMIX{% endblock %}
 
@@ -104,7 +104,7 @@
 <!-- Modal para Asignación Académica -->
 <div class="modal fade" id="assignTeacherModal" tabindex="-1" aria-labelledby="assignTeacherModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content border-0 shadow">
+        <div class="modal-content border-0 shadow" style="backdrop-filter:blur(2px);">
             <form method="POST" action="{% url 'teachers:assign' %}">
                 {% csrf_token %}
                 <input type="hidden" name="academic_year_id" value="{{ current_year.id }}">
@@ -152,7 +152,7 @@
 <!-- Modal para Registrar Nuevo Docente -->
 <div class="modal fade" id="createTeacherModal" tabindex="-1" aria-labelledby="createTeacherModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
+        <div class="modal-content border-0 shadow" style="backdrop-filter:blur(2px);">
             <form method="POST" action="{% url 'teachers:create' %}">
                 {% csrf_token %}
                 <div class="modal-header bg-primary text-white">
@@ -215,4 +215,5 @@
     </div>
 </div>
 {% endblock %}
+
 

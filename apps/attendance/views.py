@@ -62,6 +62,48 @@ def attendance_index_view(request):
             'recent_records': recent_records,
         })
 
+    # 1.1 Modo Padre de Familia (Solo Lectura Estricto)
+    if request.user.is_parent:
+        from apps.students.models import StudentProfile
+        children = StudentProfile.objects.filter(parent=request.user).select_related('user')
+        child_id = request.GET.get('student_id')
+        student = children.filter(id=child_id).first() if child_id else children.first()
+
+        enrollment = Enrollment.objects.filter(
+            student=student,
+            academic_year=current_year,
+            status=Enrollment.Status.ACTIVE
+        ).select_related('course_section__grade_level').first() if student else None
+
+        attendance_by_subject = []
+        recent_records = []
+        if student and active_period:
+            from apps.subjects.models import Subject
+            subjects = Subject.objects.all()
+            for subj in subjects:
+                stats = calculate_student_absence_stats(student, subj, active_period)
+                if stats['total_sessions'] > 0:
+                    attendance_by_subject.append({
+                        'subject': subj,
+                        'stats': stats,
+                    })
+
+            recent_records = AttendanceRecord.objects.filter(
+                student=student,
+                session__academic_period=active_period
+            ).select_related('session__subject').order_by('-session__date')[:15]
+
+        return render(request, 'attendance/student_attendance.html', {
+            'enrollment': enrollment,
+            'current_year': current_year,
+            'active_period': active_period,
+            'attendance_by_subject': attendance_by_subject,
+            'recent_records': recent_records,
+            'children': children,
+            'student': student,
+            'is_parent': True,
+        })
+
     # 2. Modo Docente / Directivo / Secretaría
     if request.user.is_teacher and hasattr(request.user, 'teacher_profile'):
         assignments = TeachingAssignment.objects.filter(
@@ -151,6 +193,40 @@ def attendance_sheet_view(request):
             'stats': stats,
         })
 
+    # ── Exportación CSV de la planilla (descarga masiva) ──
+    if request.GET.get('export') == 'csv':
+        import csv
+        from django.http import HttpResponse as _HR
+        filename = f"Lista_{section.name}_{subject.code}_{session_date.strftime('%Y%m%d')}.csv"
+        response = _HR(content_type='text/csv; charset=utf-8-sig')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        writer = csv.writer(response, delimiter=';')
+        writer.writerow([
+            'Codigo', 'Apellidos', 'Nombres', 'Documento',
+            'Asistencia', 'Horas', 'Fecha', 'Asignatura', 'Grupo'
+        ])
+        for item in enriched_records:
+            st = item['student']
+            rec = item['record']
+            if rec.status == 'PRESENT':
+                estado = 'Presente'
+            elif rec.status == 'JUSTIFIED':
+                estado = 'Falta Justificada'
+            else:
+                estado = 'X'
+            writer.writerow([
+                st.student_code,
+                st.user.last_name,
+                st.user.first_name,
+                st.user.document_number or '',
+                estado,
+                session.hours_count,
+                session_date.strftime('%d/%m/%Y'),
+                subject.name,
+                section.name,
+            ])
+        return response
+
     context = {
         'session': session,
         'section': section,
@@ -160,6 +236,7 @@ def attendance_sheet_view(request):
         'is_editable': is_editable,
     }
     return render(request, 'attendance/sheet.html', context)
+
 
 @login_required
 def update_record_inline_view(request, record_id):
@@ -187,7 +264,7 @@ def update_record_inline_view(request, record_id):
             return HttpResponse(f'<div class="text-danger small">{str(e)}</div>', status=400)
 
         context = {
-            'r': {
+            'item': {
                 'record': record,
                 'student': record.student,
                 'stats': stats,
@@ -195,7 +272,7 @@ def update_record_inline_view(request, record_id):
             'session': record.session,
             'is_editable': record.session.academic_period.is_editable and not request.user.is_secretary,
         }
-        return render(request, 'attendance/partials/record_row.html', context)
+        return render(request, 'attendance/partials/student_row.html', context)
 
     return HttpResponse(status=400)
 
@@ -227,3 +304,129 @@ def mark_all_present_view(request, session_id):
         'is_editable': session.academic_period.is_editable,
     }
     return render(request, 'attendance/partials/sheet_table.html', context)
+
+
+@login_required
+def student_justify_absence_view(request, record_id):
+    """
+    Permite al estudiante (o su padre) enviar la justificación de una falta
+    directamente desde su módulo de asistencia.
+    El registro pasa a estado JUSTIFIED con el texto y/o archivo adjunto.
+    Solo puede justificar sus propias faltas (control estricto).
+    """
+    from apps.audit.services import log_audit
+
+    record = get_object_or_404(
+        AttendanceRecord.objects.select_related(
+            'student__user', 'student__parent', 'session__academic_period', 'session__subject'
+        ),
+        id=record_id
+    )
+
+    # Control: solo el propio alumno o su padre puede justificar
+    user = request.user
+    is_own_student = user.is_student and hasattr(user, 'student_profile') and user.student_profile == record.student
+    is_own_parent = user.is_parent and record.student.parent_id == user.id
+
+    if not (is_own_student or is_own_parent):
+        messages.error(request, 'Solo puede justificar sus propias faltas.')
+        return redirect('attendance:index')
+
+    # No se puede justificar en periodo cerrado
+    if not record.session.academic_period.is_editable:
+        messages.warning(request, f'El periodo "{record.session.academic_period.name}" esta cerrado. No es posible enviar justificaciones.')
+        return redirect('attendance:index')
+
+    # No tiene sentido justificar si ya esta PRESENT o JUSTIFIED
+    if record.status == AttendanceRecord.Status.PRESENT:
+        messages.info(request, 'Esta sesion ya tiene registrada su asistencia como Presente.')
+        return redirect('attendance:index')
+
+    if request.method == 'POST':
+        justification_text = request.POST.get('justification', '').strip()
+        justification_file = request.FILES.get('justification_file')
+
+        if not justification_text:
+            messages.error(request, 'Debe escribir el motivo de la justificacion.')
+            return redirect('attendance:index')
+
+        old_status = record.status
+        record.status = AttendanceRecord.Status.JUSTIFIED
+        record.is_justified = True
+        record.justification = justification_text
+        if justification_file:
+            record.justification_file = justification_file
+        record.save()
+
+        log_audit(
+            user=user,
+            action='STUDENT_JUSTIFY',
+            table_name='AttendanceRecord',
+            record_id=record.id,
+            old_values={'status': old_status},
+            new_values={'status': 'JUSTIFIED', 'justification': justification_text},
+            reason=f'Justificacion enviada por el estudiante: {record.student.user.get_full_name()}',
+            request=request
+        )
+
+        messages.success(
+            request,
+            f'Justificacion enviada correctamente para la clase de '
+            f'{record.session.subject.name} del {record.session.date.strftime("%d/%m/%Y")}.'
+        )
+
+    return redirect('attendance:index')
+
+
+@login_required
+def save_session_view(request, session_id):
+    """
+    Guarda de forma masiva todos los registros del llamado de lista para la sesión del día.
+    Los estudiantes sin P ni FJ marcados quedan como inasistencia (X).
+    """
+    if not (request.user.is_teacher or request.user.is_admin_role or request.user.is_rector):
+        messages.error(request, 'No tiene permisos para modificar la lista de asistencia.')
+        return redirect('attendance:index')
+
+    session = get_object_or_404(
+        AttendanceSession.objects.select_related('academic_period', 'course_section', 'subject'),
+        id=session_id
+    )
+
+    if not session.academic_period.is_editable:
+        messages.error(request, f'El periodo lectivo "{session.academic_period.name}" se encuentra cerrado o en solo lectura.')
+        return redirect(
+            reverse('attendance:sheet') + f'?section_id={session.course_section_id}&subject_id={session.subject_id}&date={session.date.isoformat()}'
+        )
+
+    if request.method == 'POST':
+        from django.db import transaction
+        records = session.records.select_related('student__user')
+        updated_count = 0
+
+        with transaction.atomic():
+            for rec in records:
+                input_key = f'attendance_{rec.id}'
+                if input_key in request.POST:
+                    new_status = request.POST.get(input_key)
+                else:
+                    # Si no se marcó ni Presente ni Falta Justificada, queda como Falta sin justificar (X)
+                    new_status = AttendanceRecord.Status.UNJUSTIFIED
+
+                if new_status in AttendanceRecord.Status.values:
+                    rec.status = new_status
+                    rec.is_justified = (new_status == AttendanceRecord.Status.JUSTIFIED)
+                    rec.save()
+                    updated_count += 1
+
+            session.recorded_by = request.user
+            session.save(update_fields=['recorded_by', 'updated_at'])
+
+        messages.success(
+            request,
+            f'✓ Lista de asistencia del {session.date.strftime("%d/%m/%Y")} guardada con éxito ({updated_count} estudiantes registrados).'
+        )
+
+    return redirect(
+        reverse('attendance:sheet') + f'?section_id={session.course_section_id}&subject_id={session.subject_id}&date={session.date.isoformat()}'
+    )

@@ -58,6 +58,17 @@ def student_bulletin_view(request, student_id, period_id):
     if user.is_student and hasattr(user, 'student_profile') and user.student_profile.id != student.id:
         return HttpResponseForbidden("No está autorizado para visualizar boletines de otros estudiantes.")
 
+    # Alumnos y padres: solo pueden ver el boletín si el período está CERRADO o BLOQUEADO
+    RESTRICTED_ROLES = user.is_student or user.is_parent
+    PERIOD_OPEN = period.status not in ['CLOSED', 'LOCKED']
+    if RESTRICTED_ROLES and PERIOD_OPEN:
+        messages.warning(
+            request,
+            f'El boletín del período "{period.name}" aún no está disponible. '
+            f'Solo podrá consultarlo una vez que el período sea cerrado oficialmente por la institución.'
+        )
+        return redirect('accounts:dashboard')
+
     enrollment = Enrollment.objects.filter(student=student, academic_year=period.academic_year).first()
     if not enrollment:
         messages.error(request, f'El estudiante {student.user.get_full_name()} no cuenta con matrícula activa para este periodo.')

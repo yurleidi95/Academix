@@ -44,12 +44,6 @@
             </a>
         </li>
         <li class="sidebar-item">
-            <a href="{% url 'subjects:curriculum' %}" class="sidebar-link {% if 'subjects' in request.path %}active{% endif %}">
-                <i class="bi bi-book-half"></i>
-                <span>Malla Curricular</span>
-            </a>
-        </li>
-        <li class="sidebar-item">
             <a href="{% url 'periods:list' %}" class="sidebar-link {% if 'periods' in request.path %}active{% endif %}">
                 <i class="bi bi-calendar-range"></i>
                 <span>Periodos Lectivos</span>
@@ -142,6 +136,12 @@
                 <span>Asistencia de Acudido</span>
             </a>
         </li>
+        <li class="sidebar-item">
+            <a href="{% url 'homework:index' %}" class="sidebar-link">
+                <i class="bi bi-folder-check text-warning"></i>
+                <span>Tareas y Actividades</span>
+            </a>
+        </li>
         {% endif %}
 
         <!-- Reportes y Cierres (Sprint 5) -->
@@ -177,6 +177,12 @@
         {% if user.is_admin_role %}
         <li class="sidebar-menu-header">Administración</li>
         <li class="sidebar-item">
+            <a href="{% url 'courses:institution_settings' %}" class="sidebar-link {% if 'institution-settings' in request.path %}active{% endif %}">
+                <i class="bi bi-sliders2 text-primary"></i>
+                <span>Adaptabilidad Institucional</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
             <a href="{% url 'audit:list' %}" class="sidebar-link {% if 'audit' in request.path %}active{% endif %}">
                 <i class="bi bi-shield-check"></i>
                 <span>Auditoría Inmutable</span>
@@ -199,6 +205,12 @@
         <!-- Accesos para Rector -->
         {% if user.is_rector %}
         <li class="sidebar-menu-header">Supervisión Directiva</li>
+        <li class="sidebar-item">
+            <a href="{% url 'courses:institution_settings' %}" class="sidebar-link {% if 'institution-settings' in request.path %}active{% endif %}">
+                <i class="bi bi-sliders2 text-primary"></i>
+                <span>Adaptabilidad Institucional</span>
+            </a>
+        </li>
         <li class="sidebar-item">
             <a href="{% url 'audit:list' %}" class="sidebar-link">
                 <i class="bi bi-journal-text"></i>

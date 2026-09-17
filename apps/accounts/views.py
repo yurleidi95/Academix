@@ -43,22 +43,132 @@ def login_view(request):
             return redirect('accounts:dashboard')
         else:
             # Registrar intento fallido
-            attempted_user = request.POST.get('username', 'Desconocido')
+            attempted_user = request.POST.get('username') or request.POST.get('student_id') or 'Desconocido'
+            err_msg = form.non_field_errors()[0] if form.non_field_errors() else 'Credenciales o datos inválidos. Verifique el rol, usuario e ID ÚNICO.'
             log_audit(
                 user=None,
                 action='FAILED_LOGIN',
                 table_name='CustomUser',
                 record_id=None,
-                new_values={'attempted_username': attempted_user},
-                reason=f'Intento fallido de autenticación para usuario: {attempted_user}',
+                new_values={'attempted_username': attempted_user, 'role': request.POST.get('role')},
+                reason=f'Intento fallido de autenticación: {err_msg}',
                 request=request
             )
-            messages.error(request, 'Credenciales inválidas. Por favor verifique su usuario y contraseña.')
+            messages.error(request, err_msg)
             
             if request.headers.get('HX-Request'):
                 return render(request, 'accounts/partials/login_form.html', {'form': form})
 
     return render(request, 'accounts/login.html', {'form': form})
+
+
+def register_view(request):
+    """
+    Registro institucional con selección obligatoria de rol y gestión de ID ÚNICO.
+    - Alumno: Asigna automáticamente un ID ÚNICO irrepetible.
+    - Padre de Familia: Obligatorio ingresar el ID ÚNICO del alumno a representar.
+    - Profesor y Secretaría: Registro y configuración de su respectivo perfil.
+    """
+    if request.user.is_authenticated:
+        return redirect('accounts:dashboard')
+
+    from .forms import RegistrationForm
+    from apps.students.models import StudentProfile
+    from apps.teachers.models import TeacherProfile
+    import random
+
+    form = RegistrationForm(request.POST or None)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            role = form.cleaned_data['role']
+            username = form.cleaned_data['username']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            email = form.cleaned_data.get('email') or f"{username}@academix.edu.co"
+            doc_type = form.cleaned_data['document_type']
+            doc_num = form.cleaned_data['document_number']
+            password = form.cleaned_data['password']
+
+            # Crear CustomUser
+            user = CustomUser.objects.create_user(
+                username=username,
+                email=email,
+                password=password,
+                role=role,
+                first_name=first_name,
+                last_name=last_name,
+                document_type=doc_type,
+                document_number=doc_num
+            )
+
+            extra_msg = ""
+            if role == CustomUser.Role.STUDENT:
+                # Generar ID ÚNICO al momento del registro
+                unique_suffix = random.randint(1000, 9999)
+                generated_id = f"ALU-2026-{unique_suffix}"
+                while StudentProfile.objects.filter(student_code=generated_id).exists():
+                    unique_suffix = random.randint(1000, 9999)
+                    generated_id = f"ALU-2026-{unique_suffix}"
+
+                StudentProfile.objects.create(
+                    user=user,
+                    student_code=generated_id
+                )
+                extra_msg = f" Su ID ÚNICO de Alumno es: <strong>{generated_id}</strong>. Debe usarlo para iniciar sesión."
+
+            elif role == CustomUser.Role.PARENT:
+                target_student = form.cleaned_data.get('target_student_profile')
+                if target_student:
+                    target_student.parent = user
+                    target_student.save()
+                    extra_msg = f" Quedó vinculado al alumno {target_student.user.get_full_name()}."
+
+            elif role == CustomUser.Role.TEACHER:
+                TeacherProfile.objects.create(user=user, specialty='Docencia General')
+
+            log_audit(
+                user=user,
+                action='REGISTER',
+                table_name='CustomUser',
+                record_id=user.id,
+                new_values={'role': role, 'username': username},
+                reason=f'Registro de usuario con rol {role}',
+                request=request
+            )
+
+            login(request, user)
+
+            # ── Enviar email con ID único si el alumno tiene correo real ──
+            if role == CustomUser.Role.STUDENT and extra_msg:
+                try:
+                    from django.core.mail import send_mail
+                    from django.template.loader import render_to_string
+                    if email and '@academix.edu.co' not in email:
+                        generated_code = StudentProfile.objects.get(user=user).student_code
+                        send_mail(
+                            subject='ACADEMIX – Tu ID Único de Estudiante',
+                            message=(
+                                f'Hola {user.get_full_name() or user.username},\n\n'
+                                f'Tu registro en ACADEMIX fue exitoso.\n'
+                                f'Tu ID ÚNICO de alumno es: {generated_code}\n'
+                                f'Guárdalo con cuidado; lo necesitarás para iniciar sesión.\n\n'
+                                f'ACADEMIX – Sistema de Gestión Educativa'
+                            ),
+                            from_email=None,
+                            recipient_list=[email],
+                            fail_silently=True,
+                        )
+                except Exception:
+                    pass
+
+            messages.success(request, f"¡Registro completado!{extra_msg}")
+            return redirect('accounts:dashboard')
+        else:
+            first_err = form.non_field_errors()[0] if form.non_field_errors() else 'Por favor revise los datos del formulario.'
+            messages.error(request, first_err)
+
+    return render(request, 'accounts/register.html', {'form': form})
 
 def logout_view(request):
     """
