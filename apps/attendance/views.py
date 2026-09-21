@@ -1,5 +1,6 @@
 from datetime import date
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponse
@@ -430,6 +431,11 @@ def save_session_view(request, session_id):
                 if new_status in AttendanceRecord.Status.values:
                     rec.status = new_status
                     rec.is_justified = (new_status == AttendanceRecord.Status.JUSTIFIED)
+                    input_justification_key = f'justification_{rec.id}'
+                    if input_justification_key in request.POST:
+                        just_text = request.POST.get(input_justification_key, '').strip()
+                        if just_text:
+                            rec.justification = just_text
                     rec.save()
                     updated_count += 1
 

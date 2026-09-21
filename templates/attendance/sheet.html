@@ -82,27 +82,49 @@
 </div>
 
 <script>
-// Al enviar el formulario de guardado, recolectar todos los radios seleccionados
+// Al enviar el formulario de guardado, recolectar todos los registros seleccionados
 document.addEventListener('DOMContentLoaded', function () {
     var form = document.getElementById('saveAttendanceForm');
     if (!form) return;
 
-    form.addEventListener('submit', function () {
+    function populateAttendanceData() {
         var hiddenContainer = document.getElementById('attendance-hidden-inputs');
+        if (!hiddenContainer) return;
         hiddenContainer.innerHTML = '';
 
-        // Recolectar todos los radio buttons marcados en la planilla
-        var radios = document.querySelectorAll('input[type="radio"][name="status"]:checked');
+        // Recolectar todos los radio buttons marcados (Presente o Falta Justificada)
+        var radios = document.querySelectorAll('input[type="radio"][id^="btn-p-"]:checked, input[type="radio"][id^="btn-j-"]:checked');
         radios.forEach(function (radio) {
-            // El id del radio es btn-p-{record_id} o btn-j-{record_id}
-            // Extraer el record_id del id del input
-            var recordId = radio.id.replace('btn-p-', '').replace('btn-j-', '');
-            var input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'attendance_' + recordId;
-            input.value = radio.value;
-            hiddenContainer.appendChild(input);
+            var recordId = radio.id.replace(/^btn-[pj]-/, '');
+            if (recordId) {
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'attendance_' + recordId;
+                input.value = radio.value;
+                hiddenContainer.appendChild(input);
+            }
         });
+
+        // Recolectar motivos de justificación si existen
+        var justificationInputs = document.querySelectorAll('input[name="justification"]');
+        justificationInputs.forEach(function (justInput) {
+            var collapseRow = justInput.closest('tr[id^="justification-collapse-"]');
+            if (collapseRow && justInput.value.trim()) {
+                var recordId = collapseRow.id.replace('justification-collapse-', '');
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'justification_' + recordId;
+                input.value = justInput.value.trim();
+                hiddenContainer.appendChild(input);
+            }
+        });
+    }
+
+    form.addEventListener('submit', populateAttendanceData);
+
+    var saveButtons = document.querySelectorAll('#saveAttendanceBtn, button[form="saveAttendanceForm"]');
+    saveButtons.forEach(function(btn) {
+        btn.addEventListener('click', populateAttendanceData);
     });
 });
 </script>

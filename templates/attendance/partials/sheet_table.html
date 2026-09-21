@@ -27,18 +27,18 @@
                     <th class="text-end" style="width: 70px;">Soporte</th>
                 </tr>
             </thead>
+            {% for item in enriched_records %}
+                {% include 'attendance/partials/student_row.html' with item=item session=session is_editable=is_editable %}
+            {% empty %}
             <tbody>
-                {% for item in enriched_records %}
-                    {% include 'attendance/partials/student_row.html' with item=item session=session is_editable=is_editable %}
-                {% empty %}
                 <tr>
                     <td colspan="6" class="text-center py-5 text-muted">
                         <i class="bi bi-people display-6 d-block mb-2 text-secondary"></i>
                         No hay estudiantes matriculados activos en este curso.
                     </td>
                 </tr>
-                {% endfor %}
             </tbody>
+            {% endfor %}
         </table>
     </div>
 </div>

@@ -1,86 +1,97 @@
-<tr id="student-row-{{ item.student.id }}" class="align-middle {% if item.stats.is_blocked %}table-danger{% endif %} animate__animated animate__fadeIn">
-    <td class="font-monospace small fw-bold text-primary">
-        {{ item.student.student_code }}
-    </td>
-    <td>
-        <div class="fw-bold text-dark small">{{ item.student.user.get_full_name|default:item.student.user.username }}</div>
-        <small class="text-muted">Doc: {{ item.student.user.document_number|default:"Sin doc" }}</small>
-    </td>
-    <td>
-        {% if is_editable %}
-        <form class="d-inline-flex gap-1" hx-post="{% url 'attendance:update_record' item.record.id %}" hx-trigger="change" hx-target="#student-row-{{ item.student.id }}" hx-swap="outerHTML">
-            {% csrf_token %}
-            <div class="btn-group btn-group-sm" role="group" aria-label="Asistencia de {{ item.student.user.username }}">
-                <!-- Solo: Presente y Falta Justificada -->
-                <input type="radio" class="btn-check" name="status" id="btn-p-{{ item.record.id }}" value="PRESENT" autocomplete="off" {% if item.record.status == 'PRESENT' %}checked{% endif %}>
-                <label class="btn btn-outline-success" for="btn-p-{{ item.record.id }}" title="Presente">
-                    <i class="bi bi-check-lg"></i> P
-                </label>
+<tbody id="student-row-{{ item.student.id }}" class="border-top-0">
+    <tr class="align-middle {% if item.stats.is_blocked %}table-danger{% endif %} animate__animated animate__fadeIn">
+        <td class="font-monospace small fw-bold text-primary">
+            {{ item.student.student_code }}
+        </td>
+        <td>
+            <div class="fw-bold text-dark small">{{ item.student.user.get_full_name|default:item.student.user.username }}</div>
+            <small class="text-muted">Doc: {{ item.student.user.document_number|default:"Sin doc" }}</small>
+        </td>
+        <td>
+            {% if is_editable %}
+            <form class="d-inline-flex gap-1" hx-post="{% url 'attendance:update_record' item.record.id %}" hx-trigger="change" hx-target="#student-row-{{ item.student.id }}" hx-swap="outerHTML">
+                {% csrf_token %}
+                <div class="btn-group btn-group-sm" role="group" aria-label="Asistencia de {{ item.student.user.username }}">
+                    <!-- Solo: Presente y Falta Justificada -->
+                    <input type="radio" class="btn-check" name="status" id="btn-p-{{ item.record.id }}" value="PRESENT" autocomplete="off" {% if item.record.status == 'PRESENT' %}checked{% endif %}>
+                    <label class="btn btn-outline-success" for="btn-p-{{ item.record.id }}" title="Presente">
+                        <i class="bi bi-check-lg"></i> P
+                    </label>
 
-                <input type="radio" class="btn-check" name="status" id="btn-j-{{ item.record.id }}" value="JUSTIFIED" autocomplete="off" {% if item.record.status == 'JUSTIFIED' %}checked{% endif %}>
-                <label class="btn btn-outline-info" for="btn-j-{{ item.record.id }}" title="Falta Justificada">
-                    <i class="bi bi-file-earmark-medical"></i> FJ
-                </label>
+                    <input type="radio" class="btn-check" name="status" id="btn-j-{{ item.record.id }}" value="JUSTIFIED" autocomplete="off" {% if item.record.status == 'JUSTIFIED' %}checked{% endif %}>
+                    <label class="btn btn-outline-info" for="btn-j-{{ item.record.id }}" title="Falta Justificada">
+                        <i class="bi bi-file-earmark-medical"></i> FJ
+                    </label>
+                </div>
+            </form>
+            {% else %}
+            {# Solo lectura #}
+            {% if item.record.status == 'PRESENT' %}
+                <span class="badge bg-success text-white py-2 px-3">✔ Presente</span>
+            {% elif item.record.status == 'JUSTIFIED' %}
+                <span class="badge bg-info text-dark py-2 px-3">FJ Justificada</span>
+            {% else %}
+                <span class="badge bg-danger text-white py-2 px-3 fw-bold" title="{{ item.record.get_status_display }}">✕</span>
+            {% endif %}
+            {% endif %}
+            {% if is_editable %}
+            {% if item.record.status != 'PRESENT' and item.record.status != 'JUSTIFIED' %}
+            <span class="badge bg-danger text-white ms-1 fw-bold" title="Falta sin registrar (ni Presente ni Justificada)">✕</span>
+            {% endif %}
+            {% endif %}
+        </td>
+        <td>
+            <span class="badge {{ item.stats.semaphore_badge }} py-2 px-3 fw-bold font-monospace" style="font-size: 0.8rem;">
+                {{ item.stats.absence_percentage }}%
+            </span>
+            <small class="d-block text-muted mt-1" style="font-size: 0.7rem;">
+                {{ item.stats.semaphore_label }}
+            </small>
+        </td>
+        <td>
+            <div class="small font-monospace d-flex flex-column gap-1">
+                <span class="text-success fw-bold">
+                    <i class="bi bi-check-circle-fill me-1"></i>
+                    Presente: {{ item.stats.present_count }}
+                </span>
+                <span class="text-info fw-bold">
+                    <i class="bi bi-file-earmark-medical-fill me-1"></i>
+                    F. Justificada: {{ item.stats.justified_hours }}h
+                </span>
             </div>
-        </form>
-        {% else %}
-        {# Solo lectura: P o FJ → badge; cualquier otro estado → X roja #}
-        {% if item.record.status == 'PRESENT' %}
-            <span class="badge bg-success text-white py-2 px-3">✔ Presente</span>
-        {% elif item.record.status == 'JUSTIFIED' %}
-            <span class="badge bg-info text-dark py-2 px-3">FJ Justificada</span>
-        {% else %}
-            <span class="badge bg-danger text-white py-2 px-3 fw-bold" title="{{ item.record.get_status_display }}">✕</span>
-        {% endif %}
-        {% endif %}
-        {# Si el estado activo no es P ni FJ, mostrar X en modo edición también #}
-        {% if is_editable %}
-        {% if item.record.status != 'PRESENT' and item.record.status != 'JUSTIFIED' %}
-        <span class="badge bg-danger text-white ms-1 fw-bold" title="Falta sin registrar (ni Presente ni Justificada)">✕</span>
-        {% endif %}
-        {% endif %}
-    </td>
-    <td>
-        <span class="badge {{ item.stats.semaphore_badge }} py-2 px-3 fw-bold font-monospace" style="font-size: 0.8rem;">
-            {{ item.stats.absence_percentage }}%
-        </span>
-        <small class="d-block text-muted mt-1" style="font-size: 0.7rem;">
-            {{ item.stats.semaphore_label }}
-        </small>
-    </td>
-    <!-- Desglose: solo Presente y Falta Justificada -->
-    <td>
-        <div class="small font-monospace d-flex flex-column gap-1">
-            <span class="text-success fw-bold">
-                <i class="bi bi-check-circle-fill me-1"></i>
-                Presente: {{ item.stats.present_count }}
-            </span>
-            <span class="text-info fw-bold">
-                <i class="bi bi-file-earmark-medical-fill me-1"></i>
-                F. Justificada: {{ item.stats.justified_hours }}h
-            </span>
-        </div>
-        <small class="text-secondary" style="font-size: 0.65rem;">de {{ item.stats.total_hours }}h totales</small>
-    </td>
-    <td class="text-end">
-        {% if item.record.status == 'JUSTIFIED' %}
-            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#justification-collapse-{{ item.record.id }}" aria-expanded="false" title="Ver Justificación">
-                <i class="bi bi-card-text"></i>
-            </button>
-        {% else %}
-            <span class="text-muted small">-</span>
-        {% endif %}
-    </td>
-</tr>
-{% if item.record.status == 'JUSTIFIED' %}
-<tr class="collapse bg-light" id="justification-collapse-{{ item.record.id }}">
-    <td colspan="6" class="p-3 small">
-        <form hx-post="{% url 'attendance:update_record' item.record.id %}" hx-target="#student-row-{{ item.student.id }}" hx-swap="outerHTML" class="d-flex gap-2">
-            {% csrf_token %}
-            <input type="hidden" name="status" value="JUSTIFIED">
-            <input type="text" name="justification" class="form-control form-control-sm" placeholder="Motivo o soporte médico de justificación..." value="{{ item.record.justification|default:'' }}">
-            <button type="submit" class="btn btn-primary btn-sm">Guardar Motivo</button>
-        </form>
-    </td>
-</tr>
-{% endif %}
+            <small class="text-secondary" style="font-size: 0.65rem;">de {{ item.stats.total_hours }}h totales</small>
+        </td>
+        <td class="text-end">
+            {% if item.record.status == 'JUSTIFIED' %}
+                <button class="btn btn-sm btn-outline-info" type="button" data-bs-toggle="collapse" data-bs-target="#justification-collapse-{{ item.record.id }}" aria-expanded="{% if item.record.justification %}false{% else %}true{% endif %}" title="Ver / Editar Justificación">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                </button>
+            {% else %}
+                <span class="text-muted small">-</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% if item.record.status == 'JUSTIFIED' %}
+    <tr class="collapse {% if not item.record.justification %}show{% endif %} bg-light" id="justification-collapse-{{ item.record.id }}">
+        <td colspan="6" class="p-3 small border-0">
+            <form hx-post="{% url 'attendance:update_record' item.record.id %}" hx-target="#student-row-{{ item.student.id }}" hx-swap="outerHTML" class="d-flex gap-2 align-items-center">
+                {% csrf_token %}
+                <input type="hidden" name="status" value="JUSTIFIED">
+                <span class="fw-semibold text-info d-flex align-items-center gap-1 text-nowrap">
+                    <i class="bi bi-info-circle-fill"></i> Motivo:
+                </span>
+                <input type="text" name="justification" class="form-control form-control-sm shadow-sm" placeholder="Escriba el motivo o soporte médico de justificación..." value="{{ item.record.justification|default:'' }}">
+                <button type="submit" class="btn btn-primary btn-sm text-nowrap d-flex align-items-center gap-1 shadow-sm">
+                    <i class="bi bi-check2-circle"></i>
+                    <span>Guardar Motivo</span>
+                </button>
+                {% if item.record.justification %}
+                <span class="badge bg-success-subtle text-success border border-success-subtle py-1 px-2 text-nowrap">
+                    <i class="bi bi-check-all me-1"></i>Guardado
+                </span>
+                {% endif %}
+            </form>
+        </td>
+    </tr>
+    {% endif %}
+</tbody>
