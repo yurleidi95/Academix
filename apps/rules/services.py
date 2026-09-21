@@ -28,9 +28,10 @@ def get_or_create_promotion_rule(academic_year):
     return rule
 
 @transaction.atomic
-def close_academic_period(period, user, reason='Cierre formal de periodo lectivo'):
+def close_academic_period(period, user, reason='Cierre formal de periodo lectivo', rector_signature_authorized=True):
     """
-    Cierra un periodo lectivo, impidiendo futuras alteraciones de notas y asistencias.
+    Cierra un periodo lectivo, impidiendo futuras alteraciones de notas y asistencias,
+    y registrando la autorización de firma automática de la rectora en boletines.
     """
     if not (user.is_admin_role or user.is_rector):
         raise PermissionDenied("Solo el Rector o Administrador del sistema pueden autorizar el cierre de un periodo.")
@@ -47,6 +48,7 @@ def close_academic_period(period, user, reason='Cierre formal de periodo lectivo
         academic_period=period,
         closing_type=AcademicClosingLog.ClosingType.PERIOD,
         closed_by=user,
+        rector_signature_authorized=rector_signature_authorized,
         observations=reason
     )
 

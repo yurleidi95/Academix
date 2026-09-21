@@ -44,6 +44,7 @@ class GradeLevel(models.Model):
     Grado, Nivel, Trimestre o Semestre Escolar según el tipo de institución.
     """
     class LevelStage(models.TextChoices):
+        PREESCOLAR = 'PREESCOLAR', 'Educación Preescolar'
         PRIMARIA = 'PRIMARIA', 'Básica Primaria'
         SECUNDARIA = 'SECUNDARIA', 'Básica Secundaria'
         MEDIA = 'MEDIA', 'Educación Media'

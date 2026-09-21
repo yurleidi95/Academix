@@ -268,6 +268,34 @@ def grades_matrix_view(request):
             'final_grade': final_grade,
         })
 
+    # Cálculo del Área de Indicadores (KPIs en tiempo real)
+    total_students = len(matrix_rows)
+    final_grades_list = [r['final_grade'].final_score for r in matrix_rows if r.get('final_grade')]
+    if final_grades_list and total_students > 0:
+        from decimal import ROUND_HALF_UP
+        group_average = (sum(final_grades_list) / Decimal(len(final_grades_list))).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        approved_count = sum(1 for r in matrix_rows if r.get('final_grade') and r['final_grade'].is_approved)
+        failed_count = sum(1 for r in matrix_rows if r.get('final_grade') and not r['final_grade'].is_approved)
+        at_risk_count = sum(1 for r in matrix_rows if r.get('final_grade') and r['final_grade'].final_score < Decimal('3.00'))
+    else:
+        group_average = Decimal('0.00')
+        approved_count = 0
+        failed_count = 0
+        at_risk_count = 0
+
+    total_cells = total_students * len(criteria) if criteria else 0
+    filled_cells = sum(1 for r in matrix_rows for s in r['scores'] if s.get('record') is not None)
+    completion_percentage = int((filled_cells / total_cells * 100)) if total_cells > 0 else 0
+
+    kpis = {
+        'total_students': total_students,
+        'group_average': group_average,
+        'approved_count': approved_count,
+        'failed_count': failed_count,
+        'at_risk_count': at_risk_count,
+        'completion_percentage': completion_percentage,
+    }
+
     context = {
         'section': section,
         'subject': subject,
@@ -275,6 +303,7 @@ def grades_matrix_view(request):
         'criteria': criteria,
         'matrix_rows': matrix_rows,
         'is_editable': is_editable,
+        'kpis': kpis,
     }
     return render(request, 'grades/matrix.html', context)
 

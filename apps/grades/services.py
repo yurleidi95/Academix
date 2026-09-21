@@ -6,11 +6,11 @@ from apps.audit.services import log_audit
 
 def get_or_create_default_criteria(course_section, subject, academic_period):
     """
-    Recupera o inicializa los criterios estándar de evaluación para la asignatura y periodo:
-    1. Evaluaciones Escritas y Quices (40.00%)
-    2. Talleres, Tareas y Trabajos (40.00%)
-    3. Autoevaluación y Actitudinal (20.00%)
-    Total = 100.00%
+    Recupera o inicializa los criterios estándar de evaluación adaptados al tipo de institución:
+    - SENA: RAP 1, RAP 2, RAP 3 (Desempeño y Producto)
+    - Universidad: Corte 1, Corte 2, Examen Final / Proyecto
+    - Academia: Módulo Práctico, Proyecto Final Asincrónico
+    - Colegio: Evaluaciones/Quices, Talleres/Tareas, Actitudinal
     """
     criteria = list(EvaluationCriterion.objects.filter(
         course_section=course_section,
@@ -19,11 +19,34 @@ def get_or_create_default_criteria(course_section, subject, academic_period):
     ).order_by('order'))
 
     if not criteria:
-        default_defs = [
-            ('Evaluaciones y Quices', Decimal('40.00'), 1),
-            ('Talleres y Actividades', Decimal('40.00'), 2),
-            ('Actitudinal y Autoevaluación', Decimal('20.00'), 3),
-        ]
+        inst_type = 'COLEGIO'
+        if hasattr(course_section, 'grade_level') and course_section.grade_level:
+            inst_type = course_section.grade_level.institution_type
+
+        if inst_type == 'SENA_TECNICO':
+            default_defs = [
+                ('RAP 1 - Resultado de Aprendizaje 1', Decimal('35.00'), 1),
+                ('RAP 2 - Resultado de Aprendizaje 2', Decimal('35.00'), 2),
+                ('RAP 3 - Desempeño y Producto', Decimal('30.00'), 3),
+            ]
+        elif inst_type == 'UNIVERSIDAD':
+            default_defs = [
+                ('Corte 1 - Parcial y Talleres', Decimal('30.00'), 1),
+                ('Corte 2 - Investigación y Tareas', Decimal('30.00'), 2),
+                ('Examen Final / Proyecto de Semestre', Decimal('40.00'), 3),
+            ]
+        elif inst_type == 'ACADEMIA':
+            default_defs = [
+                ('Módulo / Taller Práctico', Decimal('50.00'), 1),
+                ('Proyecto Final / Evaluación Asincrónica', Decimal('50.00'), 2),
+            ]
+        else:
+            default_defs = [
+                ('Evaluaciones y Quices', Decimal('40.00'), 1),
+                ('Talleres y Actividades', Decimal('40.00'), 2),
+                ('Actitudinal y Autoevaluación', Decimal('20.00'), 3),
+            ]
+
         criteria = []
         for name, pct, order in default_defs:
             crit = EvaluationCriterion.objects.create(
@@ -41,7 +64,11 @@ def get_or_create_default_criteria(course_section, subject, academic_period):
 def calculate_period_final_grade(student, course_section, subject, academic_period):
     """
     Calcula la nota definitiva del periodo sumando las calificaciones ponderadas.
-    Consistencia matemática estricta: Únicamente tipos Decimal y redondeo ROUND_HALF_UP.
+    Fórmula de Periodo:
+    - P1, P2 y P3 promedian las valoraciones del periodo respectivo.
+    - P4 es el Cierre Final: aplica la fórmula integradora tomando el promedio acumulado
+      de periodos anteriores (P1-P3: 75%) + notas de P4 (25%).
+    Consistencia matemática estricta: tipos Decimal y redondeo ROUND_HALF_UP.
     """
     criteria = EvaluationCriterion.objects.filter(
         course_section=course_section,
@@ -68,11 +95,30 @@ def calculate_period_final_grade(student, course_section, subject, academic_peri
         weighted_sum += (score * (crit.percentage / Decimal('100.00')))
         total_percentage_applied += crit.percentage
 
-    final_score = weighted_sum.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+    p_score = weighted_sum.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+
+    # Fórmula especial para P4 (Cierre Definitivo Anual)
+    if academic_period.number == 4:
+        previous_grades = list(PeriodFinalGrade.objects.filter(
+            student=student,
+            course_section=course_section,
+            subject=subject,
+            academic_period__academic_year=academic_period.academic_year,
+            academic_period__number__in=[1, 2, 3]
+        ).values_list('final_score', flat=True))
+
+        if previous_grades:
+            accumulated_p1_p3 = sum(previous_grades) / Decimal(len(previous_grades))
+            final_score = (accumulated_p1_p3 * Decimal('0.75') + p_score * Decimal('0.25')).quantize(
+                Decimal('0.01'), rounding=ROUND_HALF_UP
+            )
+        else:
+            final_score = p_score
+    else:
+        final_score = p_score
 
     # Escala de Desempeño según Decreto 1290 (soporta escalas 0 a 5 y 0 a 10)
     if final_score <= Decimal('5.00'):
-        # Escala institucional estándar (0.00 a 5.00)
         if final_score < Decimal('3.00'):
             performance = PeriodFinalGrade.PerformanceLevel.BAJO
             is_approved = False
@@ -86,7 +132,6 @@ def calculate_period_final_grade(student, course_section, subject, academic_peri
             performance = PeriodFinalGrade.PerformanceLevel.SUPERIOR
             is_approved = True
     else:
-        # Escala institucional extendida (0.00 a 10.00)
         if final_score < Decimal('6.00'):
             performance = PeriodFinalGrade.PerformanceLevel.BAJO
             is_approved = False
@@ -118,9 +163,8 @@ def calculate_period_final_grade(student, course_section, subject, academic_peri
 @transaction.atomic
 def save_or_update_grade(student, course_section, subject, academic_period, criterion, score, feedback=None, user=None):
     """
-    Guarda o actualiza una nota con validación de periodo abierto,
-    transacción atómica, auditoría inmutable y recálculo automático de la definitiva.
-    Soporta escalas de 0.00 a 5.00 y de 0.00 a 10.00.
+    Guarda o actualiza una nota garantizando persistencia y permitiendo edición al docente
+    mientras el periodo académico se encuentre abierto (is_editable=True).
     """
     if not academic_period.is_editable:
         raise PermissionDenied(f"El periodo {academic_period.name} está cerrado o bloqueado. No se pueden alterar calificaciones.")
@@ -130,18 +174,14 @@ def save_or_update_grade(student, course_section, subject, academic_period, crit
     if score_dec < Decimal('0.00') or score_dec > Decimal('10.00'):
         raise ValidationError("La calificación debe encontrarse en el rango permitido (0.00 a 5.00 o hasta 10.00).")
 
-
     record, created = GradeRecord.objects.select_for_update().get_or_create(
         student=student,
         course_section=course_section,
         subject=subject,
         academic_period=academic_period,
         criterion=criterion,
-        defaults={'score': score_dec, 'feedback': feedback, 'graded_by': user, 'is_locked': True}
+        defaults={'score': score_dec, 'feedback': feedback, 'graded_by': user, 'is_locked': False}
     )
-
-    if not created and record.is_locked:
-        raise ValidationError("Esta calificación ya fue actualizada y no puede ser modificada por ningún usuario.")
 
     old_score = None if created else record.score
     if not created:
@@ -149,7 +189,6 @@ def save_or_update_grade(student, course_section, subject, academic_period, crit
         if feedback is not None:
             record.feedback = feedback
         record.graded_by = user
-        record.is_locked = True
         record.save()
 
     # Auditoría inmutable de la nota

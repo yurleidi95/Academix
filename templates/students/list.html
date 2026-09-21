@@ -57,9 +57,10 @@
                 <th>{{ institution.term_student|default:'Estudiante' }}</th>
                 <th>{{ institution.term_section|default:'Grupo' }}</th>
                 {% if institution.has_parents %}<th>Acudiente / Contacto</th>{% endif %}
-                <th>Fecha Matrícula</th>
+                <th>Requisito Admisión</th>
+                <th>Tesorería</th>
                 <th>Estado</th>
-                <th class="text-end">Observaciones</th>
+                <th class="text-end">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -84,7 +85,26 @@
                     {% endif %}
                 </td>
                 {% endif %}
-                <td class="small text-muted font-monospace">{{ enr.enrollment_date|date:"d/m/Y" }}</td>
+                <td>
+                    <span class="badge bg-light text-dark border small" title="Requisitos adaptados al modelo institucional">
+                        <i class="bi bi-check2-circle text-success me-1"></i>{{ enr.admission_requirement_info|default:"Requisitos al día" }}
+                    </span>
+                </td>
+                <td>
+                    {% if enr.financial_status == 'PAZ_Y_SALVO' %}
+                    <span class="badge bg-success-subtle text-success border border-success-subtle small">
+                        <i class="bi bi-check-circle-fill me-1"></i>Paz y Salvo
+                    </span>
+                    {% elif enr.financial_status == 'PENDIENTE' %}
+                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle small">
+                        <i class="bi bi-clock-fill me-1"></i>Pendiente
+                    </span>
+                    {% else %}
+                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle small">
+                        <i class="bi bi-exclamation-circle-fill me-1"></i>En Mora
+                    </span>
+                    {% endif %}
+                </td>
                 <td>
                     {% if enr.status == 'ACTIVE' %}
                     <span class="badge bg-success-subtle text-success border border-success-subtle">

@@ -1,0 +1,379 @@
+{% extends 'base.html' %}
+{% load teacher_tags %}
+
+{% block title %}{{ section.name }} | Espacio de Curso{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+    <!-- Migas de pan y cabecera del curso -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb small mb-1">
+                    <li class="breadcrumb-item"><a href="{% url 'teachers:my_courses' %}" class="text-decoration-none">Mis {{ institution.term_sections|default:'Cursos' }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ section.name }}</li>
+                </ol>
+            </nav>
+            <h2 class="h3 fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                <span>{{ section.name }}</span>
+                <span class="badge bg-primary-subtle text-primary fs-6">{{ institution.term_grade|default:'Grado' }} {{ section.grade_level.name }}</span>
+                <span class="badge bg-light text-muted border fs-6">{{ section.classroom|default:"Aula Principal" }}</span>
+            </h2>
+        </div>
+        <div class="d-flex gap-2 mt-2 mt-md-0">
+            <a href="{% url 'teachers:my_courses' %}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 shadow-sm">
+                <i class="bi bi-arrow-left"></i>
+                <span>Volver a Mis Cursos</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Pestañas Principales: Asistencia, Malla Curricular y Asignaturas -->
+    <ul class="nav nav-pills mb-4 p-2 bg-white rounded-3 shadow-sm border" id="courseWorkspaceTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold d-flex align-items-center gap-2 {% if active_tab == 'asignaturas' %}active{% endif %}"
+                    id="tab-asignaturas-btn" data-bs-toggle="pill" data-bs-target="#tab-asignaturas" type="button" role="tab">
+                <i class="bi bi-book-half fs-5"></i>
+                <span>Asignaturas ({{ principales|length|add:humanisticas|length|add:arte_deporte|length }})</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold d-flex align-items-center gap-2 {% if active_tab == 'asistencia' %}active{% endif %}"
+                    id="tab-asistencia-btn" data-bs-toggle="pill" data-bs-target="#tab-asistencia" type="button" role="tab">
+                <i class="bi bi-calendar2-check-fill fs-5 text-success"></i>
+                <span>Asistencia</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold d-flex align-items-center gap-2 {% if active_tab == 'malla' %}active{% endif %}"
+                    id="tab-malla-btn" data-bs-toggle="pill" data-bs-target="#tab-malla" type="button" role="tab">
+                <i class="bi bi-diagram-3-fill fs-5 text-info"></i>
+                <span>Malla Curricular y Normas</span>
+            </button>
+        </li>
+    </ul>
+
+    <!-- Contenido de Pestañas -->
+    <div class="tab-content" id="courseWorkspaceTabContent">
+
+        <!-- ==========================================
+             PESTAÑA 1: ASIGNATURAS (AGRUPADAS)
+             ========================================== -->
+        <div class="tab-pane fade {% if active_tab == 'asignaturas' %}show active{% endif %}" id="tab-asignaturas" role="tabpanel">
+
+            <!-- 1. Materias Principales -->
+            <div class="mb-4">
+                <h5 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
+                    <span class="badge bg-primary p-2"><i class="bi bi-star-fill text-white"></i></span>
+                    <span>Materias Principales</span>
+                    <small class="text-muted fw-normal fs-6">({{ principales|length }} asignadas)</small>
+                </h5>
+                <div class="row g-3">
+                    {% for subj in principales %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card ac-card border-0 shadow-sm rounded-3 h-100 border-start border-4 border-primary">
+                            <div class="card-body p-3 d-flex flex-column justify-content-between">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <span class="badge bg-primary-subtle text-primary font-monospace">{{ subj.code }}</span>
+                                        {% if subj.norms.count %}
+                                        <span class="badge bg-light text-dark border"><i class="bi bi-check-circle me-1 text-success"></i>{{ subj.norms.count }} Normas</span>
+                                        {% endif %}
+                                    </div>
+                                    <h6 class="fw-bold text-dark mb-1">{{ subj.name }}</h6>
+                                    <p class="text-muted small mb-2" style="font-size: 0.75rem;">{{ subj.description|truncatechars:80|default:"Área técnica y curricular principal." }}</p>
+                                </div>
+                                <div class="d-flex gap-2 pt-2 border-top">
+                                    <a href="{% url 'grades:matrix' %}?section_id={{ section.id }}&subject_id={{ subj.id }}{% if active_period %}&period_id={{ active_period.id }}{% endif %}"
+                                       class="btn btn-primary btn-sm flex-fill fw-bold shadow-sm">
+                                        <i class="bi bi-card-checklist me-1"></i>Calificar
+                                    </a>
+                                    <a href="{% url 'homework:course_matrix' %}?section_id={{ section.id }}&subject_id={{ subj.id }}"
+                                       class="btn btn-outline-warning btn-sm" title="Tareas y Trabajos">
+                                        <i class="bi bi-folder2-open"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12"><div class="alert alert-light border small text-muted py-2">No hay materias principales asignadas en este curso.</div></div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- 2. Materias Humanísticas -->
+            <div class="mb-4">
+                <h5 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
+                    <span class="badge bg-info p-2"><i class="bi bi-people-fill text-white"></i></span>
+                    <span>Materias Humanísticas</span>
+                    <small class="text-muted fw-normal fs-6">({{ humanisticas|length }} asignadas)</small>
+                </h5>
+                <div class="row g-3">
+                    {% for subj in humanisticas %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card ac-card border-0 shadow-sm rounded-3 h-100 border-start border-4 border-info">
+                            <div class="card-body p-3 d-flex flex-column justify-content-between">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <span class="badge bg-info-subtle text-info font-monospace">{{ subj.code }}</span>
+                                        {% if subj.norms.count %}
+                                        <span class="badge bg-light text-dark border"><i class="bi bi-check-circle me-1 text-success"></i>{{ subj.norms.count }} Normas</span>
+                                        {% endif %}
+                                    </div>
+                                    <h6 class="fw-bold text-dark mb-1">{{ subj.name }}</h6>
+                                    <p class="text-muted small mb-2" style="font-size: 0.75rem;">{{ subj.description|truncatechars:80|default:"Formación ciudadana, ética y social." }}</p>
+                                </div>
+                                <div class="d-flex gap-2 pt-2 border-top">
+                                    <a href="{% url 'grades:matrix' %}?section_id={{ section.id }}&subject_id={{ subj.id }}{% if active_period %}&period_id={{ active_period.id }}{% endif %}"
+                                       class="btn btn-info text-white btn-sm flex-fill fw-bold shadow-sm">
+                                        <i class="bi bi-card-checklist me-1"></i>Calificar
+                                    </a>
+                                    <a href="{% url 'homework:course_matrix' %}?section_id={{ section.id }}&subject_id={{ subj.id }}"
+                                       class="btn btn-outline-warning btn-sm" title="Tareas y Trabajos">
+                                        <i class="bi bi-folder2-open"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12"><div class="alert alert-light border small text-muted py-2">No hay materias humanísticas asignadas en este curso.</div></div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- 3. Arte y Deporte -->
+            <div class="mb-4">
+                <h5 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
+                    <span class="badge bg-success p-2"><i class="bi bi-palette-fill text-white"></i></span>
+                    <span>Arte y Deporte</span>
+                    <small class="text-muted fw-normal fs-6">({{ arte_deporte|length }} asignadas)</small>
+                </h5>
+                <div class="row g-3">
+                    {% for subj in arte_deporte %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card ac-card border-0 shadow-sm rounded-3 h-100 border-start border-4 border-success">
+                            <div class="card-body p-3 d-flex flex-column justify-content-between">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <span class="badge bg-success-subtle text-success font-monospace">{{ subj.code }}</span>
+                                        {% if subj.norms.count %}
+                                        <span class="badge bg-light text-dark border"><i class="bi bi-check-circle me-1 text-success"></i>{{ subj.norms.count }} Normas</span>
+                                        {% endif %}
+                                    </div>
+                                    <h6 class="fw-bold text-dark mb-1">{{ subj.name }}</h6>
+                                    <p class="text-muted small mb-2" style="font-size: 0.75rem;">{{ subj.description|truncatechars:80|default:"Expresión corporal, artística y deportiva." }}</p>
+                                </div>
+                                <div class="d-flex gap-2 pt-2 border-top">
+                                    <a href="{% url 'grades:matrix' %}?section_id={{ section.id }}&subject_id={{ subj.id }}{% if active_period %}&period_id={{ active_period.id }}{% endif %}"
+                                       class="btn btn-success btn-sm flex-fill fw-bold shadow-sm">
+                                        <i class="bi bi-card-checklist me-1"></i>Calificar
+                                    </a>
+                                    <a href="{% url 'homework:course_matrix' %}?section_id={{ section.id }}&subject_id={{ subj.id }}"
+                                       class="btn btn-outline-warning btn-sm" title="Tareas y Trabajos">
+                                        <i class="bi bi-folder2-open"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12"><div class="alert alert-light border small text-muted py-2">No hay materias de arte y deporte asignadas en este curso.</div></div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ==========================================
+             PESTAÑA 2: ASISTENCIA MODIFICABLE
+             ========================================== -->
+        <div class="tab-pane fade {% if active_tab == 'asistencia' %}show active{% endif %}" id="tab-asistencia" role="tabpanel">
+            <div class="card ac-card border-0 shadow-sm rounded-4 p-4 mb-4">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                    <div>
+                        <h4 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                            <i class="bi bi-calendar2-check-fill text-success"></i>
+                            <span>Control y Modificación de Asistencia</span>
+                        </h4>
+                        <p class="text-muted small mb-0">El docente puede modificar y guardar el llamado de lista para cualquier fecha del año lectivo.</p>
+                    </div>
+
+                    <!-- Selector de Fecha -->
+                    <form method="get" class="d-flex align-items-center gap-2">
+                        <input type="hidden" name="tab" value="asistencia">
+                        <label class="small fw-bold text-muted text-nowrap">Fecha de Clase:</label>
+                        <input type="date" name="date" class="form-control form-control-sm" value="{{ current_date|date:'Y-m-d' }}" onchange="this.form.submit()">
+                        <button type="submit" class="btn btn-outline-primary btn-sm">Cargar</button>
+                    </form>
+                </div>
+
+                <div class="alert alert-info py-2 px-3 small d-flex align-items-center gap-2 mb-3">
+                    <i class="bi bi-info-circle-fill fs-5"></i>
+                    <span><strong>Estados oficiales:</strong> <span class="badge bg-success">Presente</span> <span class="badge bg-danger">Falla</span> <span class="badge bg-warning text-dark">Falta Justificada</span>. La asistencia se puede actualizar libremente en cualquier momento.</span>
+                </div>
+
+                {% if first_subject %}
+                <div class="table-responsive bg-white rounded-3 border">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small text-uppercase text-muted">
+                            <tr>
+                                <th style="width: 50px;">#</th>
+                                <th>Código</th>
+                                <th>{{ institution.term_student|default:'Estudiante' }}</th>
+                                <th class="text-center" style="width: 280px;">Estado en Lista ({{ current_date|date:"d/m/Y" }})</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for enr in active_enrollments %}
+                            {% with rec=records_by_student|get_item:enr.student.id %}
+                            <tr>
+                                <td class="text-muted small">{{ forloop.counter }}</td>
+                                <td class="font-monospace fw-bold text-primary small">{{ enr.student.student_code }}</td>
+                                <td class="fw-bold text-dark">{{ enr.student.user.get_full_name }}</td>
+                                <td class="text-center">
+                                    <span class="badge {% if rec.status == 'PRESENT' %}bg-success{% elif rec.status == 'ABSENT' %}bg-danger{% elif rec.status == 'JUSTIFIED' %}bg-warning text-dark{% else %}bg-secondary{% endif %} px-3 py-2">
+                                        {{ rec.get_status_display|default:"Sin Marcar" }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% endwith %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="text-end mt-3">
+                    <a href="{% url 'attendance:sheet' %}?section_id={{ section.id }}&subject_id={{ first_subject.id }}&date={{ current_date|date:'Y-m-d' }}"
+                       class="btn btn-success fw-bold shadow-sm px-4">
+                        <i class="bi bi-pencil-square me-1"></i>Modificar / Tomar Lista Completa
+                    </a>
+                </div>
+                {% else %}
+                <div class="alert alert-warning small">No hay asignaturas asociadas para gestionar la asistencia.</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- ==========================================
+             PESTAÑA 3: MALLA CURRICULAR Y NORMAS
+             ========================================== -->
+        <div class="tab-pane fade {% if active_tab == 'malla' %}show active{% endif %}" id="tab-malla" role="tabpanel">
+            <div class="card ac-card border-0 shadow-sm rounded-4 p-4 mb-4">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                    <div>
+                        <h4 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                            <i class="bi bi-diagram-3-fill text-info"></i>
+                            <span>Malla Curricular y Normas de Calidad</span>
+                        </h4>
+                        <p class="text-muted small mb-0">Estructura curricular de {{ institution.term_grade|default:'Grado' }} {{ section.grade_level.name }}. Asocie y visualice las normas, RAPs o competencias de cada asignatura.</p>
+                    </div>
+                </div>
+
+                {% if curriculum %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small text-uppercase text-muted">
+                            <tr>
+                                <th>Asignatura / Módulo</th>
+                                <th>Área</th>
+                                <th>Categoría</th>
+                                <th class="text-center">Intensidad</th>
+                                <th>Normas y Competencias Asociadas</th>
+                                <th class="text-end">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for gs in curriculum %}
+                            <tr>
+                                <td>
+                                    <div class="fw-bold text-dark">{{ gs.subject.name }}</div>
+                                    <small class="text-muted font-monospace">{{ gs.subject.code }}</small>
+                                </td>
+                                <td><span class="badge bg-light text-dark border">{{ gs.subject.area.name }}</span></td>
+                                <td>
+                                    {% if gs.subject.category == 'PRINCIPAL' %}
+                                    <span class="badge bg-primary-subtle text-primary">Principal</span>
+                                    {% elif gs.subject.category == 'HUMANISTICA' %}
+                                    <span class="badge bg-info-subtle text-info">Humanística</span>
+                                    {% else %}
+                                    <span class="badge bg-success-subtle text-success">Arte y Deporte</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center font-monospace fw-bold">{{ gs.weekly_hours }}h/sem</td>
+                                <td>
+                                    {% if gs.subject.norms.all %}
+                                    <div class="d-flex flex-column gap-1">
+                                        {% for norm in gs.subject.norms.all %}
+                                        <div class="small p-1 bg-light rounded border">
+                                            <span class="badge bg-secondary font-monospace me-1">{{ norm.code }}</span>
+                                            <strong class="text-dark">{{ norm.title }}</strong>
+                                            <div class="text-muted" style="font-size: 0.7rem;">{{ norm.description|truncatechars:70 }}</div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    <span class="text-muted small">Sin normas asociadas</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addNormModal-{{ gs.subject.id }}" title="Agregar Norma/Competencia">
+                                        <i class="bi bi-plus-circle me-1"></i>Norma
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Modal para Asociar Norma a la Asignatura -->
+                            <div class="modal fade" id="addNormModal-{{ gs.subject.id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content border-0 shadow">
+                                        <form method="post" action="{% url 'teachers:add_norm' gs.subject.id %}">
+                                            {% csrf_token %}
+                                            <div class="modal-header bg-primary text-white">
+                                                <h5 class="modal-title fs-6 fw-bold">
+                                                    <i class="bi bi-award-fill me-2"></i>Asociar Norma a {{ gs.subject.name }}
+                                                </h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body p-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label small fw-bold">Código de la Norma / RAP *</label>
+                                                    <input type="text" name="code" class="form-control" placeholder="Ej: RAP-01 o EST-MAT-01" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label small fw-bold">Título de la Norma / Competencia *</label>
+                                                    <input type="text" name="title" class="form-control" placeholder="Ej: Resolución de ecuaciones lineales" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label small fw-bold">Descripción Curricular *</label>
+                                                    <textarea name="description" rows="3" class="form-control" placeholder="Describe los alcances y criterios de desempeño de la norma..." required></textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label small fw-bold">Orden</label>
+                                                    <input type="number" name="order" class="form-control" value="1" min="1">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer bg-light">
+                                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="submit" class="btn btn-primary btn-sm fw-bold">
+                                                    <i class="bi bi-save me-1"></i>Guardar e Integrar Norma
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-light border small text-muted">No se ha configurado malla curricular para este grado.</div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

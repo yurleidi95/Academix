@@ -65,7 +65,13 @@
 
         {% if user.is_teacher %}
         <li class="sidebar-item">
-            <a href="{% url 'teachers:list' %}" class="sidebar-link {% if 'teachers' in request.path %}active{% endif %}">
+            <a href="{% url 'teachers:my_courses' %}" class="sidebar-link {% if 'my-courses' in request.path or 'course/' in request.path %}active{% endif %}">
+                <i class="bi bi-grid-3x3-gap-fill text-primary"></i>
+                <span>Mis {{ institution.term_sections|default:'Cursos' }}</span>
+            </a>
+        </li>
+        <li class="sidebar-item">
+            <a href="{% url 'teachers:list' %}" class="sidebar-link {% if 'teachers' in request.path and not 'my-courses' in request.path and not 'course/' in request.path %}active{% endif %}">
                 <i class="bi bi-journal-bookmark-fill"></i>
                 <span>Mis Asignaciones</span>
             </a>

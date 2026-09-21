@@ -150,6 +150,10 @@ class AcademicClosingLog(models.Model):
     total_students_evaluated = models.PositiveIntegerField(default=0, verbose_name='Total Estudiantes Evaluados')
     total_promoted = models.PositiveIntegerField(default=0, verbose_name='Total Promovidos')
     total_failed = models.PositiveIntegerField(default=0, verbose_name='Total No Promovidos')
+    rector_signature_authorized = models.BooleanField(
+        default=True,
+        verbose_name='¿Firma Digital de la Rectora Autorizada en Boletines?'
+    )
     observations = models.TextField(blank=True, verbose_name='Observaciones / Justificación')
 
     class Meta:

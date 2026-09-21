@@ -48,14 +48,17 @@ def closing_manager_view(request):
 @user_passes_test(is_admin_or_rector)
 def close_period_view(request, period_id):
     """
-    Cierra formalmente un periodo lectivo.
+    Cierra formalmente un periodo lectivo configurando la autorización de firma de rectoría.
     """
     if request.method == 'POST':
         period = get_object_or_404(AcademicPeriod, id=period_id)
         reason = request.POST.get('reason', 'Cierre formal de periodo lectivo')
+        rector_sig_raw = request.POST.get('rector_signature_authorized', 'true')
+        rector_signature_authorized = (str(rector_sig_raw).lower() in ['true', '1', 'on', 'yes', 'si', 'sí'])
         try:
-            close_academic_period(period, request.user, reason)
-            messages.success(request, f'El periodo {period.name} ha sido cerrado satisfactoriamente. Se ha bloqueado la alteración de notas.')
+            close_academic_period(period, request.user, reason, rector_signature_authorized=rector_signature_authorized)
+            sig_msg = "con Firma Digital de Rectora autorizada" if rector_signature_authorized else "sin firma digital (espacio para rúbrica manual)"
+            messages.success(request, f'El periodo {period.name} ha sido cerrado ({sig_msg}). Se ha bloqueado la alteración de notas.')
         except Exception as e:
             messages.error(request, f'Error al cerrar periodo: {str(e)}')
     return redirect('rules:closing_manager')

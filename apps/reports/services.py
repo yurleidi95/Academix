@@ -143,6 +143,14 @@ def build_student_bulletin_data(student, section, period):
     ranking_data = calculate_section_ranking(section, period)
     student_rank = ranking_data.get(student.id, {'rank': 1, 'total': len(ranking_data)})
 
+    # Estado de autorización de firma de la Rectora según bitácora de cierre
+    from apps.rules.models import AcademicClosingLog
+    closing_log = AcademicClosingLog.objects.filter(
+        academic_period=period,
+        closing_type=AcademicClosingLog.ClosingType.PERIOD
+    ).order_by('-closed_at').first()
+    rector_signature_authorized = closing_log.rector_signature_authorized if closing_log else True
+
     return {
         'student': student,
         'enrollment': enrollment,
@@ -157,6 +165,7 @@ def build_student_bulletin_data(student, section, period):
         'total_subjects_count': total_subjects_count,
         'total_failed_count': total_failed_count,
         'total_absences_period': total_absences_period,
+        'rector_signature_authorized': rector_signature_authorized,
     }
 
 def calculate_section_ranking(section, period):

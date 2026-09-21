@@ -41,6 +41,22 @@ class Subject(models.Model):
         related_name='subjects',
         verbose_name='Área Fundamental'
     )
+    class Category(models.TextChoices):
+        PRINCIPAL = 'PRINCIPAL', 'Materia Principal'
+        HUMANISTICA = 'HUMANISTICA', 'Materia Humanística'
+        ARTE_DEPORTE = 'ARTE_DEPORTE', 'Arte y Deporte'
+
+    category = models.CharField(
+        max_length=20,
+        choices=Category.choices,
+        default=Category.PRINCIPAL,
+        verbose_name='Agrupación / Categoría'
+    )
+    credits = models.PositiveSmallIntegerField(
+        default=3,
+        validators=[MinValueValidator(1), MaxValueValidator(20)],
+        verbose_name='Créditos Académicos (Superior)'
+    )
     name = models.CharField(max_length=120, verbose_name='Nombre de la Asignatura / Módulo')
     code = models.CharField(max_length=30, verbose_name='Código Abreviado')
     description = models.TextField(blank=True, null=True, verbose_name='Descripción Curricular')
@@ -49,10 +65,36 @@ class Subject(models.Model):
         verbose_name = 'Asignatura / Módulo'
         verbose_name_plural = 'Asignaturas / Módulos'
         unique_together = ('institution_type', 'code')
-        ordering = ['institution_type', 'area', 'name']
+        ordering = ['institution_type', 'category', 'area', 'name']
 
     def __str__(self):
         return f"{self.name} ({self.code})"
+
+
+class SubjectNorm(models.Model):
+    """
+    Norma, Estándar de Calidad o Competencia asociada a una Asignatura / Módulo.
+    Permite parametrizar estándares MEN, competencias laborales SENA o competencias de curso.
+    """
+    subject = models.ForeignKey(
+        Subject,
+        on_delete=models.CASCADE,
+        related_name='norms',
+        verbose_name='Asignatura / Módulo'
+    )
+    code = models.CharField(max_length=50, verbose_name='Código de Norma / Estándar')
+    title = models.CharField(max_length=200, verbose_name='Título de la Norma')
+    description = models.TextField(verbose_name='Descripción de la Competencia / Estándar')
+    order = models.PositiveSmallIntegerField(default=1, verbose_name='Orden')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Norma / Competencia'
+        verbose_name_plural = 'Normas y Competencias'
+        ordering = ['subject', 'order', 'code']
+
+    def __str__(self):
+        return f"[{self.code}] {self.title} - {self.subject.code}"
 
 
 class GradeSubject(models.Model):

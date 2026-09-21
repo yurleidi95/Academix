@@ -44,8 +44,16 @@
             <div class="col-6 col-md-4">
                 <strong>Periodo Lectivo:</strong> {{ b.period.name }} ({{ b.period.percentage }}%)
             </div>
-            <div class="col-12 col-md-4 text-md-end">
+            <div class="col-6 col-md-4">
                 <strong>Director de Grupo:</strong> {{ b.group_director.user.get_full_name|default:"Prof. Titular" }}
+            </div>
+            <div class="col-6 col-md-4 text-md-end">
+                <strong>Paz y Salvo Tesorería:</strong>
+                {% if b.enrollment.financial_status == 'PAZ_Y_SALVO' %}
+                <span class="badge bg-success-subtle text-success border border-success px-2 py-1"><i class="bi bi-check2-circle me-1"></i>Paz y Salvo</span>
+                {% else %}
+                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning px-2 py-1"><i class="bi bi-exclamation-circle me-1"></i>Pendiente</span>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -161,13 +169,33 @@
     </div>
 
     <!-- Bloque de Firmas Formales -->
-    <div class="row text-center mt-5 pt-2">
-        <div class="col-6">
+    <div class="row text-center mt-4 pt-2 align-items-end">
+        <div class="col-6 position-relative">
+            {% if b.rector_signature_authorized %}
+            <div class="mb-1">
+                <span class="badge bg-success-subtle text-success border border-success px-2 py-1 small mb-1">
+                    <i class="bi bi-patch-check-fill me-1"></i>FIRMA DIGITAL AUTORIZADA
+                </span>
+                <div style="font-family: 'Brush Script MT', 'Dancing Script', 'Segoe Script', cursive; font-size: 1.8rem; color: #1e3a8a; line-height: 1.0; font-weight: bold; transform: rotate(-2deg);">
+                    María Rectora
+                </div>
+            </div>
+            {% else %}
+            <div style="height: 48px;"></div>
+            {% endif %}
             <div class="signature-line"></div>
             <strong class="d-block text-dark small">DRA. MARÍA RECTORA</strong>
             <small class="text-muted" style="font-size: 0.72rem;">Rectora Institucional</small>
+            {% if b.rector_signature_authorized %}
+            <small class="text-success d-block" style="font-size: 0.65rem;">
+                <i class="bi bi-shield-check me-1"></i>Certificado Oficial Academix
+            </small>
+            {% else %}
+            <small class="text-muted d-block fst-italic" style="font-size: 0.65rem;">(Espacio para rúbrica manual)</small>
+            {% endif %}
         </div>
         <div class="col-6">
+            <div style="height: 48px;"></div>
             <div class="signature-line"></div>
             <strong class="d-block text-dark small">{{ b.group_director.user.get_full_name|default:"DIRECTOR(A) DE GRUPO"|upper }}</strong>
             <small class="text-muted" style="font-size: 0.72rem;">Director(a) de Grupo</small>

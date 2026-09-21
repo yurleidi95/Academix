@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Gestión de Cierres Académicos y Promoción — ACADEMIX{% endblock %}
 
@@ -134,6 +134,29 @@
                                                     <div class="mb-3">
                                                         <label class="form-label fw-bold small text-muted">Motivo / Observación del Cierre:</label>
                                                         <input type="text" name="reason" class="form-control" value="Cierre formal de periodo lectivo" required>
+                                                    </div>
+                                                    <!-- Opción de Firma Automática de la Rectora -->
+                                                    <div class="mb-3 p-3 bg-light rounded-3 border">
+                                                        <label class="form-label fw-bold small text-dark d-block mb-2">
+                                                            <i class="bi bi-pen-fill text-primary me-1"></i>Firma automática de la Rectora en Boletines:
+                                                        </label>
+                                                        <div class="d-flex align-items-center gap-4">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="rector_signature_authorized" id="sigYes-{{ period.id }}" value="true" checked>
+                                                                <label class="form-check-label small fw-bold text-success" for="sigYes-{{ period.id }}">
+                                                                    <i class="bi bi-check-circle-fill me-1"></i>Sí (Estampar firma digital y sello)
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="rector_signature_authorized" id="sigNo-{{ period.id }}" value="false">
+                                                                <label class="form-check-label small fw-bold text-secondary" for="sigNo-{{ period.id }}">
+                                                                    <i class="bi bi-x-circle-fill me-1"></i>No (Espacio en blanco para firma física)
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <small class="text-muted d-block mt-2">
+                                                            Al seleccionar <strong>Sí</strong>, todos los boletines oficiales generados de este periodo estamparán la rúbrica institucional de <strong>DRA. MARÍA RECTORA</strong>.
+                                                        </small>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer bg-light">

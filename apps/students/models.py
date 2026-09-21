@@ -99,6 +99,24 @@ class Enrollment(models.Model):
         verbose_name='Estado de Matrícula'
     )
 
+    FINANCIAL_STATUS_CHOICES = [
+        ('PAZ_Y_SALVO', '🟢 Paz y Salvo'),
+        ('PENDIENTE', '🟡 Pendiente de Pago'),
+        ('MORA', '🔴 En Mora'),
+    ]
+    financial_status = models.CharField(
+        max_length=20,
+        choices=FINANCIAL_STATUS_CHOICES,
+        default='PAZ_Y_SALVO',
+        verbose_name='Estado Financiero / Tesorería'
+    )
+    admission_requirement_info = models.CharField(
+        max_length=150,
+        blank=True,
+        default='Requisitos de Admisión al día',
+        verbose_name='Requisito de Admisión (Saber 11 / Prueba Aptitud / Paz y Salvo)'
+    )
+
     class Meta:
         verbose_name = 'Matrícula Escolar'
         verbose_name_plural = 'Matrículas Escolares'

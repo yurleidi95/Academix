@@ -135,3 +135,175 @@ def create_teacher_view(request):
 
     return redirect('teachers:list')
 
+
+@login_required
+def teacher_courses_view(request):
+    """
+    Vista principal "Mis Cursos" para el docente: listado de grupos asignados
+    con acceso directo a su espacio de trabajo institucional.
+    """
+    from apps.courses.models import InstitutionSetting
+    inst_type = InstitutionSetting.get_settings().institution_type
+    current_year = get_current_academic_year()
+
+    user = request.user
+    if user.is_teacher and hasattr(user, 'teacher_profile'):
+        assignments = TeachingAssignment.objects.filter(
+            teacher=user.teacher_profile,
+            academic_year=current_year,
+            is_active=True
+        ).select_related('course_section__grade_level', 'subject')
+
+        section_ids = assignments.values_list('course_section_id', flat=True).distinct()
+        sections = CourseSection.objects.filter(id__in=section_ids).select_related('grade_level')
+    else:
+        # Administradores y directivos pueden explorar todos los cursos
+        sections = CourseSection.objects.filter(
+            academic_year=current_year,
+            grade_level__institution_type=inst_type
+        ).select_related('grade_level')
+        assignments = TeachingAssignment.objects.filter(academic_year=current_year).select_related('subject')
+
+    courses_data = []
+    for s in sections:
+        sec_assignments = assignments.filter(course_section=s)
+        student_count = s.enrollments.filter(status='ACTIVE').count()
+        courses_data.append({
+            'section': s,
+            'assignments': sec_assignments,
+            'subjects_count': sec_assignments.values('subject').distinct().count(),
+            'students_count': student_count,
+        })
+
+    context = {
+        'courses_data': courses_data,
+        'current_year': current_year,
+    }
+    return render(request, 'teachers/my_courses.html', context)
+
+
+@login_required
+def course_workspace_view(request, section_id):
+    """
+    Espacio de trabajo del curso seleccionado por el docente con tres opciones clave:
+    1. Asistencia (Llamado de lista y modificación)
+    2. Malla Curricular (Intensidades horarias y Normas/Estándares asociados)
+    3. Asignaturas (Agrupadas en Principales, Humanísticas y Arte/Deporte con acceso a evaluación)
+    """
+    from apps.subjects.models import Subject, SubjectNorm, GradeSubject
+    from apps.periods.services import get_current_active_period
+    from apps.attendance.models import AttendanceSheet, AttendanceRecord
+    import datetime
+
+    section = get_object_or_404(CourseSection.objects.select_related('grade_level', 'academic_year'), id=section_id)
+    current_year = section.academic_year
+    active_period = get_current_active_period(current_year) if current_year else None
+    user = request.user
+
+    # Verificar asignaciones del docente en este curso
+    if user.is_teacher and hasattr(user, 'teacher_profile'):
+        my_assignments = TeachingAssignment.objects.filter(
+            teacher=user.teacher_profile,
+            course_section=section,
+            is_active=True
+        ).select_related('subject')
+        assigned_subject_ids = list(my_assignments.values_list('subject_id', flat=True))
+    else:
+        my_assignments = TeachingAssignment.objects.filter(
+            course_section=section,
+            is_active=True
+        ).select_related('subject', 'teacher__user')
+        assigned_subject_ids = list(my_assignments.values_list('subject_id', flat=True))
+
+    # 1. Asignaturas agrupadas en Principales, Humanísticas y Arte/Deporte
+    subjects_in_course = Subject.objects.filter(
+        id__in=assigned_subject_ids
+    ).prefetch_related('norms') if assigned_subject_ids else Subject.objects.filter(
+        curriculum_grades__grade_level=section.grade_level
+    ).prefetch_related('norms')
+
+    principales = [s for s in subjects_in_course if s.category == Subject.Category.PRINCIPAL]
+    humanisticas = [s for s in subjects_in_course if s.category == Subject.Category.HUMANISTICA]
+    arte_deporte = [s for s in subjects_in_course if s.category == Subject.Category.ARTE_DEPORTE]
+
+    # 2. Malla Curricular del Grado
+    curriculum = GradeSubject.objects.filter(
+        grade_level=section.grade_level
+    ).select_related('subject__area').prefetch_related('subject__norms')
+
+    # 3. Control de Asistencia del Curso
+    active_enrollments = section.enrollments.filter(status='ACTIVE').select_related('student__user').order_by('student__user__last_name')
+    date_str = request.GET.get('date', datetime.date.today().isoformat())
+    try:
+        current_date = datetime.date.fromisoformat(date_str)
+    except ValueError:
+        current_date = datetime.date.today()
+
+    first_subj = subjects_in_course.first()
+    sheet = None
+    records_by_student = {}
+    if first_subj:
+        sheet = AttendanceSheet.objects.filter(
+            course_section=section,
+            subject=first_subj,
+            date=current_date
+        ).first()
+        if sheet:
+            records = AttendanceRecord.objects.filter(sheet=sheet).select_related('student')
+            records_by_student = {r.student_id: r for r in records}
+
+    active_tab = request.GET.get('tab', 'asignaturas')
+
+    context = {
+        'section': section,
+        'current_year': current_year,
+        'active_period': active_period,
+        'my_assignments': my_assignments,
+        'principales': principales,
+        'humanisticas': humanisticas,
+        'arte_deporte': arte_deporte,
+        'curriculum': curriculum,
+        'active_enrollments': active_enrollments,
+        'current_date': current_date,
+        'sheet': sheet,
+        'records_by_student': records_by_student,
+        'first_subject': first_subj,
+        'active_tab': active_tab,
+    }
+    return render(request, 'teachers/course_workspace.html', context)
+
+
+@login_required
+def add_subject_norm_view(request, subject_id):
+    """
+    Permite asociar una Norma, Estándar MEN o Competencia a una Asignatura / Módulo.
+    """
+    from apps.subjects.models import Subject, SubjectNorm
+
+    subject = get_object_or_404(Subject, id=subject_id)
+    if request.method == 'POST':
+        code = request.POST.get('code', '').strip()
+        title = request.POST.get('title', '').strip()
+        description = request.POST.get('description', '').strip()
+        order = request.POST.get('order', 1)
+
+        if code and title and description:
+            try:
+                order_val = int(order)
+            except ValueError:
+                order_val = 1
+
+            SubjectNorm.objects.create(
+                subject=subject,
+                code=code,
+                title=title,
+                description=description,
+                order=order_val
+            )
+            messages.success(request, f'Norma/Competencia "{code}" asociada correctamente a {subject.name}.')
+        else:
+            messages.error(request, 'Todos los campos de la norma son obligatorios.')
+
+    return redirect(request.META.get('HTTP_REFERER', 'teachers:my_courses'))
+
+
