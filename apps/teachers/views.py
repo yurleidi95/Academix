@@ -185,12 +185,13 @@ def teacher_courses_view(request):
 @login_required
 def course_workspace_view(request, section_id):
     """
-    Espacio de trabajo del curso seleccionado por el docente con tres opciones clave:
-    1. Asistencia (Llamado de lista y modificación)
-    2. Malla Curricular (Intensidades horarias y Normas/Estándares asociados)
-    3. Asignaturas (Agrupadas en Principales, Humanísticas y Arte/Deporte con acceso a evaluación)
+    Espacio de trabajo del curso seleccionado con la Planilla de Notas integrada como primera opción:
+    1. Planilla de Notas (Matriz interactiva, KPIs en vivo, persistencia y cambio ágil de materia/periodo)
+    2. Asistencia (Llamado de lista y modificación en cualquier momento)
+    3. Malla Curricular y Normas (Clasificación en Principales, Humanísticas y Arte/Deporte con RAPs/Estándares)
     """
     from apps.subjects.models import Subject, SubjectNorm, GradeSubject
+    from apps.periods.models import AcademicPeriod
     from apps.periods.services import get_current_active_period
     from apps.attendance.models import AttendanceSheet, AttendanceRecord
     import datetime
@@ -200,7 +201,20 @@ def course_workspace_view(request, section_id):
     active_period = get_current_active_period(current_year) if current_year else None
     user = request.user
 
-    # Verificar asignaciones del docente en este curso
+    # Todos los cursos asignados al docente para el selector rápido superior (Curso A, Curso B, Curso C...)
+    if user.is_teacher and hasattr(user, 'teacher_profile'):
+        my_sec_ids = TeachingAssignment.objects.filter(
+            teacher=user.teacher_profile,
+            academic_year=current_year,
+            is_active=True
+        ).values_list('course_section_id', flat=True).distinct()
+        all_my_sections = CourseSection.objects.filter(id__in=my_sec_ids).select_related('grade_level').order_by('grade_level__order', 'name')
+    else:
+        all_my_sections = CourseSection.objects.filter(
+            academic_year=current_year
+        ).select_related('grade_level').order_by('grade_level__order', 'name')
+
+    # Asignaciones del docente en este curso específico
     if user.is_teacher and hasattr(user, 'teacher_profile'):
         my_assignments = TeachingAssignment.objects.filter(
             teacher=user.teacher_profile,
@@ -215,7 +229,7 @@ def course_workspace_view(request, section_id):
         ).select_related('subject', 'teacher__user')
         assigned_subject_ids = list(my_assignments.values_list('subject_id', flat=True))
 
-    # 1. Asignaturas agrupadas en Principales, Humanísticas y Arte/Deporte
+    # Asignaturas en el curso
     subjects_in_course = Subject.objects.filter(
         id__in=assigned_subject_ids
     ).prefetch_related('norms') if assigned_subject_ids else Subject.objects.filter(
@@ -225,6 +239,99 @@ def course_workspace_view(request, section_id):
     principales = [s for s in subjects_in_course if s.category == Subject.Category.PRINCIPAL]
     humanisticas = [s for s in subjects_in_course if s.category == Subject.Category.HUMANISTICA]
     arte_deporte = [s for s in subjects_in_course if s.category == Subject.Category.ARTE_DEPORTE]
+
+    # Periodos del año lectivo
+    periods = AcademicPeriod.objects.filter(academic_year=current_year).order_by('number') if current_year else []
+    period_id = request.GET.get('period_id')
+    if period_id:
+        selected_period = AcademicPeriod.objects.filter(id=period_id).first() or active_period
+    else:
+        selected_period = active_period or (periods.first() if periods.exists() else None)
+
+    # Asignatura seleccionada para la planilla de notas
+    subject_id = request.GET.get('subject_id')
+    if subject_id:
+        selected_subject = subjects_in_course.filter(id=subject_id).first() or subjects_in_course.first()
+    else:
+        selected_subject = subjects_in_course.first()
+
+    # 1. CÁLCULO DE LA PLANILLA DE NOTAS (Matriz de Calificaciones integrada)
+    matrix_rows = []
+    criteria = []
+    kpis = {}
+    is_editable = False
+
+    if selected_subject and selected_period:
+        from apps.grades.services import get_or_create_default_criteria, calculate_period_final_grade
+        from apps.grades.models import GradeRecord
+        from decimal import Decimal, ROUND_HALF_UP
+
+        is_editable = selected_period.is_editable
+        if user.is_teacher and hasattr(user, 'teacher_profile'):
+            has_assignment = TeachingAssignment.objects.filter(
+                teacher=user.teacher_profile,
+                course_section=section,
+                subject=selected_subject,
+                academic_year=current_year,
+                is_active=True
+            ).exists()
+            if not has_assignment and not (user.is_admin_role or user.is_rector):
+                is_editable = False
+
+        criteria = get_or_create_default_criteria(section, selected_subject, selected_period)
+        enrollments = section.enrollments.filter(
+            status='ACTIVE'
+        ).select_related('student__user').order_by('student__user__last_name', 'student__user__first_name')
+
+        for enr in enrollments:
+            student = enr.student
+            scores_by_criterion = []
+            for crit in criteria:
+                rec = GradeRecord.objects.filter(
+                    student=student,
+                    course_section=section,
+                    subject=selected_subject,
+                    academic_period=selected_period,
+                    criterion=crit
+                ).first()
+                scores_by_criterion.append({
+                    'criterion': crit,
+                    'record': rec,
+                    'score': rec.score if rec else Decimal('1.00')
+                })
+
+            final_grade = calculate_period_final_grade(student, section, selected_subject, selected_period)
+            matrix_rows.append({
+                'student': student,
+                'scores': scores_by_criterion,
+                'final_grade': final_grade,
+            })
+
+        total_students = len(matrix_rows)
+        final_grades_list = [r['final_grade'].final_score for r in matrix_rows if r.get('final_grade')]
+        if final_grades_list and total_students > 0:
+            group_average = (sum(final_grades_list) / Decimal(len(final_grades_list))).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+            approved_count = sum(1 for r in matrix_rows if r.get('final_grade') and r['final_grade'].is_approved)
+            failed_count = sum(1 for r in matrix_rows if r.get('final_grade') and not r['final_grade'].is_approved)
+            at_risk_count = sum(1 for r in matrix_rows if r.get('final_grade') and r['final_grade'].final_score < Decimal('3.00'))
+        else:
+            group_average = Decimal('0.00')
+            approved_count = 0
+            failed_count = 0
+            at_risk_count = 0
+
+        total_cells = total_students * len(criteria) if criteria else 0
+        filled_cells = sum(1 for r in matrix_rows for s in r['scores'] if s.get('record') is not None)
+        completion_percentage = int((filled_cells / total_cells * 100)) if total_cells > 0 else 0
+
+        kpis = {
+            'total_students': total_students,
+            'group_average': group_average,
+            'approved_count': approved_count,
+            'failed_count': failed_count,
+            'at_risk_count': at_risk_count,
+            'completion_percentage': completion_percentage,
+        }
 
     # 2. Malla Curricular del Grado
     curriculum = GradeSubject.objects.filter(
@@ -239,7 +346,7 @@ def course_workspace_view(request, section_id):
     except ValueError:
         current_date = datetime.date.today()
 
-    first_subj = subjects_in_course.first()
+    first_subj = selected_subject or subjects_in_course.first()
     sheet = None
     records_by_student = {}
     if first_subj:
@@ -252,13 +359,19 @@ def course_workspace_view(request, section_id):
             records = AttendanceRecord.objects.filter(sheet=sheet).select_related('student')
             records_by_student = {r.student_id: r for r in records}
 
-    active_tab = request.GET.get('tab', 'asignaturas')
+    # Pestaña activa: por defecto 'planilla' (Planilla de Notas al entrar)
+    active_tab = request.GET.get('tab', 'planilla')
 
     context = {
         'section': section,
         'current_year': current_year,
         'active_period': active_period,
+        'selected_period': selected_period,
+        'periods': periods,
+        'all_my_sections': all_my_sections,
         'my_assignments': my_assignments,
+        'subjects_in_course': subjects_in_course,
+        'selected_subject': selected_subject,
         'principales': principales,
         'humanisticas': humanisticas,
         'arte_deporte': arte_deporte,
@@ -269,6 +382,10 @@ def course_workspace_view(request, section_id):
         'records_by_student': records_by_student,
         'first_subject': first_subj,
         'active_tab': active_tab,
+        'matrix_rows': matrix_rows,
+        'criteria': criteria,
+        'kpis': kpis,
+        'is_editable': is_editable,
     }
     return render(request, 'teachers/course_workspace.html', context)
 

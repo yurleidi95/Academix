@@ -69,17 +69,10 @@
                 <i class="bi bi-lightning-charge-fill text-warning"></i> Acciones Rápidas
             </h5>
             <div class="d-grid gap-2">
-                <a href="{% url 'teachers:my_courses' %}" class="btn btn-dark text-start d-flex align-items-center justify-content-between p-3 rounded-3 shadow-sm">
+                <a href="{% url 'teachers:my_courses' %}" class="btn btn-primary text-start d-flex align-items-center justify-content-between p-3 rounded-3 shadow-sm">
                     <div>
-                        <div class="fw-bold"><i class="bi bi-grid-fill me-2 text-warning"></i>Mis Cursos y Aulas</div>
-                        <small class="text-white-50">Espacio de trabajo docente (Asistencia, Malla, Asignaturas)</small>
-                    </div>
-                    <i class="bi bi-arrow-right-circle-fill fs-5 text-warning"></i>
-                </a>
-                <a href="{% url 'grades:index' %}" class="btn btn-primary text-start d-flex align-items-center justify-content-between p-3 rounded-3">
-                    <div>
-                        <div class="fw-bold"><i class="bi bi-card-checklist me-2"></i>Registrar Notas</div>
-                        <small class="opacity-75">Matriz interactiva de calificaciones</small>
+                        <div class="fw-bold"><i class="bi bi-journal-bookmark-fill me-2"></i>Mis Asignaciones (Cursos)</div>
+                        <small class="opacity-90">Planillas de notas, asistencia y malla curricular</small>
                     </div>
                     <i class="bi bi-arrow-right-circle-fill fs-5"></i>
                 </a>
@@ -136,16 +129,8 @@
                             <td class="text-muted">{{ assignment.course_section.grade_level.name }}</td>
                             <td class="text-center">
                                 <a href="{% url 'teachers:course_workspace' assignment.course_section.id %}?subject_id={{ assignment.subject.id }}"
-                                   class="btn btn-sm btn-dark me-1" title="Espacio de Trabajo (Malla, Asistencia, Asignaturas)">
-                                    <i class="bi bi-laptop"></i>
-                                </a>
-                                <a href="{% url 'grades:matrix' %}?section_id={{ assignment.course_section.id }}&subject_id={{ assignment.subject.id }}{% if stats.active_period %}&period_id={{ stats.active_period.id }}{% endif %}"
-                                   class="btn btn-sm btn-outline-primary me-1" title="Ver notas">
-                                    <i class="bi bi-card-checklist"></i>
-                                </a>
-                                <a href="{% url 'attendance:index' %}?section_id={{ assignment.course_section.id }}&subject_id={{ assignment.subject.id }}"
-                                   class="btn btn-sm btn-outline-success" title="Asistencia">
-                                    <i class="bi bi-calendar2-check"></i>
+                                   class="btn btn-sm btn-primary fw-bold px-3 shadow-sm" title="Abrir Planilla de Notas de este Curso">
+                                    <i class="bi bi-card-checklist me-1"></i>Planilla de Notas
                                 </a>
                             </td>
                         </tr>

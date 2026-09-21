@@ -66,13 +66,7 @@
         {% if user.is_teacher %}
         <li class="sidebar-item">
             <a href="{% url 'teachers:my_courses' %}" class="sidebar-link {% if 'my-courses' in request.path or 'course/' in request.path %}active{% endif %}">
-                <i class="bi bi-grid-3x3-gap-fill text-primary"></i>
-                <span>Mis {{ institution.term_sections|default:'Cursos' }}</span>
-            </a>
-        </li>
-        <li class="sidebar-item">
-            <a href="{% url 'teachers:list' %}" class="sidebar-link {% if 'teachers' in request.path and not 'my-courses' in request.path and not 'course/' in request.path %}active{% endif %}">
-                <i class="bi bi-journal-bookmark-fill"></i>
+                <i class="bi bi-journal-bookmark-fill text-primary"></i>
                 <span>Mis Asignaciones</span>
             </a>
         </li>
@@ -87,13 +81,15 @@
         <!-- Evaluación y Seguimiento Escolar (Sprint 3 y 4 Activos) -->
         <li class="sidebar-menu-header">Evaluación y Aula</li>
         
-        {% if user.is_teacher or user.is_admin_role or user.is_rector or user.is_secretary %}
+        {% if user.is_admin_role or user.is_rector or user.is_secretary %}
         <li class="sidebar-item">
             <a href="{% url 'grades:index' %}" class="sidebar-link {% if 'grades' in request.path %}active{% endif %}">
                 <i class="bi bi-card-checklist text-primary"></i>
                 <span>Planilla de Notas</span>
             </a>
         </li>
+        {% endif %}
+        {% if user.is_teacher or user.is_admin_role or user.is_rector or user.is_secretary %}
         <li class="sidebar-item">
             <a href="{% url 'attendance:index' %}" class="sidebar-link {% if 'attendance' in request.path %}active{% endif %}">
                 <i class="bi bi-calendar2-check-fill text-success"></i>

@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% load teacher_tags %}
 
-{% block title %}{{ section.name }} | Espacio de Curso{% endblock %}
+{% block title %}{{ section.name }} | Planilla de Notas y Espacio de Curso{% endblock %}
 
 {% block content %}
 <div class="container-fluid py-3">
     <!-- Migas de pan y cabecera del curso -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
         <div>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb small mb-1">
-                    <li class="breadcrumb-item"><a href="{% url 'teachers:my_courses' %}" class="text-decoration-none">Mis {{ institution.term_sections|default:'Cursos' }}</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'teachers:my_courses' %}" class="text-decoration-none">Mis Asignaciones</a></li>
                     <li class="breadcrumb-item active" aria-current="page">{{ section.name }}</li>
                 </ol>
             </nav>
@@ -23,32 +23,49 @@
         <div class="d-flex gap-2 mt-2 mt-md-0">
             <a href="{% url 'teachers:my_courses' %}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 shadow-sm">
                 <i class="bi bi-arrow-left"></i>
-                <span>Volver a Mis Cursos</span>
+                <span>Volver a Mis Asignaciones</span>
             </a>
         </div>
     </div>
 
-    <!-- Pestañas Principales: Asistencia, Malla Curricular y Asignaturas -->
+    <!-- Barra de Navegación Rápida entre Cursos Asignados (Curso A, Curso B, Curso C...) -->
+    <div class="card ac-card p-2 mb-3 bg-light border-0 shadow-sm">
+        <div class="d-flex align-items-center gap-2 overflow-x-auto py-1">
+            <span class="small fw-bold text-dark text-nowrap me-1">
+                <i class="bi bi-grid-fill text-primary me-1"></i>Mis Cursos Asignados:
+            </span>
+            {% for sec in all_my_sections %}
+            <a href="{% url 'teachers:course_workspace' sec.id %}?tab={{ active_tab }}" 
+               class="btn btn-sm {% if sec.id == section.id %}btn-primary fw-bold shadow-sm{% else %}btn-outline-secondary bg-white{% endif %} text-nowrap">
+                <i class="bi bi-mortarboard-fill me-1"></i>{{ sec.name }}
+            </a>
+            {% empty %}
+            <span class="text-muted small">Sin otros cursos asignados</span>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Pestañas Principales en Orden: 1. Planilla de Notas | 2. Asistencia | 3. Malla Curricular -->
     <ul class="nav nav-pills mb-4 p-2 bg-white rounded-3 shadow-sm border" id="courseWorkspaceTabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link fw-bold d-flex align-items-center gap-2 {% if active_tab == 'asignaturas' %}active{% endif %}"
-                    id="tab-asignaturas-btn" data-bs-toggle="pill" data-bs-target="#tab-asignaturas" type="button" role="tab">
-                <i class="bi bi-book-half fs-5"></i>
-                <span>Asignaturas ({{ principales|length|add:humanisticas|length|add:arte_deporte|length }})</span>
+            <button class="nav-link fw-bold d-flex align-items-center gap-2 {% if active_tab == 'planilla' %}active{% endif %}"
+                    id="tab-planilla-btn" data-bs-toggle="pill" data-bs-target="#tab-planilla" type="button" role="tab">
+                <i class="bi bi-card-checklist fs-5 text-warning"></i>
+                <span>1. Planilla de Notas</span>
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link fw-bold d-flex align-items-center gap-2 {% if active_tab == 'asistencia' %}active{% endif %}"
                     id="tab-asistencia-btn" data-bs-toggle="pill" data-bs-target="#tab-asistencia" type="button" role="tab">
                 <i class="bi bi-calendar2-check-fill fs-5 text-success"></i>
-                <span>Asistencia</span>
+                <span>2. Asistencia</span>
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link fw-bold d-flex align-items-center gap-2 {% if active_tab == 'malla' %}active{% endif %}"
                     id="tab-malla-btn" data-bs-toggle="pill" data-bs-target="#tab-malla" type="button" role="tab">
                 <i class="bi bi-diagram-3-fill fs-5 text-info"></i>
-                <span>Malla Curricular y Normas</span>
+                <span>3. Malla Curricular y Asignaturas</span>
             </button>
         </li>
     </ul>
@@ -57,145 +74,194 @@
     <div class="tab-content" id="courseWorkspaceTabContent">
 
         <!-- ==========================================
-             PESTAÑA 1: ASIGNATURAS (AGRUPADAS)
+             PESTAÑA 1: PLANILLA DE NOTAS (INTEGRADA)
              ========================================== -->
-        <div class="tab-pane fade {% if active_tab == 'asignaturas' %}show active{% endif %}" id="tab-asignaturas" role="tabpanel">
-
-            <!-- 1. Materias Principales -->
-            <div class="mb-4">
-                <h5 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
-                    <span class="badge bg-primary p-2"><i class="bi bi-star-fill text-white"></i></span>
-                    <span>Materias Principales</span>
-                    <small class="text-muted fw-normal fs-6">({{ principales|length }} asignadas)</small>
-                </h5>
-                <div class="row g-3">
-                    {% for subj in principales %}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card ac-card border-0 shadow-sm rounded-3 h-100 border-start border-4 border-primary">
-                            <div class="card-body p-3 d-flex flex-column justify-content-between">
-                                <div>
-                                    <div class="d-flex justify-content-between align-items-start mb-1">
-                                        <span class="badge bg-primary-subtle text-primary font-monospace">{{ subj.code }}</span>
-                                        {% if subj.norms.count %}
-                                        <span class="badge bg-light text-dark border"><i class="bi bi-check-circle me-1 text-success"></i>{{ subj.norms.count }} Normas</span>
-                                        {% endif %}
-                                    </div>
-                                    <h6 class="fw-bold text-dark mb-1">{{ subj.name }}</h6>
-                                    <p class="text-muted small mb-2" style="font-size: 0.75rem;">{{ subj.description|truncatechars:80|default:"Área técnica y curricular principal." }}</p>
-                                </div>
-                                <div class="d-flex gap-2 pt-2 border-top">
-                                    <a href="{% url 'grades:matrix' %}?section_id={{ section.id }}&subject_id={{ subj.id }}{% if active_period %}&period_id={{ active_period.id }}{% endif %}"
-                                       class="btn btn-primary btn-sm flex-fill fw-bold shadow-sm">
-                                        <i class="bi bi-card-checklist me-1"></i>Calificar
-                                    </a>
-                                    <a href="{% url 'homework:course_matrix' %}?section_id={{ section.id }}&subject_id={{ subj.id }}"
-                                       class="btn btn-outline-warning btn-sm" title="Tareas y Trabajos">
-                                        <i class="bi bi-folder2-open"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+        <div class="tab-pane fade {% if active_tab == 'planilla' %}show active{% endif %}" id="tab-planilla" role="tabpanel">
+            
+            <!-- Selector de Asignatura y Periodo -->
+            <div class="card ac-card p-3 mb-4 bg-white border shadow-sm">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <span class="small fw-bold text-dark">
+                            <i class="bi bi-journal-check text-primary me-1"></i>Materia a Calificar:
+                        </span>
+                        {% for s in subjects_in_course %}
+                        <a href="?tab=planilla&subject_id={{ s.id }}{% if selected_period %}&period_id={{ selected_period.id }}{% endif %}" 
+                           class="btn btn-sm {% if s.id == selected_subject.id %}btn-primary fw-bold shadow-sm{% else %}btn-outline-secondary bg-light{% endif %}">
+                            <i class="bi bi-book me-1"></i>{{ s.name }} ({{ s.code }})
+                        </a>
+                        {% empty %}
+                        <span class="text-muted small">Sin materias asignadas en este curso</span>
+                        {% endfor %}
                     </div>
-                    {% empty %}
-                    <div class="col-12"><div class="alert alert-light border small text-muted py-2">No hay materias principales asignadas en este curso.</div></div>
-                    {% endfor %}
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="small fw-bold text-dark"><i class="bi bi-calendar-event text-primary me-1"></i>Periodo:</span>
+                        <select class="form-select form-select-sm" style="min-width: 170px;" 
+                                onchange="location.href='?tab=planilla{% if selected_subject %}&subject_id={{ selected_subject.id }}{% endif %}&period_id=' + this.value;">
+                            {% for p in periods %}
+                            <option value="{{ p.id }}" {% if p.id == selected_period.id %}selected{% endif %}>
+                                {{ p.name }} ({{ p.percentage }}%)
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <!-- 2. Materias Humanísticas -->
-            <div class="mb-4">
-                <h5 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
-                    <span class="badge bg-info p-2"><i class="bi bi-people-fill text-white"></i></span>
-                    <span>Materias Humanísticas</span>
-                    <small class="text-muted fw-normal fs-6">({{ humanisticas|length }} asignadas)</small>
-                </h5>
-                <div class="row g-3">
-                    {% for subj in humanisticas %}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card ac-card border-0 shadow-sm rounded-3 h-100 border-start border-4 border-info">
-                            <div class="card-body p-3 d-flex flex-column justify-content-between">
-                                <div>
-                                    <div class="d-flex justify-content-between align-items-start mb-1">
-                                        <span class="badge bg-info-subtle text-info font-monospace">{{ subj.code }}</span>
-                                        {% if subj.norms.count %}
-                                        <span class="badge bg-light text-dark border"><i class="bi bi-check-circle me-1 text-success"></i>{{ subj.norms.count }} Normas</span>
-                                        {% endif %}
-                                    </div>
-                                    <h6 class="fw-bold text-dark mb-1">{{ subj.name }}</h6>
-                                    <p class="text-muted small mb-2" style="font-size: 0.75rem;">{{ subj.description|truncatechars:80|default:"Formación ciudadana, ética y social." }}</p>
-                                </div>
-                                <div class="d-flex gap-2 pt-2 border-top">
-                                    <a href="{% url 'grades:matrix' %}?section_id={{ section.id }}&subject_id={{ subj.id }}{% if active_period %}&period_id={{ active_period.id }}{% endif %}"
-                                       class="btn btn-info text-white btn-sm flex-fill fw-bold shadow-sm">
-                                        <i class="bi bi-card-checklist me-1"></i>Calificar
-                                    </a>
-                                    <a href="{% url 'homework:course_matrix' %}?section_id={{ section.id }}&subject_id={{ subj.id }}"
-                                       class="btn btn-outline-warning btn-sm" title="Tareas y Trabajos">
-                                        <i class="bi bi-folder2-open"></i>
-                                    </a>
-                                </div>
+            {% if selected_subject and selected_period %}
+            <!-- Área de Indicadores Clave (KPIs en vivo) -->
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-md-3">
+                    <div class="card ac-card p-3 border-0 bg-primary-subtle text-primary h-100 shadow-sm">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-uppercase fw-semibold" style="font-size: 0.72rem;">Promedio Grupo</div>
+                                <div class="fs-3 fw-bold font-monospace mt-1">{{ kpis.group_average|default:"0.00" }}</div>
+                                <small class="text-primary-emphasis">
+                                    {% if kpis.group_average >= 4.0 %}Rendimiento Alto
+                                    {% elif kpis.group_average >= 3.0 %}Rendimiento Básico
+                                    {% else %}En Riesgo Académico{% endif %}
+                                </small>
                             </div>
+                            <div class="fs-1 opacity-50"><i class="bi bi-graph-up-arrow"></i></div>
                         </div>
                     </div>
-                    {% empty %}
-                    <div class="col-12"><div class="alert alert-light border small text-muted py-2">No hay materias humanísticas asignadas en este curso.</div></div>
-                    {% endfor %}
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card ac-card p-3 border-0 bg-success-subtle text-success h-100 shadow-sm">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-uppercase fw-semibold" style="font-size: 0.72rem;">Aprobados / Reprobados</div>
+                                <div class="fs-3 fw-bold font-monospace mt-1">
+                                    <span class="text-success">{{ kpis.approved_count }}</span> <span class="text-muted fs-5">/</span> <span class="text-danger">{{ kpis.failed_count }}</span>
+                                </div>
+                                <small class="text-success-emphasis">Total: {{ kpis.total_students }} estudiantes</small>
+                            </div>
+                            <div class="fs-1 opacity-50"><i class="bi bi-person-check-fill"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card ac-card p-3 border-0 bg-info-subtle text-info h-100 shadow-sm">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-uppercase fw-semibold" style="font-size: 0.72rem;">Completitud de Notas</div>
+                                <div class="fs-3 fw-bold font-monospace mt-1">{{ kpis.completion_percentage }}%</div>
+                                <div class="progress mt-1" style="height: 6px; width: 100px;">
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ kpis.completion_percentage }}%;"></div>
+                                </div>
+                            </div>
+                            <div class="fs-1 opacity-50"><i class="bi bi-clipboard-data-fill"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card ac-card p-3 border-0 {% if kpis.at_risk_count > 0 %}bg-danger-subtle text-danger{% else %}bg-light text-muted{% endif %} h-100 shadow-sm">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-uppercase fw-semibold" style="font-size: 0.72rem;">Alertas en Riesgo</div>
+                                <div class="fs-3 fw-bold font-monospace mt-1">{{ kpis.at_risk_count }}</div>
+                                <small>{% if kpis.at_risk_count > 0 %}Requieren refuerzo{% else %}Sin alertas de pérdida{% endif %}</small>
+                            </div>
+                            <div class="fs-1 opacity-50"><i class="bi bi-exclamation-triangle-fill"></i></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- 3. Arte y Deporte -->
-            <div class="mb-4">
-                <h5 class="fw-bold text-dark d-flex align-items-center gap-2 mb-3">
-                    <span class="badge bg-success p-2"><i class="bi bi-palette-fill text-white"></i></span>
-                    <span>Arte y Deporte</span>
-                    <small class="text-muted fw-normal fs-6">({{ arte_deporte|length }} asignadas)</small>
-                </h5>
-                <div class="row g-3">
-                    {% for subj in arte_deporte %}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card ac-card border-0 shadow-sm rounded-3 h-100 border-start border-4 border-success">
-                            <div class="card-body p-3 d-flex flex-column justify-content-between">
-                                <div>
-                                    <div class="d-flex justify-content-between align-items-start mb-1">
-                                        <span class="badge bg-success-subtle text-success font-monospace">{{ subj.code }}</span>
-                                        {% if subj.norms.count %}
-                                        <span class="badge bg-light text-dark border"><i class="bi bi-check-circle me-1 text-success"></i>{{ subj.norms.count }} Normas</span>
-                                        {% endif %}
-                                    </div>
-                                    <h6 class="fw-bold text-dark mb-1">{{ subj.name }}</h6>
-                                    <p class="text-muted small mb-2" style="font-size: 0.75rem;">{{ subj.description|truncatechars:80|default:"Expresión corporal, artística y deportiva." }}</p>
-                                </div>
-                                <div class="d-flex gap-2 pt-2 border-top">
-                                    <a href="{% url 'grades:matrix' %}?section_id={{ section.id }}&subject_id={{ subj.id }}{% if active_period %}&period_id={{ active_period.id }}{% endif %}"
-                                       class="btn btn-success btn-sm flex-fill fw-bold shadow-sm">
-                                        <i class="bi bi-card-checklist me-1"></i>Calificar
-                                    </a>
-                                    <a href="{% url 'homework:course_matrix' %}?section_id={{ section.id }}&subject_id={{ subj.id }}"
-                                       class="btn btn-outline-warning btn-sm" title="Tareas y Trabajos">
-                                        <i class="bi bi-folder2-open"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+            {% if selected_period.number == 4 %}
+            <div class="alert alert-info d-flex align-items-center gap-3 mb-4 shadow-sm border-start border-4 border-info">
+                <i class="bi bi-calculator fs-2 text-info"></i>
+                <div>
+                    <h6 class="fw-bold mb-0">Fórmula de Cierre Definitivo Anual (Periodo 4 Activo)</h6>
+                    <small class="text-muted">
+                        La nota definitiva anual integra el acumulado previo: 
+                        <strong>75% Promedio Acumulado (Periodos 1 a 3) + 25% Calificaciones Periodo 4</strong>.
+                    </small>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Barra de Escala Institucional y Botón Maestro de Edición -->
+            <div class="card ac-card p-3 mb-4 bg-light border-0">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 small">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-info-circle-fill text-primary fs-5"></i>
+                        <strong>Escala Institucional (Decreto 1290):</strong>
                     </div>
-                    {% empty %}
-                    <div class="col-12"><div class="alert alert-light border small text-muted py-2">No hay materias de arte y deporte asignadas en este curso.</div></div>
-                    {% endfor %}
+                    <div class="d-flex align-items-center gap-3 flex-wrap font-monospace">
+                        <span class="badge bg-danger text-white">Bajo (&lt; 3.00 ó &lt; 6.00)</span>
+                        <span class="badge bg-warning text-dark">Básico (3.00-3.99 ó 6.00-7.99)</span>
+                        <span class="badge bg-primary text-white">Alto (4.00-4.59 ó 8.00-9.19)</span>
+                        <span class="badge bg-success text-white">Superior (4.60-5.00 ó 9.20-10.00)</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        {% if is_editable %}
+                        <button type="button" id="btn-toggle-all-edit" class="btn btn-sm btn-primary shadow-sm" onclick="toggleAllRowsEdit()">
+                            <i class="bi bi-pencil-fill me-1"></i>Habilitar Edición de Todos
+                        </button>
+                        {% else %}
+                        <span class="badge bg-danger p-2"><i class="bi bi-lock-fill me-1"></i>Periodo Cerrado (Solo Lectura)</span>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
 
+            <!-- Matriz de Notas del Curso -->
+            <div class="table-responsive bg-white rounded-3 border shadow-sm mb-4">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small text-muted text-uppercase">
+                        <tr>
+                            <th style="width: 120px;">Código</th>
+                            <th>Estudiante</th>
+                            {% for crit in criteria %}
+                            <th class="text-center" style="min-width: 140px;">
+                                <div class="fw-bold">{{ crit.name }}</div>
+                                <span class="badge bg-primary-subtle text-primary font-monospace" style="font-size: 0.7rem;">
+                                    {{ crit.percentage }}%
+                                </span>
+                            </th>
+                            {% endfor %}
+                            <th class="text-center text-primary" style="width: 120px;">
+                                <div>Definitiva</div>
+                                <span class="badge bg-light text-secondary border" style="font-size: 0.7rem;">100%</span>
+                            </th>
+                            <th class="text-center" style="width: 130px;">Desempeño</th>
+                            <th class="text-center" style="width: 110px;">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in matrix_rows %}
+                            {% include 'grades/partials/grade_row.html' with row=row section=section subject=selected_subject period=selected_period criteria=criteria is_editable=is_editable %}
+                        {% empty %}
+                        <tr>
+                            <td colspan="{{ criteria|length|add:'5' }}" class="text-center py-5 text-muted">
+                                <i class="bi bi-people display-6 d-block mb-2 text-secondary"></i>
+                                No hay estudiantes matriculados activos en este curso.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% else %}
+            <div class="alert alert-warning">
+                Seleccione una materia y un periodo para cargar la planilla de notas.
+            </div>
+            {% endif %}
         </div>
 
         <!-- ==========================================
-             PESTAÑA 2: ASISTENCIA MODIFICABLE
+             PESTAÑA 2: ASISTENCIA (LLAMADO DE LISTA)
              ========================================== -->
         <div class="tab-pane fade {% if active_tab == 'asistencia' %}show active{% endif %}" id="tab-asistencia" role="tabpanel">
             <div class="card ac-card border-0 shadow-sm rounded-4 p-4 mb-4">
-                <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
                     <div>
                         <h4 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
                             <i class="bi bi-calendar2-check-fill text-success"></i>
-                            <span>Control y Modificación de Asistencia</span>
+                            <span>Llamado de Lista y Asistencia</span>
                         </h4>
                         <p class="text-muted small mb-0">El docente puede modificar y guardar el llamado de lista para cualquier fecha del año lectivo.</p>
                     </div>
@@ -203,6 +269,7 @@
                     <!-- Selector de Fecha -->
                     <form method="get" class="d-flex align-items-center gap-2">
                         <input type="hidden" name="tab" value="asistencia">
+                        <input type="hidden" name="subject_id" value="{{ selected_subject.id }}">
                         <label class="small fw-bold text-muted text-nowrap">Fecha de Clase:</label>
                         <input type="date" name="date" class="form-control form-control-sm" value="{{ current_date|date:'Y-m-d' }}" onchange="this.form.submit()">
                         <button type="submit" class="btn btn-outline-primary btn-sm">Cargar</button>
@@ -260,6 +327,65 @@
              PESTAÑA 3: MALLA CURRICULAR Y NORMAS
              ========================================== -->
         <div class="tab-pane fade {% if active_tab == 'malla' %}show active{% endif %}" id="tab-malla" role="tabpanel">
+            
+            <!-- Asignaturas organizadas en categorías -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="card ac-card border-0 shadow-sm rounded-3 p-3 border-top border-4 border-primary h-100">
+                        <h6 class="fw-bold text-primary mb-2"><i class="bi bi-star-fill me-1"></i>Materias Principales</h6>
+                        <ul class="list-group list-group-flush small">
+                            {% for s in principales %}
+                            <li class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ s.name }}</strong>
+                                    <small class="text-muted d-block font-monospace">{{ s.code }}</small>
+                                </div>
+                                <span class="badge bg-primary-subtle text-primary">{{ s.norms.count }} normas</span>
+                            </li>
+                            {% empty %}
+                            <li class="list-group-item px-0 text-muted small">Sin materias principales</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card ac-card border-0 shadow-sm rounded-3 p-3 border-top border-4 border-info h-100">
+                        <h6 class="fw-bold text-info mb-2"><i class="bi bi-people-fill me-1"></i>Materias Humanísticas</h6>
+                        <ul class="list-group list-group-flush small">
+                            {% for s in humanisticas %}
+                            <li class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ s.name }}</strong>
+                                    <small class="text-muted d-block font-monospace">{{ s.code }}</small>
+                                </div>
+                                <span class="badge bg-info-subtle text-info">{{ s.norms.count }} normas</span>
+                            </li>
+                            {% empty %}
+                            <li class="list-group-item px-0 text-muted small">Sin materias humanísticas</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card ac-card border-0 shadow-sm rounded-3 p-3 border-top border-4 border-success h-100">
+                        <h6 class="fw-bold text-success mb-2"><i class="bi bi-palette-fill me-1"></i>Arte y Deporte</h6>
+                        <ul class="list-group list-group-flush small">
+                            {% for s in arte_deporte %}
+                            <li class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ s.name }}</strong>
+                                    <small class="text-muted d-block font-monospace">{{ s.code }}</small>
+                                </div>
+                                <span class="badge bg-success-subtle text-success">{{ s.norms.count }} normas</span>
+                            </li>
+                            {% empty %}
+                            <li class="list-group-item px-0 text-muted small">Sin materias de arte y deporte</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
             <div class="card ac-card border-0 shadow-sm rounded-4 p-4 mb-4">
                 <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
                     <div>
@@ -376,4 +502,90 @@
 
     </div>
 </div>
+
+<script>
+let globalEditMode = false;
+
+function toggleRowEdit(studentId) {
+    const row = document.getElementById('grade-row-' + studentId);
+    if (!row) return;
+    const displays = row.querySelectorAll('.score-display');
+    const inputs = row.querySelectorAll('.score-input');
+    const btn = row.querySelector('.edit-toggle-btn');
+    
+    const isCurrentlyEditing = inputs.length > 0 && inputs[0].style.display !== 'none';
+    
+    if (isCurrentlyEditing) {
+        displays.forEach(d => d.style.display = '');
+        inputs.forEach(i => i.style.display = 'none');
+        if (btn) {
+            btn.innerHTML = '<i class="bi bi-pencil-square me-1"></i>Editar';
+            btn.className = 'btn btn-sm btn-outline-primary edit-toggle-btn shadow-sm';
+        }
+    } else {
+        displays.forEach(d => d.style.display = 'none');
+        inputs.forEach(i => i.style.display = '');
+        if (btn) {
+            btn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Fijar';
+            btn.className = 'btn btn-sm btn-success edit-toggle-btn shadow-sm';
+        }
+        if (inputs.length > 0) {
+            const firstInput = inputs[0].querySelector('input');
+            if (firstInput) firstInput.focus();
+        }
+    }
+}
+
+function toggleAllRowsEdit() {
+    globalEditMode = !globalEditMode;
+    const allRows = document.querySelectorAll('[id^="grade-row-"]');
+    const masterBtn = document.getElementById('btn-toggle-all-edit');
+    
+    allRows.forEach(row => {
+        const studentId = row.id.replace('grade-row-', '');
+        const displays = row.querySelectorAll('.score-display');
+        const inputs = row.querySelectorAll('.score-input');
+        const btn = row.querySelector('.edit-toggle-btn');
+        
+        if (globalEditMode) {
+            displays.forEach(d => d.style.display = 'none');
+            inputs.forEach(i => i.style.display = '');
+            if (btn) {
+                btn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Fijar';
+                btn.className = 'btn btn-sm btn-success edit-toggle-btn shadow-sm';
+            }
+        } else {
+            displays.forEach(d => d.style.display = '');
+            inputs.forEach(i => i.style.display = 'none');
+            if (btn) {
+                btn.innerHTML = '<i class="bi bi-pencil-square me-1"></i>Editar';
+                btn.className = 'btn btn-sm btn-outline-primary edit-toggle-btn shadow-sm';
+            }
+        }
+    });
+    
+    if (masterBtn) {
+        if (globalEditMode) {
+            masterBtn.innerHTML = '<i class="bi bi-lock-fill me-1"></i>Fijar Todas las Notas';
+            masterBtn.className = 'btn btn-sm btn-success shadow-sm';
+        } else {
+            masterBtn.innerHTML = '<i class="bi bi-pencil-fill me-1"></i>Habilitar Edición de Todos';
+            masterBtn.className = 'btn btn-sm btn-primary shadow-sm';
+        }
+    }
+}
+
+document.body.addEventListener('htmx:afterSwap', function(evt) {
+    if (globalEditMode && evt.detail.target && evt.detail.target.matches('[id^="grade-row-"]')) {
+        const r = evt.detail.target;
+        r.querySelectorAll('.score-display').forEach(d => d.style.display = 'none');
+        r.querySelectorAll('.score-input').forEach(i => i.style.display = '');
+        const b = r.querySelector('.edit-toggle-btn');
+        if (b) {
+            b.innerHTML = '<i class="bi bi-check-circle me-1"></i>Fijar';
+            b.className = 'btn btn-sm btn-success edit-toggle-btn shadow-sm';
+        }
+    }
+});
+</script>
 {% endblock %}

@@ -163,28 +163,20 @@ def grades_index_view(request):
     from apps.courses.models import InstitutionSetting
     inst_type = InstitutionSetting.get_settings().institution_type
 
-    # 2. Modo Docente / Directivo / Secretaría: Selector de asignación
+    # 2. Modo Docente: Redirigir directamente a Mis Asignaciones (el módulo externo se integra en cada curso)
     if request.user.is_teacher and hasattr(request.user, 'teacher_profile'):
-        assignments = TeachingAssignment.objects.filter(
-            teacher=request.user.teacher_profile,
-            academic_year=current_year,
-            course_section__grade_level__institution_type=inst_type,
-            is_active=True
-        ).select_related('course_section', 'subject')
-        sections = CourseSection.objects.filter(
-            id__in=assignments.values_list('course_section_id', flat=True),
-            grade_level__institution_type=inst_type
-        )
-    else:
-        assignments = TeachingAssignment.objects.filter(
-            academic_year=current_year,
-            course_section__grade_level__institution_type=inst_type,
-            is_active=True
-        ).select_related('course_section', 'subject')
-        sections = CourseSection.objects.filter(
-            academic_year=current_year,
-            grade_level__institution_type=inst_type
-        ).select_related('grade_level') if current_year else []
+        return redirect('teachers:my_courses')
+
+    # 3. Modo Directivo / Rector / Secretaría: Selector de asignación
+    assignments = TeachingAssignment.objects.filter(
+        academic_year=current_year,
+        course_section__grade_level__institution_type=inst_type,
+        is_active=True
+    ).select_related('course_section', 'subject')
+    sections = CourseSection.objects.filter(
+        academic_year=current_year,
+        grade_level__institution_type=inst_type
+    ).select_related('grade_level') if current_year else []
 
     context = {
         'current_year': current_year,
