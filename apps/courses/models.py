@@ -178,6 +178,15 @@ class InstitutionSetting(models.Model):
         setting, _ = cls.objects.get_or_create(id=1)
         return setting
 
+    @property
+    def has_parents(self):
+        """
+        Indica si este modelo institucional maneja acudientes / padres de familia.
+        Exclusivo para Colegios / Escuelas (Básica y Media).
+        En Universidad, SENA / Técnico y Academia los alumnos son independientes.
+        """
+        return self.institution_type == self.InstitutionType.COLEGIO
+
     def apply_preset(self, preset_type):
         """Aplica terminología estándar según el tipo de entidad educativa."""
         self.institution_type = preset_type

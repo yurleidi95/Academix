@@ -32,7 +32,7 @@
     {% include 'dashboard/partials/teacher_dashboard.html' %}
 {% elif user.role == 'STUDENT' %}
     {% include 'dashboard/partials/student_dashboard.html' %}
-{% elif user.role == 'PARENT' %}
+{% elif user.role == 'PARENT' and institution.has_parents %}
     {% include 'dashboard/partials/parent_dashboard.html' %}
 {% else %}
     {% include 'dashboard/partials/admin_dashboard.html' %}

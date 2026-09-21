@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}Agenda de Actividades Institucionales | ACADEMIX{% endblock %}
 
@@ -137,9 +137,9 @@
                         <label class="form-label fw-bold small text-muted text-uppercase">Población Destinataria *</label>
                         <select name="target_audience" class="form-select" required>
                             <option value="ALL">Toda la Comunidad Institucional</option>
-                            <option value="STUDENTS" selected>Solo Estudiantes (Notificación directa al alumno)</option>
-                            <option value="TEACHERS">Solo Cuerpo Docente</option>
-                            <option value="PARENTS">Solo Padres de Familia / Acudientes</option>
+                            <option value="STUDENTS" selected>Solo {{ institution.term_students|default:'Estudiantes' }}</option>
+                            <option value="TEACHERS">Solo {{ institution.term_teachers|default:'Cuerpo Docente' }}</option>
+                            {% if institution.has_parents %}<option value="PARENTS">Solo Padres de Familia / Acudientes</option>{% endif %}
                         </select>
                         <div class="form-text small">Los destinatarios verán la alerta emergente al iniciar sesión.</div>
                     </div>

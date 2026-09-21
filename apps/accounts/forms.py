@@ -93,6 +93,11 @@ class LoginForm(forms.Form):
 
         # 2. Validación para PADRE DE FAMILIA
         elif role == 'PARENT':
+            from apps.courses.models import InstitutionSetting
+            institution = InstitutionSetting.get_settings()
+            if not institution.has_parents:
+                raise ValidationError("El rol de Acudiente / Padre de Familia solo está habilitado para el modelo de Colegio.")
+
             if not student_id:
                 raise ValidationError("El ID ÚNICO del alumno es obligatorio para el acceso del padre de familia.")
             if not username:
@@ -224,6 +229,11 @@ class RegistrationForm(forms.Form):
             raise ValidationError("Las contraseñas no coinciden.")
 
         if role == 'PARENT':
+            from apps.courses.models import InstitutionSetting
+            institution = InstitutionSetting.get_settings()
+            if not institution.has_parents:
+                raise ValidationError("El registro de Acudientes / Padres de Familia solo está habilitado para el modelo de Colegio.")
+
             if not student_id_target:
                 raise ValidationError("Para registrarse como Padre de Familia, es OBLIGATORIO ingresar el ID ÚNICO del alumno.")
             student_profile = StudentProfile.objects.filter(student_code__iexact=student_id_target).first()

@@ -6,7 +6,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
         <h3 class="fw-bold text-dark mb-0">Expedientes de {{ institution.term_students|default:'Estudiantes' }} y Matrículas</h3>
-        <p class="text-muted small mb-0">Gestión de matrículas, asignación a {{ institution.term_sections|lower|default:'grupos' }} y datos de acudiente</p>
+        <p class="text-muted small mb-0">Gestión de matrículas y asignación a {{ institution.term_sections|lower|default:'grupos' }}{% if institution.has_parents %} y datos de acudiente{% endif %}</p>
     </div>
     <div class="d-flex gap-2">
         {% if user.is_admin_role or user.is_rector or user.is_secretary or user.is_teacher %}
@@ -56,7 +56,7 @@
                 <th>Código</th>
                 <th>{{ institution.term_student|default:'Estudiante' }}</th>
                 <th>{{ institution.term_section|default:'Grupo' }}</th>
-                <th>Acudiente / Contacto</th>
+                {% if institution.has_parents %}<th>Acudiente / Contacto</th>{% endif %}
                 <th>Fecha Matrícula</th>
                 <th>Estado</th>
                 <th class="text-end">Observaciones</th>
@@ -74,6 +74,7 @@
                     <span class="badge bg-primary-subtle text-primary fw-bold">{{ enr.course_section.name }}</span>
                     <small class="text-muted d-block" style="font-size: 0.7rem;">Grado {{ enr.course_section.grade_level.name }}</small>
                 </td>
+                {% if institution.has_parents %}
                 <td>
                     {% if enr.student.parent %}
                         <div class="small fw-semibold text-dark">{{ enr.student.parent.get_full_name|default:enr.student.parent.username }}</div>
@@ -82,6 +83,7 @@
                         <span class="badge bg-secondary-subtle text-secondary small">Sin acudiente asignado</span>
                     {% endif %}
                 </td>
+                {% endif %}
                 <td class="small text-muted font-monospace">{{ enr.enrollment_date|date:"d/m/Y" }}</td>
                 <td>
                     {% if enr.status == 'ACTIVE' %}

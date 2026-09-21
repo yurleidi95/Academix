@@ -275,6 +275,7 @@
         'COLEGIO': {
             name: 'Colegio / Escuela',
             subtitle: 'Registro escolar para básica primaria, secundaria y media.',
+            hasParents: true,
             roles: {
                 'STUDENT': 'Estudiante / Alumno',
                 'TEACHER': 'Docente / Profesor',
@@ -295,61 +296,52 @@
         'UNIVERSIDAD': {
             name: 'Universidad / Superior',
             subtitle: 'Registro universitario para carreras profesionales, facultades y semestres.',
+            hasParents: false,
             roles: {
                 'STUDENT': 'Estudiante Universitario',
                 'TEACHER': 'Profesor(a) / Catedrático',
                 'RECTOR': 'Rector(a) / Decano(a)',
-                'PARENT': 'Acudiente / Contacto Familiar',
                 'SECRETARIA': 'Registro y Control Académico'
             },
             roleHelp: {
                 'STUDENT': 'Los estudiantes universitarios recibirán su ID ÚNICO de matrícula automáticamente.',
-                'PARENT': 'El ID ÚNICO del estudiante universitario a cargo es OBLIGATORIO para el acudiente.',
                 'default': 'Registro universitario con credenciales de campus institucional.'
             },
             studentNotice: '<strong>ID ÚNICO Universitario:</strong> Al registrarse como <strong>estudiante</strong>, se le asignará su <strong>ID ÚNICO</strong> para inscribir materias y grupos.',
-            parentIdLabel: '<i class="bi bi-person-badge text-warning-emphasis"></i> <span class="text-danger">*</span> ID ÚNICO del Estudiante a Representar:',
-            parentIdHelp: 'Obligatorio para acudientes. Ingrese el código ID ÚNICO del estudiante universitario (ej: ALU-2026-1001).',
             btnText: 'Registrarse en Universidad'
         },
         'SENA_TECNICO': {
             name: 'Técnico / SENA',
             subtitle: 'Registro para formación técnica laboral, tecnológica, competencias y fichas.',
+            hasParents: false,
             roles: {
                 'STUDENT': 'Aprendiz SENA / Técnico',
                 'TEACHER': 'Instructor(a) Técnico',
                 'RECTOR': 'Subdirector(a) de Centro',
-                'PARENT': 'Acudiente / Responsable',
                 'SECRETARIA': 'Administración Educativa'
             },
             roleHelp: {
                 'STUDENT': 'Los aprendices recibirán su ID ÚNICO de ficha y formación técnica automáticamente.',
-                'PARENT': 'El ID ÚNICO del aprendiz asignado es OBLIGATORIO para registrar el acudiente.',
                 'default': 'Registro técnico con credenciales de formación institucional.'
             },
             studentNotice: '<strong>ID ÚNICO de Aprendiz:</strong> Al registrarse como <strong>aprendiz</strong>, el sistema le asignará su <strong>ID ÚNICO</strong> exclusivo para su ficha y competencias.',
-            parentIdLabel: '<i class="bi bi-person-badge text-warning-emphasis"></i> <span class="text-danger">*</span> ID ÚNICO del Aprendiz a Representar:',
-            parentIdHelp: 'Obligatorio para acudientes. Ingrese el código ID ÚNICO del aprendiz a cargo (ej: ALU-2026-1001).',
             btnText: 'Registrarse en SENA / Técnico'
         },
         'ACADEMIA': {
             name: 'Academia / Cursos',
             subtitle: 'Registro para academias de idiomas, talleres prácticos y cursos continuos.',
+            hasParents: false,
             roles: {
                 'STUDENT': 'Alumno(a) de Curso o Taller',
                 'TEACHER': 'Tutor(a) / Tallerista',
                 'RECTOR': 'Director(a) de Academia',
-                'PARENT': 'Acudiente / Tutor Legal',
                 'SECRETARIA': 'Coordinación y Admisiones'
             },
             roleHelp: {
                 'STUDENT': 'Los alumnos recibirán su código ID ÚNICO de membresía de cursos automáticamente.',
-                'PARENT': 'El ID ÚNICO del alumno matriculado es OBLIGATORIO para el acudiente.',
                 'default': 'Registro en academia con usuario y contraseña institucional.'
             },
             studentNotice: '<strong>ID ÚNICO de Alumno:</strong> Al registrarse como <strong>alumno(a)</strong>, el sistema le asignará su <strong>ID ÚNICO</strong> exclusivo para sus talleres y clases.',
-            parentIdLabel: '<i class="bi bi-person-badge text-warning-emphasis"></i> <span class="text-danger">*</span> ID ÚNICO del Alumno a Representar:',
-            parentIdHelp: 'Obligatorio para acudientes. Ingrese el ID ÚNICO del alumno registrado (ej: ALU-2026-1001).',
             btnText: 'Registrarse en Academia'
         }
     };
@@ -366,14 +358,21 @@
         const regSubtitle = document.getElementById('reg-subtitle');
         if (regSubtitle) regSubtitle.textContent = config.subtitle;
 
-        // 3. Adaptar opciones del desplegable de Roles
+        // 3. Reconstruir opciones del desplegable de Roles (eliminando Acudiente en Universidad, SENA y Academia)
         const roleSelect = document.getElementById('reg-role-select');
         if (roleSelect && config.roles) {
-            for (let i = 0; i < roleSelect.options.length; i++) {
-                const opt = roleSelect.options[i];
-                if (config.roles[opt.value]) {
-                    opt.textContent = config.roles[opt.value];
-                }
+            const currentVal = roleSelect.value;
+            roleSelect.innerHTML = '';
+            for (const [rKey, rLabel] of Object.entries(config.roles)) {
+                const opt = document.createElement('option');
+                opt.value = rKey;
+                opt.textContent = rLabel;
+                roleSelect.appendChild(opt);
+            }
+            if (config.roles[currentVal]) {
+                roleSelect.value = currentVal;
+            } else {
+                roleSelect.value = 'STUDENT';
             }
         }
 

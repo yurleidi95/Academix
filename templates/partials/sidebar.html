@@ -123,7 +123,7 @@
         </li>
         {% endif %}
 
-        {% if user.is_parent %}
+        {% if user.is_parent and institution.has_parents %}
         <li class="sidebar-item">
             <a href="{% url 'grades:index' %}" class="sidebar-link">
                 <i class="bi bi-award text-primary"></i>

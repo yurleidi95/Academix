@@ -185,6 +185,28 @@
             regLink.href = "{% url 'accounts:register' %}?model=" + encodeURIComponent(value);
         }
 
+        // Quitar opción de Acudiente en SENA, Universidad y Academia
+        const loginRoleSelect = document.getElementById('login-role-select');
+        if (loginRoleSelect) {
+            let parentOpt = loginRoleSelect.querySelector('option[value="PARENT"]');
+            if (value === 'COLEGIO') {
+                if (!parentOpt) {
+                    parentOpt = document.createElement('option');
+                    parentOpt.value = 'PARENT';
+                    parentOpt.textContent = 'Padre de Familia';
+                    loginRoleSelect.appendChild(parentOpt);
+                }
+            } else {
+                if (parentOpt) {
+                    if (loginRoleSelect.value === 'PARENT') {
+                        loginRoleSelect.value = 'STUDENT';
+                        loginRoleSelect.dispatchEvent(new Event('change'));
+                    }
+                    parentOpt.remove();
+                }
+            }
+        }
+
         // Sincronizar preset en el servidor de forma asíncrona
         fetch("{% url 'accounts:switch_model' %}?model=" + encodeURIComponent(value), {
             headers: {'X-Requested-With': 'XMLHttpRequest'}
