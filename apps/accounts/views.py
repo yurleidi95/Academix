@@ -23,6 +23,12 @@ def login_view(request):
     institution_types = InstitutionSetting.InstitutionType.choices
     current_institution = InstitutionSetting.get_settings()
 
+    model_param = request.GET.get('model')
+    if model_param and model_param in dict(InstitutionSetting.InstitutionType.choices):
+        if current_institution.institution_type != model_param:
+            current_institution.apply_preset(model_param)
+            current_institution.refresh_from_db()
+
     if request.method == 'POST':
         # Aplicar el modelo institucional seleccionado antes de autenticar
         selected_type = request.POST.get('institution_type', '').strip()
@@ -102,6 +108,12 @@ def register_view(request):
 
     current_institution = InstitutionSetting.get_settings()
     institution_types = InstitutionSetting.InstitutionType.choices
+
+    model_param = request.GET.get('model')
+    if model_param and model_param in dict(InstitutionSetting.InstitutionType.choices):
+        if current_institution.institution_type != model_param:
+            current_institution.apply_preset(model_param)
+            current_institution.refresh_from_db()
 
     form = RegistrationForm(request.POST or None)
 
@@ -206,6 +218,41 @@ def register_view(request):
         'institution_types': institution_types,
         'current_institution': current_institution,
     })
+
+
+def switch_institution_model_view(request):
+    """
+    Endpoint AJAX/GET/POST para cambiar inmediatamente el modelo institucional activo
+    y retornar su terminología para adaptación dinámica del frontend en login y registro.
+    """
+    from apps.courses.models import InstitutionSetting
+    from django.http import JsonResponse
+
+    model_type = request.POST.get('model') or request.GET.get('model') or request.POST.get('institution_type')
+    settings_obj = InstitutionSetting.get_settings()
+
+    if model_type and model_type in dict(InstitutionSetting.InstitutionType.choices):
+        if settings_obj.institution_type != model_type:
+            settings_obj.apply_preset(model_type)
+            settings_obj.refresh_from_db()
+        return JsonResponse({
+            'status': 'ok',
+            'model': model_type,
+            'model_display': settings_obj.get_institution_type_display(),
+            'terms': {
+                'student': settings_obj.term_student,
+                'students': settings_obj.term_students,
+                'teacher': settings_obj.term_teacher,
+                'teachers': settings_obj.term_teachers,
+                'grade': settings_obj.term_grade,
+                'section': settings_obj.term_section,
+                'sections': settings_obj.term_sections,
+                'subject': settings_obj.term_subject,
+                'subjects': settings_obj.term_subjects,
+                'director': settings_obj.term_director,
+            }
+        })
+    return JsonResponse({'status': 'error', 'message': 'Modelo institucional no válido'}, status=400)
 
 def logout_view(request):
     """

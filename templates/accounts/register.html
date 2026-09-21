@@ -75,15 +75,15 @@
 
 <div class="login-bg py-5">
     <div class="login-card p-4 p-sm-5 shadow-lg animate__animated animate__fadeIn" style="max-width: 580px; width: 100%;">
-        <div class="text-center mb-4">
-            <div class="d-inline-flex p-3 rounded-circle bg-primary-subtle text-primary mb-2 shadow-sm">
-                <i class="bi bi-person-plus-fill display-6"></i>
+        <div class="text-center mb-3">
+            <div class="d-inline-flex p-3 rounded-circle bg-primary-subtle text-primary mb-2 shadow-sm" id="reg-header-icon-box">
+                <i class="bi bi-person-plus-fill display-6" id="reg-header-icon"></i>
             </div>
             <h3 class="fw-bold text-dark mb-1">Registro en ACADEMIX</h3>
-            <p class="text-muted small mb-0">Seleccione su institución, rol y complete sus datos para acceder</p>
+            <p class="text-muted small mb-0" id="reg-subtitle">Seleccione su institución, rol y complete sus datos para acceder</p>
         </div>
 
-        <form method="POST" action="{% url 'accounts:register' %}" class="needs-validation">
+        <form method="POST" action="{% url 'accounts:register' %}" class="needs-validation" id="register-form">
             {% csrf_token %}
 
             {% if form.non_field_errors %}
@@ -150,15 +150,15 @@
                         </div>
                     </label>
                 </div>
-                <div class="form-text small mt-1 text-muted" style="font-size: 0.72rem;">
-                    El entorno y la terminología se adaptarán automáticamente a este modelo institucional.
+                <div class="form-text small mt-1 text-muted" id="reg-inst-help" style="font-size: 0.72rem;">
+                    El entorno, roles y terminología se adaptan automáticamente al modelo seleccionado.
                 </div>
             </div>
 
-            <!-- 1. Selección de Rol Obligatoria -->
+            <!-- 1. Selección de Rol Obligatoria Adaptable -->
             <div class="mb-3 p-3 bg-light rounded border border-primary-subtle shadow-sm">
                 <label for="reg-role-select" class="form-label small fw-bold text-dark d-flex align-items-center gap-1 mb-2">
-                    <i class="bi bi-shield-check text-primary"></i> <span class="text-danger">*</span> Rol a Registrar en la Institución:
+                    <i class="bi bi-shield-check text-primary"></i> <span class="text-danger">*</span> <span id="reg-role-label">Rol a Registrar en la Institución:</span>
                 </label>
                 {{ form.role }}
                 <div class="form-text small mt-1" id="role-help-text" style="font-size: 0.75rem;">
@@ -169,17 +169,17 @@
             <!-- Aviso para Alumnos (Asignación de ID Único) -->
             <div class="alert alert-primary py-2 px-3 small mb-3 border-0 shadow-sm" id="student-notice" style="display: none;">
                 <i class="bi bi-info-circle-fill me-1"></i>
-                <strong>ID ÚNICO Automático:</strong> Al registrarse como alumno, el sistema le generará y asignará su <strong>ID ÚNICO</strong> exclusivo de acceso.
+                <span id="student-notice-content"><strong>ID ÚNICO Automático:</strong> Al registrarse como alumno, el sistema le generará y asignará su <strong>ID ÚNICO</strong> exclusivo de acceso.</span>
             </div>
 
-            <!-- Campo Obligatorio para Padre de Familia: ID ÚNICO del Alumno -->
+            <!-- Campo Obligatorio para Padre / Acudiente: ID ÚNICO del Estudiante -->
             <div class="mb-3 p-3 bg-warning-subtle rounded border border-warning shadow-sm" id="parent-student-id-wrapper" style="display: none;">
-                <label for="reg-student-id-input" class="form-label small fw-bold text-dark d-flex align-items-center gap-1 mb-1">
+                <label for="reg-student-id-input" class="form-label small fw-bold text-dark d-flex align-items-center gap-1 mb-1" id="parent-student-id-label">
                     <i class="bi bi-person-badge text-warning-emphasis"></i> <span class="text-danger">*</span> ID ÚNICO del Alumno a Representar:
                 </label>
                 {{ form.student_id_target }}
-                <div class="form-text small mt-1" style="font-size: 0.72rem;">
-                    Obligatorio para acudientes. Ingrese el código o ID único de su hijo/a (ej: ALU-2026-1001).
+                <div class="form-text small mt-1" id="parent-student-id-help" style="font-size: 0.72rem;">
+                    Obligatorio para acudientes. Ingrese el código o ID único de su alumno a cargo (ej: ALU-2026-1001).
                 </div>
                 {% if form.student_id_target.errors %}
                     <div class="text-danger small mt-1">{{ form.student_id_target.errors.0 }}</div>
@@ -252,15 +252,15 @@
             </div>
 
             <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-primary btn-lg fw-bold d-flex align-items-center justify-content-center gap-2 shadow">
+                <button type="submit" class="btn btn-primary btn-lg fw-bold d-flex align-items-center justify-content-center gap-2 shadow" id="reg-submit-btn">
                     <i class="bi bi-check-circle-fill fs-5"></i>
-                    <span>Registrarse y Crear Cuenta</span>
+                    <span id="reg-submit-text">Registrarse en el Sistema</span>
                 </button>
             </div>
 
             <div class="text-center mt-3 pt-3 border-top">
                 <span class="text-muted small">¿Ya tienes una cuenta registrada?</span>
-                <a href="{% url 'accounts:login' %}" class="small fw-bold text-primary text-decoration-none ms-1">
+                <a href="{% url 'accounts:login' %}?model={{ current_institution.institution_type }}" class="small fw-bold text-primary text-decoration-none ms-1" id="reg-login-link">
                     <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesión
                 </a>
             </div>
@@ -270,25 +270,142 @@
 
 <script>
 (function() {
-    // Sincronización del label de modelo institucional
-    const regInstLabels = {
-        'COLEGIO': 'Colegio / Escuela',
-        'UNIVERSIDAD': 'Universidad / Superior',
-        'SENA_TECNICO': 'Técnico / SENA',
-        'ACADEMIA': 'Academia / Cursos'
+    // Configuración exhaustiva de terminología adaptada por modelo
+    const MODEL_CONFIGS = {
+        'COLEGIO': {
+            name: 'Colegio / Escuela',
+            subtitle: 'Registro escolar para básica primaria, secundaria y media.',
+            roles: {
+                'STUDENT': 'Estudiante / Alumno',
+                'TEACHER': 'Docente / Profesor',
+                'RECTOR': 'Rector / Rectora',
+                'PARENT': 'Padre de Familia / Acudiente',
+                'SECRETARIA': 'Secretaría Escolar'
+            },
+            roleHelp: {
+                'STUDENT': 'Los estudiantes recibirán su código ID ÚNICO escolar generado automáticamente.',
+                'PARENT': 'El ID ÚNICO del alumno a cargo es OBLIGATORIO para registrar el acudiente.',
+                'default': 'Registro escolar con usuario y credenciales institucionales.'
+            },
+            studentNotice: '<strong>ID ÚNICO Escolar:</strong> Al registrarse como <strong>estudiante</strong>, el sistema le asignará su <strong>ID ÚNICO</strong> exclusivo de acceso escolar.',
+            parentIdLabel: '<i class="bi bi-person-badge text-warning-emphasis"></i> <span class="text-danger">*</span> ID ÚNICO del Alumno a Representar:',
+            parentIdHelp: 'Obligatorio para acudientes. Ingrese el código o ID único de su alumno (ej: ALU-2026-1001).',
+            btnText: 'Registrarse en Colegio'
+        },
+        'UNIVERSIDAD': {
+            name: 'Universidad / Superior',
+            subtitle: 'Registro universitario para carreras profesionales, facultades y semestres.',
+            roles: {
+                'STUDENT': 'Estudiante Universitario',
+                'TEACHER': 'Profesor(a) / Catedrático',
+                'RECTOR': 'Rector(a) / Decano(a)',
+                'PARENT': 'Acudiente / Contacto Familiar',
+                'SECRETARIA': 'Registro y Control Académico'
+            },
+            roleHelp: {
+                'STUDENT': 'Los estudiantes universitarios recibirán su ID ÚNICO de matrícula automáticamente.',
+                'PARENT': 'El ID ÚNICO del estudiante universitario a cargo es OBLIGATORIO para el acudiente.',
+                'default': 'Registro universitario con credenciales de campus institucional.'
+            },
+            studentNotice: '<strong>ID ÚNICO Universitario:</strong> Al registrarse como <strong>estudiante</strong>, se le asignará su <strong>ID ÚNICO</strong> para inscribir materias y grupos.',
+            parentIdLabel: '<i class="bi bi-person-badge text-warning-emphasis"></i> <span class="text-danger">*</span> ID ÚNICO del Estudiante a Representar:',
+            parentIdHelp: 'Obligatorio para acudientes. Ingrese el código ID ÚNICO del estudiante universitario (ej: ALU-2026-1001).',
+            btnText: 'Registrarse en Universidad'
+        },
+        'SENA_TECNICO': {
+            name: 'Técnico / SENA',
+            subtitle: 'Registro para formación técnica laboral, tecnológica, competencias y fichas.',
+            roles: {
+                'STUDENT': 'Aprendiz SENA / Técnico',
+                'TEACHER': 'Instructor(a) Técnico',
+                'RECTOR': 'Subdirector(a) de Centro',
+                'PARENT': 'Acudiente / Responsable',
+                'SECRETARIA': 'Administración Educativa'
+            },
+            roleHelp: {
+                'STUDENT': 'Los aprendices recibirán su ID ÚNICO de ficha y formación técnica automáticamente.',
+                'PARENT': 'El ID ÚNICO del aprendiz asignado es OBLIGATORIO para registrar el acudiente.',
+                'default': 'Registro técnico con credenciales de formación institucional.'
+            },
+            studentNotice: '<strong>ID ÚNICO de Aprendiz:</strong> Al registrarse como <strong>aprendiz</strong>, el sistema le asignará su <strong>ID ÚNICO</strong> exclusivo para su ficha y competencias.',
+            parentIdLabel: '<i class="bi bi-person-badge text-warning-emphasis"></i> <span class="text-danger">*</span> ID ÚNICO del Aprendiz a Representar:',
+            parentIdHelp: 'Obligatorio para acudientes. Ingrese el código ID ÚNICO del aprendiz a cargo (ej: ALU-2026-1001).',
+            btnText: 'Registrarse en SENA / Técnico'
+        },
+        'ACADEMIA': {
+            name: 'Academia / Cursos',
+            subtitle: 'Registro para academias de idiomas, talleres prácticos y cursos continuos.',
+            roles: {
+                'STUDENT': 'Alumno(a) de Curso o Taller',
+                'TEACHER': 'Tutor(a) / Tallerista',
+                'RECTOR': 'Director(a) de Academia',
+                'PARENT': 'Acudiente / Tutor Legal',
+                'SECRETARIA': 'Coordinación y Admisiones'
+            },
+            roleHelp: {
+                'STUDENT': 'Los alumnos recibirán su código ID ÚNICO de membresía de cursos automáticamente.',
+                'PARENT': 'El ID ÚNICO del alumno matriculado es OBLIGATORIO para el acudiente.',
+                'default': 'Registro en academia con usuario y contraseña institucional.'
+            },
+            studentNotice: '<strong>ID ÚNICO de Alumno:</strong> Al registrarse como <strong>alumno(a)</strong>, el sistema le asignará su <strong>ID ÚNICO</strong> exclusivo para sus talleres y clases.',
+            parentIdLabel: '<i class="bi bi-person-badge text-warning-emphasis"></i> <span class="text-danger">*</span> ID ÚNICO del Alumno a Representar:',
+            parentIdHelp: 'Obligatorio para acudientes. Ingrese el ID ÚNICO del alumno registrado (ej: ALU-2026-1001).',
+            btnText: 'Registrarse en Academia'
+        }
     };
-    const regRadios = document.querySelectorAll('input[name="institution_type"]');
-    const regSelectedText = document.getElementById('reg-selected-inst-text');
-    regRadios.forEach(function(radio) {
-        radio.addEventListener('change', function() {
-            if (regSelectedText) regSelectedText.textContent = regInstLabels[this.value] || this.value;
-        });
-    });
 
-    function updateRegisterFields() {
+    function applyModelAdaptation(modelKey) {
+        const config = MODEL_CONFIGS[modelKey];
+        if (!config) return;
+
+        // 1. Actualizar badge de modelo
+        const regSelectedText = document.getElementById('reg-selected-inst-text');
+        if (regSelectedText) regSelectedText.textContent = config.name;
+
+        // 2. Actualizar subtítulo
+        const regSubtitle = document.getElementById('reg-subtitle');
+        if (regSubtitle) regSubtitle.textContent = config.subtitle;
+
+        // 3. Adaptar opciones del desplegable de Roles
+        const roleSelect = document.getElementById('reg-role-select');
+        if (roleSelect && config.roles) {
+            for (let i = 0; i < roleSelect.options.length; i++) {
+                const opt = roleSelect.options[i];
+                if (config.roles[opt.value]) {
+                    opt.textContent = config.roles[opt.value];
+                }
+            }
+        }
+
+        // 4. Adaptar texto del botón de envío
+        const submitText = document.getElementById('reg-submit-text');
+        if (submitText) submitText.textContent = config.btnText;
+
+        // 5. Adaptar enlace hacia el Login
+        const loginLink = document.getElementById('reg-login-link');
+        if (loginLink) {
+            loginLink.href = "{% url 'accounts:login' %}?model=" + encodeURIComponent(modelKey);
+        }
+
+        // 6. Actualizar campos condicionales
+        updateRegisterFields(modelKey);
+
+        // 7. Notificar al backend de forma asíncrona para sincronizar preset de inmediato
+        fetch("{% url 'accounts:switch_model' %}?model=" + encodeURIComponent(modelKey), {
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        }).catch(function(e) {});
+    }
+
+    function updateRegisterFields(activeModel) {
+        const currentModel = activeModel || (document.querySelector('input[name="institution_type"]:checked') || {}).value || 'COLEGIO';
+        const config = MODEL_CONFIGS[currentModel] || MODEL_CONFIGS['COLEGIO'];
+
         const roleSelect = document.getElementById('reg-role-select');
         const studentNotice = document.getElementById('student-notice');
+        const studentNoticeContent = document.getElementById('student-notice-content');
         const parentStudentWrapper = document.getElementById('parent-student-id-wrapper');
+        const parentStudentLabel = document.getElementById('parent-student-id-label');
+        const parentStudentHelp = document.getElementById('parent-student-id-help');
         const studentIdInput = document.getElementById('reg-student-id-input');
         const helpText = document.getElementById('role-help-text');
 
@@ -296,27 +413,52 @@
         const role = roleSelect.value;
 
         if (role === 'STUDENT') {
-            if (studentNotice) studentNotice.style.display = 'block';
+            if (studentNotice) {
+                studentNotice.style.display = 'block';
+                if (studentNoticeContent) studentNoticeContent.innerHTML = config.studentNotice;
+            }
             if (parentStudentWrapper) parentStudentWrapper.style.display = 'none';
             if (studentIdInput) studentIdInput.required = false;
-            if (helpText) helpText.innerText = "Se generará y asignará automáticamente un ID ÚNICO para el alumno.";
+            if (helpText) helpText.innerText = config.roleHelp['STUDENT'];
         } else if (role === 'PARENT') {
             if (studentNotice) studentNotice.style.display = 'none';
-            if (parentStudentWrapper) parentStudentWrapper.style.display = 'block';
+            if (parentStudentWrapper) {
+                parentStudentWrapper.style.display = 'block';
+                if (parentStudentLabel) parentStudentLabel.innerHTML = config.parentIdLabel;
+                if (parentStudentHelp) parentStudentHelp.innerText = config.parentIdHelp;
+            }
             if (studentIdInput) studentIdInput.required = true;
-            if (helpText) helpText.innerText = "El ID ÚNICO del alumno a cargo es OBLIGATORIO para registrar el acudiente.";
+            if (helpText) helpText.innerText = config.roleHelp['PARENT'];
         } else {
             if (studentNotice) studentNotice.style.display = 'none';
             if (parentStudentWrapper) parentStudentWrapper.style.display = 'none';
             if (studentIdInput) studentIdInput.required = false;
-            if (helpText) helpText.innerText = "Registro con usuario y contraseña institucional.";
+            if (helpText) helpText.innerText = config.roleHelp['default'];
         }
     }
 
+    // Escuchar cambios en los radios de tipo de institución
+    const regRadios = document.querySelectorAll('input[name="institution_type"]');
+    regRadios.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            applyModelAdaptation(this.value);
+        });
+    });
+
+    // Escuchar cambios en el selector de roles
     const roleSelect = document.getElementById('reg-role-select');
     if (roleSelect) {
-        roleSelect.addEventListener('change', updateRegisterFields);
-        updateRegisterFields();
+        roleSelect.addEventListener('change', function() {
+            updateRegisterFields();
+        });
+    }
+
+    // Inicializar de inmediato al cargar la página con el modelo activo
+    const initialChecked = document.querySelector('input[name="institution_type"]:checked');
+    if (initialChecked) {
+        applyModelAdaptation(initialChecked.value);
+    } else {
+        updateRegisterFields('{{ current_institution.institution_type|default:"COLEGIO" }}');
     }
 })();
 </script>

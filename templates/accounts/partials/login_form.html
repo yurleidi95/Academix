@@ -75,7 +75,7 @@
 
     <div class="text-center mt-3 pt-3 border-top">
         <span class="text-muted small">¿No tienes una cuenta aún?</span>
-        <a href="{% url 'accounts:register' %}" class="small fw-bold text-purple text-decoration-none ms-1">
+        <a href="{% url 'accounts:register' %}?model={{ current_institution.institution_type }}" id="login-register-link" class="small fw-bold text-purple text-decoration-none ms-1">
             <i class="bi bi-person-plus me-1"></i>Registrarse Aquí
         </a>
     </div>

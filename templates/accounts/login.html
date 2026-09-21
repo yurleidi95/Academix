@@ -178,6 +178,17 @@
         }
         if (hidden) hidden.value = value;
         if (selectedText) selectedText.textContent = institutionLabels[value] || value;
+
+        // Actualizar enlace a registro para preseleccionar este modelo
+        const regLink = document.getElementById('login-register-link') || document.querySelector('a[href*="register"]');
+        if (regLink) {
+            regLink.href = "{% url 'accounts:register' %}?model=" + encodeURIComponent(value);
+        }
+
+        // Sincronizar preset en el servidor de forma asíncrona
+        fetch("{% url 'accounts:switch_model' %}?model=" + encodeURIComponent(value), {
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        }).catch(function() {});
     }
 
     const checked = document.querySelector('input[name="institution_type_preview"]:checked');

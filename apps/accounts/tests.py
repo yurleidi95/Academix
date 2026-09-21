@@ -46,3 +46,28 @@ class AccountsModelTests(TestCase):
         )
         self.assertTrue(admin_user.is_admin_role)
         self.assertTrue(admin_user.is_staff)
+
+    def test_switch_institution_model_endpoint(self):
+        from apps.courses.models import InstitutionSetting
+        client = Client()
+        response = client.get(reverse('accounts:switch_model') + '?model=SENA_TECNICO')
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data['status'], 'ok')
+        self.assertEqual(data['model'], 'SENA_TECNICO')
+        self.assertEqual(data['terms']['student'], 'Aprendiz')
+
+        settings = InstitutionSetting.get_settings()
+        self.assertEqual(settings.institution_type, 'SENA_TECNICO')
+        self.assertEqual(settings.term_student, 'Aprendiz')
+
+    def test_register_view_with_model_param(self):
+        from apps.courses.models import InstitutionSetting
+        client = Client()
+        response = client.get(reverse('accounts:register') + '?model=UNIVERSIDAD')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'UNIVERSIDAD')
+
+        settings = InstitutionSetting.get_settings()
+        self.assertEqual(settings.institution_type, 'UNIVERSIDAD')
+
