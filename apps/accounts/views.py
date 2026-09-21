@@ -10,36 +10,49 @@ from apps.audit.services import log_audit
 def login_view(request):
     """
     Vista de inicio de sesión con soporte para peticiones estándar y HTMX.
+    Permite seleccionar el modelo institucional (Colegio, Universidad, SENA, Academia)
+    antes de ingresar. El entorno se adapta automáticamente al modelo elegido.
     Registra intentos en auditoría inmutable.
     """
+    from apps.courses.models import InstitutionSetting
+
     if request.user.is_authenticated:
         return redirect('accounts:dashboard')
 
     form = LoginForm(request, data=request.POST or None)
+    institution_types = InstitutionSetting.InstitutionType.choices
+    current_institution = InstitutionSetting.get_settings()
 
     if request.method == 'POST':
+        # Aplicar el modelo institucional seleccionado antes de autenticar
+        selected_type = request.POST.get('institution_type', '').strip()
+        if selected_type and selected_type in dict(InstitutionSetting.InstitutionType.choices):
+            if current_institution.institution_type != selected_type:
+                current_institution.apply_preset(selected_type)
+                current_institution.refresh_from_db()
+
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            
+
             # Registrar login en auditoría
             log_audit(
                 user=user,
                 action='LOGIN',
                 table_name='CustomUser',
                 record_id=user.id,
-                reason='Inicio de sesión exitoso en la plataforma',
+                reason=f'Inicio de sesión exitoso. Modelo institucional: {current_institution.get_institution_type_display()}',
                 request=request
             )
 
             messages.success(request, f'¡Bienvenido a ACADEMIX, {user.get_full_name() or user.username}!')
-            
+
             # Si la petición viene de HTMX, enviamos cabecera de redirección
             if request.headers.get('HX-Request'):
                 response = HttpResponse(status=200)
                 response['HX-Redirect'] = '/dashboard/'
                 return response
-            
+
             return redirect('accounts:dashboard')
         else:
             # Registrar intento fallido
@@ -55,11 +68,20 @@ def login_view(request):
                 request=request
             )
             messages.error(request, err_msg)
-            
-            if request.headers.get('HX-Request'):
-                return render(request, 'accounts/partials/login_form.html', {'form': form})
 
-    return render(request, 'accounts/login.html', {'form': form})
+            if request.headers.get('HX-Request'):
+                return render(request, 'accounts/partials/login_form.html', {
+                    'form': form,
+                    'institution_types': institution_types,
+                    'current_institution': current_institution,
+                })
+
+    return render(request, 'accounts/login.html', {
+        'form': form,
+        'institution_types': institution_types,
+        'current_institution': current_institution,
+    })
+
 
 
 def register_view(request):
