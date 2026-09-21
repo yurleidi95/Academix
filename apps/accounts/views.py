@@ -94,14 +94,25 @@ def register_view(request):
     if request.user.is_authenticated:
         return redirect('accounts:dashboard')
 
+    from apps.courses.models import InstitutionSetting
     from .forms import RegistrationForm
     from apps.students.models import StudentProfile
     from apps.teachers.models import TeacherProfile
     import random
 
+    current_institution = InstitutionSetting.get_settings()
+    institution_types = InstitutionSetting.InstitutionType.choices
+
     form = RegistrationForm(request.POST or None)
 
     if request.method == 'POST':
+        # Aplicar el modelo institucional seleccionado si se especificó
+        selected_type = request.POST.get('institution_type', '').strip()
+        if selected_type and selected_type in dict(InstitutionSetting.InstitutionType.choices):
+            if current_institution.institution_type != selected_type:
+                current_institution.apply_preset(selected_type)
+                current_institution.refresh_from_db()
+
         if form.is_valid():
             role = form.cleaned_data['role']
             username = form.cleaned_data['username']
@@ -190,7 +201,11 @@ def register_view(request):
             first_err = form.non_field_errors()[0] if form.non_field_errors() else 'Por favor revise los datos del formulario.'
             messages.error(request, first_err)
 
-    return render(request, 'accounts/register.html', {'form': form})
+    return render(request, 'accounts/register.html', {
+        'form': form,
+        'institution_types': institution_types,
+        'current_institution': current_institution,
+    })
 
 def logout_view(request):
     """

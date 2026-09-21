@@ -3,6 +3,76 @@
 {% block title %}Registro de Usuario | ACADEMIX{% endblock %}
 
 {% block auth_content %}
+<style>
+.institution-selector {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-bottom: 6px;
+}
+@media (max-width: 480px) {
+    .institution-selector {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+.inst-card {
+    position: relative;
+    cursor: pointer;
+    margin: 0;
+}
+.inst-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0; height: 0;
+}
+.inst-card-inner {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 9px;
+    padding: 6px 3px;
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+    background: #ffffff;
+    cursor: pointer;
+    user-select: none;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.inst-card-inner:hover {
+    border-color: #a78bfa;
+    background: #faf5ff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(124,58,237,.12);
+}
+.inst-card input[type="radio"]:checked + .inst-card-inner {
+    border-color: #7c3aed;
+    background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+    box-shadow: 0 3px 10px rgba(124,58,237,.18);
+    transform: translateY(-1px);
+}
+.inst-card input[type="radio"]:checked + .inst-card-inner .inst-icon {
+    transform: scale(1.12);
+}
+.inst-card input[type="radio"]:checked + .inst-card-inner .inst-name {
+    color: #5b21b6;
+    font-weight: 700;
+}
+.inst-icon { font-size: 1.3rem; display: block; margin-bottom: 2px; transition: transform 0.2s; line-height: 1; }
+.inst-name { font-size: 0.67rem; font-weight: 600; color: #374151; line-height: 1.15; }
+.inst-badge {
+    font-size: 0.52rem;
+    padding: 1px 4px;
+    border-radius: 8px;
+    margin-top: 3px;
+    display: inline-block;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    line-height: 1.2;
+}
+</style>
+
 <div class="login-bg py-5">
     <div class="login-card p-4 p-sm-5 shadow-lg animate__animated animate__fadeIn" style="max-width: 580px; width: 100%;">
         <div class="text-center mb-4">
@@ -10,7 +80,7 @@
                 <i class="bi bi-person-plus-fill display-6"></i>
             </div>
             <h3 class="fw-bold text-dark mb-1">Registro en ACADEMIX</h3>
-            <p class="text-muted small mb-0">Seleccione su rol y complete sus datos para acceder al sistema</p>
+            <p class="text-muted small mb-0">Seleccione su institución, rol y complete sus datos para acceder</p>
         </div>
 
         <form method="POST" action="{% url 'accounts:register' %}" class="needs-validation">
@@ -26,6 +96,64 @@
                 </div>
             </div>
             {% endif %}
+
+            <!-- 0. Selección de Tipo de Institución / Modelo -->
+            <div class="mb-3 p-3 bg-light rounded border border-purple-subtle shadow-sm" style="border-color: #ddd6fe !important;">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <label class="form-label small fw-bold text-dark d-flex align-items-center gap-1 mb-0">
+                        <i class="bi bi-building-fill-gear text-purple"></i> <span class="text-danger">*</span> Tipo de Institución:
+                    </label>
+                    <span class="badge bg-white text-dark border px-2 py-1" style="font-size: 0.68rem; font-weight: 500;">
+                        <i class="bi bi-check-circle-fill text-success me-1"></i><strong id="reg-selected-inst-text" class="text-purple">{{ current_institution.get_institution_type_display }}</strong>
+                    </span>
+                </div>
+
+                <div class="institution-selector" id="reg-institution-selector-grid">
+                    <!-- Colegio -->
+                    <label class="inst-card" for="reg-inst-colegio" title="Colegio / Escuela — Básica Primaria, Secundaria y Media">
+                        <input type="radio" name="institution_type" id="reg-inst-colegio" value="COLEGIO"
+                               {% if current_institution.institution_type == 'COLEGIO' %}checked{% endif %}>
+                        <div class="inst-card-inner">
+                            <span class="inst-icon">🏫</span>
+                            <span class="inst-name">Colegio</span>
+                            <span class="inst-badge" style="background:#dcfce7; color:#15803d;">Básica/Media</span>
+                        </div>
+                    </label>
+                    <!-- Universidad -->
+                    <label class="inst-card" for="reg-inst-universidad" title="Universidad / Educación Superior">
+                        <input type="radio" name="institution_type" id="reg-inst-universidad" value="UNIVERSIDAD"
+                               {% if current_institution.institution_type == 'UNIVERSIDAD' %}checked{% endif %}>
+                        <div class="inst-card-inner">
+                            <span class="inst-icon">🎓</span>
+                            <span class="inst-name">Universidad</span>
+                            <span class="inst-badge" style="background:#dbeafe; color:#1d4ed8;">Superior</span>
+                        </div>
+                    </label>
+                    <!-- SENA / Técnico -->
+                    <label class="inst-card" for="reg-inst-sena" title="Instituto Técnico / Tecnológico / SENA">
+                        <input type="radio" name="institution_type" id="reg-inst-sena" value="SENA_TECNICO"
+                               {% if current_institution.institution_type == 'SENA_TECNICO' %}checked{% endif %}>
+                        <div class="inst-card-inner">
+                            <span class="inst-icon">🔧</span>
+                            <span class="inst-name">Técnico/SENA</span>
+                            <span class="inst-badge" style="background:#fef9c3; color:#92400e;">Técnica</span>
+                        </div>
+                    </label>
+                    <!-- Academia -->
+                    <label class="inst-card" for="reg-inst-academia" title="Academia / Educación Continua / Cursos">
+                        <input type="radio" name="institution_type" id="reg-inst-academia" value="ACADEMIA"
+                               {% if current_institution.institution_type == 'ACADEMIA' %}checked{% endif %}>
+                        <div class="inst-card-inner">
+                            <span class="inst-icon">🎨</span>
+                            <span class="inst-name">Academia</span>
+                            <span class="inst-badge" style="background:#fce7f3; color:#be185d;">Cursos</span>
+                        </div>
+                    </label>
+                </div>
+                <div class="form-text small mt-1 text-muted" style="font-size: 0.72rem;">
+                    El entorno y la terminología se adaptarán automáticamente a este modelo institucional.
+                </div>
+            </div>
 
             <!-- 1. Selección de Rol Obligatoria -->
             <div class="mb-3 p-3 bg-light rounded border border-primary-subtle shadow-sm">
@@ -142,6 +270,21 @@
 
 <script>
 (function() {
+    // Sincronización del label de modelo institucional
+    const regInstLabels = {
+        'COLEGIO': 'Colegio / Escuela',
+        'UNIVERSIDAD': 'Universidad / Superior',
+        'SENA_TECNICO': 'Técnico / SENA',
+        'ACADEMIA': 'Academia / Cursos'
+    };
+    const regRadios = document.querySelectorAll('input[name="institution_type"]');
+    const regSelectedText = document.getElementById('reg-selected-inst-text');
+    regRadios.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            if (regSelectedText) regSelectedText.textContent = regInstLabels[this.value] || this.value;
+        });
+    });
+
     function updateRegisterFields() {
         const roleSelect = document.getElementById('reg-role-select');
         const studentNotice = document.getElementById('student-notice');

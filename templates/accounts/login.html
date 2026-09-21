@@ -6,13 +6,19 @@
 <style>
 .institution-selector {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 20px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+}
+@media (max-width: 440px) {
+    .institution-selector {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 .inst-card {
     position: relative;
     cursor: pointer;
+    margin: 0;
 }
 .inst-card input[type="radio"] {
     position: absolute;
@@ -20,64 +26,77 @@
     width: 0; height: 0;
 }
 .inst-card-inner {
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 12px 10px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 9px;
+    padding: 6px 3px;
     text-align: center;
-    transition: all 0.22s cubic-bezier(.4,0,.2,1);
-    background: #fff;
+    transition: all 0.2s ease-in-out;
+    background: #ffffff;
     cursor: pointer;
     user-select: none;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 .inst-card-inner:hover {
-    border-color: #b892ff;
+    border-color: #a78bfa;
     background: #faf5ff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(184,146,255,.18);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(124,58,237,.12);
 }
 .inst-card input[type="radio"]:checked + .inst-card-inner {
     border-color: #7c3aed;
-    background: linear-gradient(135deg, #f3e8ff 0%, #ede9fe 100%);
-    box-shadow: 0 4px 18px rgba(124,58,237,.22);
-    transform: translateY(-2px);
+    background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+    box-shadow: 0 3px 10px rgba(124,58,237,.18);
+    transform: translateY(-1px);
 }
 .inst-card input[type="radio"]:checked + .inst-card-inner .inst-icon {
-    transform: scale(1.15);
+    transform: scale(1.12);
 }
 .inst-card input[type="radio"]:checked + .inst-card-inner .inst-name {
     color: #5b21b6;
     font-weight: 700;
 }
-.inst-icon { font-size: 1.9rem; display: block; margin-bottom: 4px; transition: transform 0.22s; }
-.inst-name { font-size: 0.72rem; font-weight: 600; color: #374151; line-height: 1.3; }
+.inst-icon { font-size: 1.3rem; display: block; margin-bottom: 2px; transition: transform 0.2s; line-height: 1; }
+.inst-name { font-size: 0.67rem; font-weight: 600; color: #374151; line-height: 1.15; }
 .inst-badge {
-    font-size: 0.6rem;
-    padding: 1px 6px;
-    border-radius: 20px;
-    margin-top: 4px;
+    font-size: 0.52rem;
+    padding: 1px 4px;
+    border-radius: 8px;
+    margin-top: 3px;
     display: inline-block;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    line-height: 1.2;
 }
 </style>
 
 <div class="login-bg">
-    <div class="login-card p-4 p-sm-5 animate__animated animate__fadeIn" style="max-width: 440px;">
+    <div class="login-card p-4 p-sm-5 animate__animated animate__fadeIn" style="max-width: 460px;">
 
         <!-- Encabezado -->
-        <div class="text-center mb-4">
-            <div class="d-inline-flex p-3 rounded-circle mb-3 shadow-sm" style="background: linear-gradient(135deg, #c4b5fd 0%, #b892ff 100%); color: #3b0764; width: 68px; height: 68px; align-items: center; justify-content: center;">
-                <i class="bi bi-mortarboard-fill fs-2"></i>
+        <div class="text-center mb-3">
+            <div class="d-inline-flex p-2 rounded-circle mb-2 shadow-sm" style="background: linear-gradient(135deg, #c4b5fd 0%, #b892ff 100%); color: #3b0764; width: 56px; height: 56px; align-items: center; justify-content: center;">
+                <i class="bi bi-mortarboard-fill fs-3"></i>
             </div>
-            <h3 class="fw-bold text-dark mb-1" style="letter-spacing: -0.5px;">ACADEMIX</h3>
-            <p class="text-muted small mb-0">Selecciona tu institución e ingresa al sistema</p>
+            <h3 class="fw-bold text-dark mb-0" style="letter-spacing: -0.5px;">ACADEMIX</h3>
+            <p class="text-muted small mb-0" style="font-size: 0.8rem;">Selecciona tu institución e ingresa al sistema</p>
         </div>
 
-        <!-- Selector Visual de Modelo Institucional -->
-        <div class="mb-4">
-            <p class="small fw-bold text-dark mb-2 d-flex align-items-center gap-1">
-                <i class="bi bi-building-fill-gear text-purple fs-6"></i>
-                Elige tu Tipo de Institución:
-            </p>
+        <!-- Selector Visual Compacto de Modelo Institucional -->
+        <div class="mb-3">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="small fw-bold text-dark d-flex align-items-center gap-1" style="font-size: 0.78rem;">
+                    <i class="bi bi-building-fill-gear text-purple"></i>
+                    Tipo de Institución:
+                </span>
+                <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 0.68rem; font-weight: 500;">
+                    <i class="bi bi-check-circle-fill text-success me-1"></i><strong id="selected-inst-text" class="text-purple">{{ current_institution.get_institution_type_display }}</strong>
+                </span>
+            </div>
+
             <div class="institution-selector" id="institution-selector-grid">
                 <!-- Colegio -->
                 <label class="inst-card" for="inst-colegio" title="Colegio / Escuela — Básica Primaria, Secundaria y Media">
@@ -85,8 +104,8 @@
                            {% if current_institution.institution_type == 'COLEGIO' %}checked{% endif %}>
                     <div class="inst-card-inner">
                         <span class="inst-icon">🏫</span>
-                        <span class="inst-name d-block">Colegio / Escuela</span>
-                        <span class="inst-badge" style="background:#dcfce7; color:#15803d;">Básica y Media</span>
+                        <span class="inst-name">Colegio</span>
+                        <span class="inst-badge" style="background:#dcfce7; color:#15803d;">Básica/Media</span>
                     </div>
                 </label>
                 <!-- Universidad -->
@@ -95,8 +114,8 @@
                            {% if current_institution.institution_type == 'UNIVERSIDAD' %}checked{% endif %}>
                     <div class="inst-card-inner">
                         <span class="inst-icon">🎓</span>
-                        <span class="inst-name d-block">Universidad / Superior</span>
-                        <span class="inst-badge" style="background:#dbeafe; color:#1d4ed8;">Pregrado y Posgrado</span>
+                        <span class="inst-name">Universidad</span>
+                        <span class="inst-badge" style="background:#dbeafe; color:#1d4ed8;">Superior</span>
                     </div>
                 </label>
                 <!-- SENA / Técnico -->
@@ -105,8 +124,8 @@
                            {% if current_institution.institution_type == 'SENA_TECNICO' %}checked{% endif %}>
                     <div class="inst-card-inner">
                         <span class="inst-icon">🔧</span>
-                        <span class="inst-name d-block">Técnico / SENA</span>
-                        <span class="inst-badge" style="background:#fef9c3; color:#92400e;">Formación Técnica</span>
+                        <span class="inst-name">Técnico/SENA</span>
+                        <span class="inst-badge" style="background:#fef9c3; color:#92400e;">Técnica</span>
                     </div>
                 </label>
                 <!-- Academia -->
@@ -115,29 +134,22 @@
                            {% if current_institution.institution_type == 'ACADEMIA' %}checked{% endif %}>
                     <div class="inst-card-inner">
                         <span class="inst-icon">🎨</span>
-                        <span class="inst-name d-block">Academia / Cursos</span>
-                        <span class="inst-badge" style="background:#fce7f3; color:#be185d;">Idiomas, Artes, Talleres</span>
+                        <span class="inst-name">Academia</span>
+                        <span class="inst-badge" style="background:#fce7f3; color:#be185d;">Cursos</span>
                     </div>
                 </label>
             </div>
-            <!-- Indicador del tipo activo -->
-            <div class="text-center">
-                <small class="text-muted" id="selected-inst-label" style="font-size: 0.72rem;">
-                    <i class="bi bi-check-circle-fill text-success me-1"></i>
-                    Seleccionado: <strong id="selected-inst-text">{{ current_institution.get_institution_type_display }}</strong>
-                </small>
-            </div>
         </div>
 
-        <hr class="my-3">
+        <hr class="my-2" style="border-top: 1px dashed #e2e8f0;">
 
         <!-- Formulario de Login -->
         <div id="login-form-container">
             {% include 'accounts/partials/login_form.html' %}
         </div>
 
-        <div class="text-center mt-4 text-muted small">
-            <span style="font-size: 0.75rem;"><i class="bi bi-shield-check text-purple me-1"></i>Plataforma Educativa Segura y Auditada</span>
+        <div class="text-center mt-3 text-muted small">
+            <span style="font-size: 0.72rem;"><i class="bi bi-shield-check text-purple me-1"></i>Plataforma Educativa Segura y Auditada</span>
         </div>
     </div>
 </div>
@@ -145,16 +157,14 @@
 <script>
 (function() {
     const institutionLabels = {
-        'COLEGIO': 'Colegio / Escuela (Básica y Media)',
-        'UNIVERSIDAD': 'Universidad / Educación Superior',
-        'SENA_TECNICO': 'Instituto Técnico / Tecnológico / SENA',
-        'ACADEMIA': 'Academia / Educación Continua'
+        'COLEGIO': 'Colegio / Escuela',
+        'UNIVERSIDAD': 'Universidad / Superior',
+        'SENA_TECNICO': 'Técnico / SENA',
+        'ACADEMIA': 'Academia / Cursos'
     };
 
     const radios = document.querySelectorAll('input[name="institution_type_preview"]');
     const selectedText = document.getElementById('selected-inst-text');
-    // Hidden input dentro del form de login para enviar el tipo al servidor
-    const loginForm = document.getElementById('login-form-container');
 
     function syncHiddenInput(value) {
         let hidden = document.getElementById('institution_type_hidden');
@@ -163,14 +173,13 @@
             hidden.type = 'hidden';
             hidden.name = 'institution_type';
             hidden.id = 'institution_type_hidden';
-            const form = document.querySelector('form[action]');
+            const form = document.querySelector('form[action*="login"]');
             if (form) form.appendChild(hidden);
         }
-        hidden.value = value;
+        if (hidden) hidden.value = value;
         if (selectedText) selectedText.textContent = institutionLabels[value] || value;
     }
 
-    // Inicializar con el valor ya seleccionado
     const checked = document.querySelector('input[name="institution_type_preview"]:checked');
     if (checked) syncHiddenInput(checked.value);
 

@@ -1,5 +1,6 @@
 <form method="POST" action="{% url 'accounts:login' %}" class="needs-validation">
     {% csrf_token %}
+    <input type="hidden" name="institution_type" id="institution_type_hidden" value="{{ current_institution.institution_type }}">
 
     {% if form.non_field_errors %}
     <div class="alert alert-danger py-2 px-3 small d-flex align-items-center mb-3 shadow-sm border-danger-subtle" role="alert">
