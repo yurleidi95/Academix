@@ -4,38 +4,52 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 class KnowledgeArea(models.Model):
     """
-    Área Fundamental u Optativa de Conocimiento (ej. Matemáticas, Ciencias Naturales).
+    Área Fundamental u Optativa de Conocimiento (ej. Matemáticas, Ciencias Naturales, TIC, Idiomas).
     """
-    name = models.CharField(max_length=100, unique=True, verbose_name='Nombre del Área')
+    institution_type = models.CharField(
+        max_length=20,
+        default='COLEGIO',
+        db_index=True,
+        verbose_name='Tipo de Institución'
+    )
+    name = models.CharField(max_length=100, verbose_name='Nombre del Área')
     order = models.PositiveSmallIntegerField(default=1, verbose_name='Orden en Boletines')
 
     class Meta:
         verbose_name = 'Área de Conocimiento'
         verbose_name_plural = 'Áreas de Conocimiento'
-        ordering = ['order', 'name']
+        unique_together = ('institution_type', 'name')
+        ordering = ['institution_type', 'order', 'name']
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.institution_type})"
 
 
 class Subject(models.Model):
     """
-    Asignatura individual (ej. Álgebra, Biología, Filosofía, Inglés).
+    Asignatura, Materia, Competencia o Módulo individual según el tipo de institución.
     """
+    institution_type = models.CharField(
+        max_length=20,
+        default='COLEGIO',
+        db_index=True,
+        verbose_name='Tipo de Institución'
+    )
     area = models.ForeignKey(
         KnowledgeArea,
         on_delete=models.PROTECT,
         related_name='subjects',
         verbose_name='Área Fundamental'
     )
-    name = models.CharField(max_length=100, verbose_name='Nombre de la Asignatura')
-    code = models.CharField(max_length=20, unique=True, verbose_name='Código Abreviado')
+    name = models.CharField(max_length=120, verbose_name='Nombre de la Asignatura / Módulo')
+    code = models.CharField(max_length=30, verbose_name='Código Abreviado')
     description = models.TextField(blank=True, null=True, verbose_name='Descripción Curricular')
 
     class Meta:
-        verbose_name = 'Asignatura'
-        verbose_name_plural = 'Asignaturas'
-        ordering = ['area', 'name']
+        verbose_name = 'Asignatura / Módulo'
+        verbose_name_plural = 'Asignaturas / Módulos'
+        unique_together = ('institution_type', 'code')
+        ordering = ['institution_type', 'area', 'name']
 
     def __str__(self):
         return f"{self.name} ({self.code})"

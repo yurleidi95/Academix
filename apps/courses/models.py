@@ -41,15 +41,24 @@ class AcademicYear(models.Model):
 
 class GradeLevel(models.Model):
     """
-    Grado Escolar (ej. Sexto, Séptimo, Décimo, Once).
+    Grado, Nivel, Trimestre o Semestre Escolar según el tipo de institución.
     """
     class LevelStage(models.TextChoices):
         PRIMARIA = 'PRIMARIA', 'Básica Primaria'
         SECUNDARIA = 'SECUNDARIA', 'Básica Secundaria'
         MEDIA = 'MEDIA', 'Educación Media'
+        SUPERIOR = 'SUPERIOR', 'Educación Superior'
+        TECNICO = 'TECNICO', 'Formación Técnica / Tecnológica'
+        CONTINUA = 'CONTINUA', 'Educación Continua / Cursos'
 
-    name = models.CharField(max_length=50, verbose_name='Nombre del Grado')
-    code = models.CharField(max_length=10, unique=True, verbose_name='Código de Grado')
+    institution_type = models.CharField(
+        max_length=20,
+        default='COLEGIO',
+        db_index=True,
+        verbose_name='Tipo de Institución'
+    )
+    name = models.CharField(max_length=60, verbose_name='Nombre del Grado / Nivel')
+    code = models.CharField(max_length=25, verbose_name='Código de Grado')
     level_stage = models.CharField(
         max_length=20,
         choices=LevelStage.choices,
@@ -59,12 +68,13 @@ class GradeLevel(models.Model):
     order = models.PositiveSmallIntegerField(default=1, verbose_name='Orden Numérico')
 
     class Meta:
-        verbose_name = 'Grado Escolar'
-        verbose_name_plural = 'Grados Escolares'
-        ordering = ['order']
+        verbose_name = 'Grado / Nivel'
+        verbose_name_plural = 'Grados / Niveles'
+        unique_together = ('institution_type', 'code')
+        ordering = ['institution_type', 'order']
 
     def __str__(self):
-        return f"{self.name} ({self.get_level_stage_display()})"
+        return f"{self.name} ({self.code})"
 
 
 class CourseSection(models.Model):
@@ -181,18 +191,18 @@ class InstitutionSetting(models.Model):
             self.term_sections = 'Grupos'
             self.term_subject = 'Materia'
             self.term_subjects = 'Materias'
-            self.term_director = 'Decano(a) / Rector(a)'
+            self.term_director = 'Decano(a)'
         elif preset_type == self.InstitutionType.SENA_TECNICO:
             self.term_student = 'Aprendiz'
             self.term_students = 'Aprendices'
             self.term_teacher = 'Instructor(a)'
             self.term_teachers = 'Instructores'
-            self.term_grade = 'Nivel / Trimestre'
+            self.term_grade = 'Trimestre'
             self.term_section = 'Ficha'
             self.term_sections = 'Fichas'
             self.term_subject = 'Competencia / Módulo'
-            self.term_subjects = 'Competencias'
-            self.term_director = 'Subdirector(a) de Centro'
+            self.term_subjects = 'Competencias / Módulos'
+            self.term_director = 'Subdirector(a)'
         elif preset_type == self.InstitutionType.ACADEMIA:
             self.term_student = 'Alumno(a)'
             self.term_students = 'Alumnos'
@@ -200,9 +210,9 @@ class InstitutionSetting(models.Model):
             self.term_teachers = 'Tutores'
             self.term_grade = 'Nivel'
             self.term_section = 'Grupo / Clase'
-            self.term_sections = 'Grupos'
+            self.term_sections = 'Grupos / Clases'
             self.term_subject = 'Módulo / Taller'
-            self.term_subjects = 'Módulos'
+            self.term_subjects = 'Módulos / Talleres'
             self.term_director = 'Director(a)'
         else: # COLEGIO
             self.term_student = 'Estudiante'
@@ -216,4 +226,10 @@ class InstitutionSetting(models.Model):
             self.term_subjects = 'Asignaturas'
             self.term_director = 'Rector(a)'
         self.save()
+        try:
+            from .environment_provisioner import provision_institution_environment
+            provision_institution_environment(preset_type)
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).warning(f"Error al aprovisionar entorno {preset_type}: {e}")
 

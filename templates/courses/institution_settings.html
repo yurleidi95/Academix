@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Adaptabilidad Institucional | ACADEMIX{% endblock %}
+{% block title %}Adaptabilidad y Trazabilidad Institucional | ACADEMIX{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
@@ -9,108 +9,112 @@
             <i class="bi bi-sliders2 text-primary me-2"></i>Adaptabilidad Institucional
         </h3>
         <p class="text-muted small mb-0">
-            Configure ACADEMIX para que se adapte al modelo y terminología de su institución (Colegio, Universidad, SENA / Técnico, Academia).
+            Parámetros, trazabilidad y vocabulario oficial de la institución activa en la plataforma.
         </p>
     </div>
-    <div>
-        <a href="{% url 'courses:academic_structure' %}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left me-1"></i> Volver a Estructura
+    <div class="d-flex gap-2">
+        <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#changePresetModal">
+            <i class="bi bi-arrow-repeat"></i>
+            <span>Cambiar Modelo Institucional</span>
+        </button>
+        <a href="{% url 'courses:academic_structure' %}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
+            <i class="bi bi-arrow-left"></i>
+            <span>Estructura Académica</span>
         </a>
     </div>
 </div>
 
-<!-- Selector Rápido de Presets -->
+<!-- Tarjeta Principal: Estado de la Institución Activa -->
 <div class="card ac-card border-0 shadow-sm mb-4">
     <div class="card-body p-4">
-        <h5 class="fw-bold text-dark mb-2">
-            <i class="bi bi-magic me-2 text-warning"></i>Modos Preconfigurados con 1 Clic
-        </h5>
-        <p class="text-muted small mb-3">
-            Haga clic en cualquiera de estos perfiles para ajustar automáticamente todos los nombres y roles de la plataforma al entorno educativo correspondiente:
-        </p>
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="rounded-3 p-3 text-white shadow-sm d-flex align-items-center justify-content-center"
+                         style="width: 56px; height: 56px; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
+                        {% if inst_settings.institution_type == 'UNIVERSIDAD' %}
+                            <i class="bi bi-mortarboard-fill fs-3"></i>
+                        {% elif inst_settings.institution_type == 'SENA_TECNICO' %}
+                            <i class="bi bi-gear-wide-connected fs-3"></i>
+                        {% elif inst_settings.institution_type == 'ACADEMIA' %}
+                            <i class="bi bi-palette-fill fs-3"></i>
+                        {% else %}
+                            <i class="bi bi-backpack4-fill fs-3"></i>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 small mb-1">
+                            <i class="bi bi-check-circle-fill me-1"></i>Modelo Activo: {{ inst_settings.get_institution_type_display }}
+                        </span>
+                        <h4 class="fw-bold text-dark mb-0">{{ inst_settings.institution_name }}</h4>
+                    </div>
+                </div>
+                <p class="text-muted small mb-0">{{ inst_settings.slogan|default:"Sistema Integral de Gestión Académica y Control Escolar" }}</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <button class="btn btn-primary btn-sm px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#changePresetModal">
+                    <i class="bi bi-magic me-1"></i> Cambiar de Modelo
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Panel de Trazabilidad Activa Exclusiva -->
+<div class="card ac-card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="fw-bold text-dark mb-0">
+                <i class="bi bi-diagram-3-fill text-success me-2"></i>Trazabilidad Académica e Institucional Vigente
+            </h5>
+            <p class="text-muted small mb-0">Términos y roles aplicados exclusivamente a la institución actual.</p>
+        </div>
+        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2">
+            <i class="bi bi-shield-check me-1"></i>Trazabilidad Aislada y Activa
+        </span>
+    </div>
+    <div class="card-body p-4">
         <div class="row g-3">
-            <!-- Preset Colegio -->
-            <div class="col-md-3">
-                <div class="p-3 rounded border {% if inst_settings.institution_type == 'COLEGIO' %}border-primary bg-primary-subtle shadow-sm{% else %}bg-light{% endif %} text-center h-100 d-flex flex-column justify-content-between">
-                    <div>
-                        <i class="bi bi-backpack4-fill fs-2 text-primary mb-2 d-block"></i>
-                        <h6 class="fw-bold text-dark mb-1">Colegio / Escuela</h6>
-                        <p class="small text-muted mb-2" style="font-size: 0.78rem;">
-                            Básica Primaria, Secundaria y Media. Términos: Estudiante, Docente, Grado, Curso, Asignatura, Rector(a).
-                        </p>
-                    </div>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="apply_preset">
-                        <input type="hidden" name="preset" value="COLEGIO">
-                        <button type="submit" class="btn btn-sm {% if inst_settings.institution_type == 'COLEGIO' %}btn-primary{% else %}btn-outline-primary{% endif %} w-100">
-                            {% if inst_settings.institution_type == 'COLEGIO' %}<i class="bi bi-check-circle me-1"></i>Activo{% else %}Activar Modo Colegio{% endif %}
-                        </button>
-                    </form>
+            <div class="col-md-4 col-sm-6">
+                <div class="p-3 bg-light rounded-3 border">
+                    <small class="text-muted text-uppercase fw-semibold d-block mb-1" style="font-size: 0.72rem;">Cargo de Dirección</small>
+                    <div class="fw-bold text-primary fs-6">{{ inst_settings.term_director }}</div>
+                    <small class="text-secondary" style="font-size: 0.75rem;">Máxima autoridad y supervisión</small>
                 </div>
             </div>
-
-            <!-- Preset Universidad -->
-            <div class="col-md-3">
-                <div class="p-3 rounded border {% if inst_settings.institution_type == 'UNIVERSIDAD' %}border-primary bg-primary-subtle shadow-sm{% else %}bg-light{% endif %} text-center h-100 d-flex flex-column justify-content-between">
-                    <div>
-                        <i class="bi bi-mortarboard-fill fs-2 text-success mb-2 d-block"></i>
-                        <h6 class="fw-bold text-dark mb-1">Universidad / Superior</h6>
-                        <p class="small text-muted mb-2" style="font-size: 0.78rem;">
-                            Pregrado y Posgrado. Términos: Estudiante, Profesor(a), Semestre, Grupo, Materia, Decano(a).
-                        </p>
-                    </div>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="apply_preset">
-                        <input type="hidden" name="preset" value="UNIVERSIDAD">
-                        <button type="submit" class="btn btn-sm {% if inst_settings.institution_type == 'UNIVERSIDAD' %}btn-success text-white{% else %}btn-outline-success{% endif %} w-100">
-                            {% if inst_settings.institution_type == 'UNIVERSIDAD' %}<i class="bi bi-check-circle me-1"></i>Activo{% else %}Activar Modo Universidad{% endif %}
-                        </button>
-                    </form>
+            <div class="col-md-4 col-sm-6">
+                <div class="p-3 bg-light rounded-3 border">
+                    <small class="text-muted text-uppercase fw-semibold d-block mb-1" style="font-size: 0.72rem;">Formador / Docente</small>
+                    <div class="fw-bold text-success fs-6">{{ inst_settings.term_teacher }} <span class="text-muted fw-normal">({{ inst_settings.term_teachers }})</span></div>
+                    <small class="text-secondary" style="font-size: 0.75rem;">Responsable de asignación y notas</small>
                 </div>
             </div>
-
-            <!-- Preset SENA / Técnico -->
-            <div class="col-md-3">
-                <div class="p-3 rounded border {% if inst_settings.institution_type == 'SENA_TECNICO' %}border-primary bg-primary-subtle shadow-sm{% else %}bg-light{% endif %} text-center h-100 d-flex flex-column justify-content-between">
-                    <div>
-                        <i class="bi bi-gear-wide-connected fs-2 text-warning mb-2 d-block"></i>
-                        <h6 class="fw-bold text-dark mb-1">Técnico / SENA</h6>
-                        <p class="small text-muted mb-2" style="font-size: 0.78rem;">
-                            Formación Técnica y Tecnológica. Términos: Aprendiz, Instructor(a), Trimestre, Ficha, Competencia / Módulo.
-                        </p>
-                    </div>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="apply_preset">
-                        <input type="hidden" name="preset" value="SENA_TECNICO">
-                        <button type="submit" class="btn btn-sm {% if inst_settings.institution_type == 'SENA_TECNICO' %}btn-warning text-dark fw-bold{% else %}btn-outline-warning text-dark{% endif %} w-100">
-                            {% if inst_settings.institution_type == 'SENA_TECNICO' %}<i class="bi bi-check-circle me-1"></i>Activo{% else %}Activar Modo SENA / Técnico{% endif %}
-                        </button>
-                    </form>
+            <div class="col-md-4 col-sm-6">
+                <div class="p-3 bg-light rounded-3 border">
+                    <small class="text-muted text-uppercase fw-semibold d-block mb-1" style="font-size: 0.72rem;">Estudiante / Participante</small>
+                    <div class="fw-bold text-dark fs-6">{{ inst_settings.term_student }} <span class="text-muted fw-normal">({{ inst_settings.term_students }})</span></div>
+                    <small class="text-secondary" style="font-size: 0.75rem;">Titular de matrícula y calificaciones</small>
                 </div>
             </div>
-
-            <!-- Preset Academia / Educación Continua -->
-            <div class="col-md-3">
-                <div class="p-3 rounded border {% if inst_settings.institution_type == 'ACADEMIA' %}border-primary bg-primary-subtle shadow-sm{% else %}bg-light{% endif %} text-center h-100 d-flex flex-column justify-content-between">
-                    <div>
-                        <i class="bi bi-palette-fill fs-2 text-info mb-2 d-block"></i>
-                        <h6 class="fw-bold text-dark mb-1">Academia / Cursos</h6>
-                        <p class="small text-muted mb-2" style="font-size: 0.78rem;">
-                            Idiomas, Artes, Diplomados. Términos: Alumno(a), Tutor(a), Nivel, Grupo/Clase, Módulo/Taller, Director(a).
-                        </p>
-                    </div>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <input type="hidden" name="action" value="apply_preset">
-                        <input type="hidden" name="preset" value="ACADEMIA">
-                        <button type="submit" class="btn btn-sm {% if inst_settings.institution_type == 'ACADEMIA' %}btn-info text-white{% else %}btn-outline-info{% endif %} w-100">
-                            {% if inst_settings.institution_type == 'ACADEMIA' %}<i class="bi bi-check-circle me-1"></i>Activo{% else %}Activar Modo Academia{% endif %}
-                        </button>
-                    </form>
+            <div class="col-md-4 col-sm-6">
+                <div class="p-3 bg-light rounded-3 border">
+                    <small class="text-muted text-uppercase fw-semibold d-block mb-1" style="font-size: 0.72rem;">Nivel / Ciclo</small>
+                    <div class="fw-bold text-info fs-6">{{ inst_settings.term_grade }}</div>
+                    <small class="text-secondary" style="font-size: 0.75rem;">Etapa formativa o temporal</small>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="p-3 bg-light rounded-3 border">
+                    <small class="text-muted text-uppercase fw-semibold d-block mb-1" style="font-size: 0.72rem;">Grupo / Salón / Ficha</small>
+                    <div class="fw-bold text-warning-emphasis fs-6">{{ inst_settings.term_section }} <span class="text-muted fw-normal">({{ inst_settings.term_sections }})</span></div>
+                    <small class="text-secondary" style="font-size: 0.75rem;">Agrupación lectiva de alumnos</small>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="p-3 bg-light rounded-3 border">
+                    <small class="text-muted text-uppercase fw-semibold d-block mb-1" style="font-size: 0.72rem;">Unidad Curricular / Asignatura</small>
+                    <div class="fw-bold text-danger fs-6">{{ inst_settings.term_subject }} <span class="text-muted fw-normal">({{ inst_settings.term_subjects }})</span></div>
+                    <small class="text-secondary" style="font-size: 0.75rem;">Contenido temático evaluable</small>
                 </div>
             </div>
         </div>
@@ -121,14 +125,15 @@
 <div class="card ac-card border-0 shadow-sm">
     <div class="card-header bg-white py-3 border-bottom">
         <h5 class="fw-bold text-dark mb-0">
-            <i class="bi bi-pencil-square text-primary me-2"></i>Personalización Fina de Términos y Etiquetas
+            <i class="bi bi-pencil-square text-primary me-2"></i>Edición de Parámetros de la Institución Activa
         </h5>
-        <p class="text-muted small mb-0">Puede ajustar con total libertad cada término para que coincida exactamente con su vocabulario institucional.</p>
+        <p class="text-muted small mb-0">Ajuste con total libertad el nombre institucional y cada una de las etiquetas del sistema.</p>
     </div>
     <div class="card-body p-4">
         <form method="POST">
             {% csrf_token %}
             <input type="hidden" name="action" value="save_custom">
+            <input type="hidden" name="institution_type" value="{{ inst_settings.institution_type }}">
 
             <div class="row g-3 mb-4">
                 <div class="col-md-6">
@@ -141,60 +146,49 @@
                 </div>
             </div>
 
-            <h6 class="fw-bold text-primary border-bottom pb-2 mb-3">Términos que se verán en toda la interfaz:</h6>
+            <h6 class="fw-bold text-primary border-bottom pb-2 mb-3">Términos que rigen en toda la plataforma:</h6>
 
             <div class="row g-3">
                 <div class="col-md-3">
                     <label class="form-label small fw-semibold">Alumno (Singular)</label>
                     <input type="text" name="term_student" class="form-control form-control-sm" value="{{ inst_settings.term_student }}" required>
-                    <div class="form-text" style="font-size: 0.72rem;">Ej: Estudiante, Aprendiz, Alumno.</div>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small fw-semibold">Alumnos (Plural)</label>
                     <input type="text" name="term_students" class="form-control form-control-sm" value="{{ inst_settings.term_students }}" required>
-                    <div class="form-text" style="font-size: 0.72rem;">Ej: Estudiantes, Aprendices, Alumnos.</div>
                 </div>
-
                 <div class="col-md-3">
                     <label class="form-label small fw-semibold">Profesor (Singular)</label>
                     <input type="text" name="term_teacher" class="form-control form-control-sm" value="{{ inst_settings.term_teacher }}" required>
-                    <div class="form-text" style="font-size: 0.72rem;">Ej: Docente, Instructor, Profesor.</div>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small fw-semibold">Profesores (Plural)</label>
                     <input type="text" name="term_teachers" class="form-control form-control-sm" value="{{ inst_settings.term_teachers }}" required>
-                    <div class="form-text" style="font-size: 0.72rem;">Ej: Docentes, Instructores, Profesores.</div>
                 </div>
 
                 <div class="col-md-3">
                     <label class="form-label small fw-semibold">Nivel Académico</label>
                     <input type="text" name="term_grade" class="form-control form-control-sm" value="{{ inst_settings.term_grade }}" required>
-                    <div class="form-text" style="font-size: 0.72rem;">Ej: Grado, Semestre, Nivel, Trimestre.</div>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small fw-semibold">Grupo / Clase (Singular)</label>
                     <input type="text" name="term_section" class="form-control form-control-sm" value="{{ inst_settings.term_section }}" required>
-                    <div class="form-text" style="font-size: 0.72rem;">Ej: Curso, Grupo, Ficha, Salón.</div>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small fw-semibold">Grupos / Clases (Plural)</label>
                     <input type="text" name="term_sections" class="form-control form-control-sm" value="{{ inst_settings.term_sections }}" required>
-                    <div class="form-text" style="font-size: 0.72rem;">Ej: Cursos, Grupos, Fichas.</div>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label small fw-semibold">Materia / Asignatura</label>
+                    <label class="form-label small fw-semibold">Materia / Asignatura (Singular)</label>
                     <input type="text" name="term_subject" class="form-control form-control-sm" value="{{ inst_settings.term_subject }}" required>
-                    <div class="form-text" style="font-size: 0.72rem;">Ej: Asignatura, Materia, Competencia, Módulo.</div>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small fw-semibold">Materias (Plural)</label>
                     <input type="text" name="term_subjects" class="form-control form-control-sm" value="{{ inst_settings.term_subjects }}" required>
-                    <div class="form-text" style="font-size: 0.72rem;">Ej: Asignaturas, Materias, Competencias.</div>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small fw-semibold">Cargo de Dirección</label>
                     <input type="text" name="term_director" class="form-control form-control-sm" value="{{ inst_settings.term_director }}" required>
-                    <div class="form-text" style="font-size: 0.72rem;">Ej: Rector(a), Decano(a), Subdirector(a).</div>
                 </div>
             </div>
 
@@ -204,6 +198,122 @@
                 </button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Modal para Cambiar el Modelo Institucional -->
+<div class="modal fade" id="changePresetModal" tabindex="-1" aria-labelledby="changePresetModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title fw-bold" id="changePresetModalLabel">
+                    <i class="bi bi-magic text-primary me-2"></i>Seleccionar Modelo Institucional
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted small mb-3">
+                    Al seleccionar un modelo, el sistema adaptará automáticamente toda la trazabilidad y vocabulario de la plataforma a la institución elegida:
+                </p>
+                <div class="row g-3">
+                    <!-- Preset Colegio -->
+                    <div class="col-md-6">
+                        <div class="p-3 rounded-3 border {% if inst_settings.institution_type == 'COLEGIO' %}border-primary bg-primary-subtle shadow-sm{% else %}bg-light{% endif %} h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <i class="bi bi-backpack4-fill fs-4 text-primary"></i>
+                                    <h6 class="fw-bold text-dark mb-0">Colegio / Escuela</h6>
+                                </div>
+                                <p class="small text-muted mb-2" style="font-size: 0.8rem;">
+                                    <strong>Básica Primaria, Secundaria y Media.</strong><br>
+                                    Términos: Estudiante, Docente, Grado, Curso, Asignatura, Rector(a).
+                                </p>
+                            </div>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="apply_preset">
+                                <input type="hidden" name="preset" value="COLEGIO">
+                                <button type="submit" class="btn btn-sm {% if inst_settings.institution_type == 'COLEGIO' %}btn-primary{% else %}btn-outline-primary{% endif %} w-100">
+                                    {% if inst_settings.institution_type == 'COLEGIO' %}<i class="bi bi-check-circle me-1"></i>Activo{% else %}Activar Modo Colegio{% endif %}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Preset Universidad -->
+                    <div class="col-md-6">
+                        <div class="p-3 rounded-3 border {% if inst_settings.institution_type == 'UNIVERSIDAD' %}border-primary bg-primary-subtle shadow-sm{% else %}bg-light{% endif %} h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <i class="bi bi-mortarboard-fill fs-4 text-success"></i>
+                                    <h6 class="fw-bold text-dark mb-0">Universidad / Superior</h6>
+                                </div>
+                                <p class="small text-muted mb-2" style="font-size: 0.8rem;">
+                                    <strong>Pregrado y Posgrado.</strong><br>
+                                    Términos: Estudiante, Profesor(a), Semestre, Grupo, Materia, Decano(a).
+                                </p>
+                            </div>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="apply_preset">
+                                <input type="hidden" name="preset" value="UNIVERSIDAD">
+                                <button type="submit" class="btn btn-sm {% if inst_settings.institution_type == 'UNIVERSIDAD' %}btn-success text-white{% else %}btn-outline-success{% endif %} w-100">
+                                    {% if inst_settings.institution_type == 'UNIVERSIDAD' %}<i class="bi bi-check-circle me-1"></i>Activo{% else %}Activar Modo Universidad{% endif %}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Preset SENA -->
+                    <div class="col-md-6">
+                        <div class="p-3 rounded-3 border {% if inst_settings.institution_type == 'SENA_TECNICO' %}border-primary bg-primary-subtle shadow-sm{% else %}bg-light{% endif %} h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <i class="bi bi-gear-wide-connected fs-4 text-warning"></i>
+                                    <h6 class="fw-bold text-dark mb-0">Técnico / SENA</h6>
+                                </div>
+                                <p class="small text-muted mb-2" style="font-size: 0.8rem;">
+                                    <strong>Formación Técnica y Tecnológica.</strong><br>
+                                    Términos: Aprendiz, Instructor(a), Trimestre, Ficha, Competencia / Módulo, Subdirector(a).
+                                </p>
+                            </div>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="apply_preset">
+                                <input type="hidden" name="preset" value="SENA_TECNICO">
+                                <button type="submit" class="btn btn-sm {% if inst_settings.institution_type == 'SENA_TECNICO' %}btn-warning text-dark fw-bold{% else %}btn-outline-warning text-dark{% endif %} w-100">
+                                    {% if inst_settings.institution_type == 'SENA_TECNICO' %}<i class="bi bi-check-circle me-1"></i>Activo{% else %}Activar Modo SENA / Técnico{% endif %}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Preset Academia -->
+                    <div class="col-md-6">
+                        <div class="p-3 rounded-3 border {% if inst_settings.institution_type == 'ACADEMIA' %}border-primary bg-primary-subtle shadow-sm{% else %}bg-light{% endif %} h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <i class="bi bi-palette-fill fs-4 text-info"></i>
+                                    <h6 class="fw-bold text-dark mb-0">Academia / Cursos</h6>
+                                </div>
+                                <p class="small text-muted mb-2" style="font-size: 0.8rem;">
+                                    <strong>Idiomas, Artes, Diplomados.</strong><br>
+                                    Términos: Alumno(a), Tutor(a), Nivel, Grupo/Clase, Módulo/Taller, Director(a).
+                                </p>
+                            </div>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="apply_preset">
+                                <input type="hidden" name="preset" value="ACADEMIA">
+                                <button type="submit" class="btn btn-sm {% if inst_settings.institution_type == 'ACADEMIA' %}btn-info text-white{% else %}btn-outline-info{% endif %} w-100">
+                                    {% if inst_settings.institution_type == 'ACADEMIA' %}<i class="bi bi-check-circle me-1"></i>Activo{% else %}Activar Modo Academia{% endif %}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

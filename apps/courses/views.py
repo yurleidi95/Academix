@@ -10,11 +10,15 @@ from apps.accounts.models import CustomUser
 def academic_structure_view(request):
     """
     Vista principal de la estructura académica institucional.
-    Muestra años lectivos, grados escolares y cursos/grupos activos.
+    Muestra años lectivos, grados escolares y cursos/grupos activos de la institución actual.
     """
+    from .models import InstitutionSetting
+    inst_settings = InstitutionSetting.get_settings()
+    inst_type = inst_settings.institution_type
+
     current_year = get_current_academic_year()
     years = AcademicYear.objects.all()
-    grades = GradeLevel.objects.all()
+    grades = GradeLevel.objects.filter(institution_type=inst_type)
     teachers = CustomUser.objects.filter(role=CustomUser.Role.TEACHER, is_active=True)
 
     selected_year_id = request.GET.get('year')
@@ -23,7 +27,10 @@ def academic_structure_view(request):
     else:
         active_year = current_year or years.first()
 
-    sections = CourseSection.objects.filter(academic_year=active_year).select_related('grade_level', 'homeroom_teacher') if active_year else []
+    sections = CourseSection.objects.filter(
+        academic_year=active_year,
+        grade_level__institution_type=inst_type
+    ).select_related('grade_level', 'homeroom_teacher') if active_year else []
 
     context = {
         'current_year': current_year,
@@ -32,19 +39,25 @@ def academic_structure_view(request):
         'grades': grades,
         'teachers': teachers,
         'sections': sections,
+        'inst_settings': inst_settings,
     }
     return render(request, 'courses/academic_structure.html', context)
 
 @login_required
 def sections_partial(request):
     """
-    Endpoint HTMX para búsqueda y filtrado reactivo de secciones escolares.
+    Endpoint HTMX para búsqueda y filtrado reactivo de secciones de la institución activa.
     """
+    from .models import InstitutionSetting
+    inst_type = InstitutionSetting.get_settings().institution_type
+
     year_id = request.GET.get('year')
     grade_id = request.GET.get('grade')
     query = request.GET.get('q', '').strip()
 
-    sections = CourseSection.objects.select_related('grade_level', 'academic_year', 'homeroom_teacher').all()
+    sections = CourseSection.objects.filter(
+        grade_level__institution_type=inst_type
+    ).select_related('grade_level', 'academic_year', 'homeroom_teacher')
 
     if year_id:
         sections = sections.filter(academic_year_id=year_id)

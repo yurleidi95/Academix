@@ -40,7 +40,7 @@
         <li class="sidebar-item">
             <a href="{% url 'courses:academic_structure' %}" class="sidebar-link {% if 'courses' in request.path %}active{% endif %}">
                 <i class="bi bi-building"></i>
-                <span>Cursos y Grados</span>
+                <span>{{ institution.term_sections|default:'Cursos' }} y {{ institution.term_grade|default:'Grados' }}</span>
             </a>
         </li>
         <li class="sidebar-item">
@@ -52,13 +52,13 @@
         <li class="sidebar-item">
             <a href="{% url 'teachers:list' %}" class="sidebar-link {% if 'teachers' in request.path %}active{% endif %}">
                 <i class="bi bi-person-video3"></i>
-                <span>Cuerpo Docente</span>
+                <span>{{ institution.term_teachers|default:'Cuerpo Docente' }}</span>
             </a>
         </li>
         <li class="sidebar-item">
             <a href="{% url 'students:list' %}" class="sidebar-link {% if 'students' in request.path %}active{% endif %}">
                 <i class="bi bi-mortarboard"></i>
-                <span>Matrículas y Alumnos</span>
+                <span>Matrículas y {{ institution.term_students|default:'Alumnos' }}</span>
             </a>
         </li>
         {% endif %}
@@ -73,7 +73,7 @@
         <li class="sidebar-item">
             <a href="{% url 'subjects:curriculum' %}" class="sidebar-link {% if 'subjects' in request.path %}active{% endif %}">
                 <i class="bi bi-book-half"></i>
-                <span>Malla Curricular</span>
+                <span>Malla Curricular ({{ institution.term_subjects|default:'Asignaturas' }})</span>
             </a>
         </li>
         {% endif %}
@@ -127,13 +127,13 @@
         <li class="sidebar-item">
             <a href="{% url 'grades:index' %}" class="sidebar-link">
                 <i class="bi bi-award text-primary"></i>
-                <span>Notas del Estudiante</span>
+                <span>Notas del {{ institution.term_student|default:'Estudiante' }}</span>
             </a>
         </li>
         <li class="sidebar-item">
             <a href="{% url 'attendance:index' %}" class="sidebar-link">
                 <i class="bi bi-calendar2-check text-success"></i>
-                <span>Asistencia de Acudido</span>
+                <span>Asistencia del {{ institution.term_student|default:'Acudido' }}</span>
             </a>
         </li>
         <li class="sidebar-item">

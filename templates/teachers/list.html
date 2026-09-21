@@ -1,18 +1,18 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 
-{% block title %}Cuerpo Docente y Asignaciones | ACADEMIX{% endblock %}
+{% block title %}Planta de {{ institution.term_teachers|default:'Docentes' }} y Asignaciones | ACADEMIX{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
-        <h3 class="fw-bold text-dark mb-0">Cuerpo Docente y Asignación Académica</h3>
-        <p class="text-muted small mb-0">Gestión de docentes, asignación de asignaturas por grupo y carga horaria</p>
+        <h3 class="fw-bold text-dark mb-0">Planta de {{ institution.term_teachers|default:'Docentes' }} y Asignación Académica</h3>
+        <p class="text-muted small mb-0">Gestión de {{ institution.term_teachers|lower|default:'docentes' }}, asignación de {{ institution.term_subjects|lower|default:'asignaturas' }} por {{ institution.term_section|lower|default:'grupo' }} y carga horaria</p>
     </div>
     <div class="d-flex gap-2">
         {% if user.is_admin_role or user.is_rector or user.is_secretary %}
         <button class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#createTeacherModal">
             <i class="bi bi-person-plus-fill"></i>
-            <span>Nuevo Docente</span>
+            <span>Nuevo(a) {{ institution.term_teacher|default:'Docente' }}</span>
         </button>
         <button class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#assignTeacherModal">
             <i class="bi bi-journal-plus"></i>
@@ -34,9 +34,9 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light small text-muted text-uppercase">
                         <tr>
-                            <th>Docente Titular</th>
-                            <th>Asignatura</th>
-                            <th>Grupo / Curso</th>
+                            <th>{{ institution.term_teacher|default:'Docente' }} Titular</th>
+                            <th>{{ institution.term_subject|default:'Asignatura' }}</th>
+                            <th>{{ institution.term_section|default:'Grupo / Curso' }}</th>
                             <th class="text-end">Estado</th>
                         </tr>
                     </thead>
@@ -110,13 +110,13 @@
                 <input type="hidden" name="academic_year_id" value="{{ current_year.id }}">
                 <div class="modal-header bg-light">
                     <h5 class="modal-title fw-bold" id="assignTeacherModalLabel">
-                        <i class="bi bi-person-check-fill text-primary me-2"></i>Asignar Docente a Asignatura
+                        <i class="bi bi-person-check-fill text-primary me-2"></i>Asignar {{ institution.term_teacher|default:'Docente' }} a {{ institution.term_subject|default:'Asignatura' }}
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Docente</label>
+                        <label class="form-label small fw-semibold text-secondary">{{ institution.term_teacher|default:'Docente' }}</label>
                         <select name="teacher_id" class="form-select" required>
                             {% for t in teachers %}
                             <option value="{{ t.id }}">{{ t.user.get_full_name|default:t.user.username }} - {{ t.specialty }}</option>
@@ -124,15 +124,15 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Curso / Grupo</label>
+                        <label class="form-label small fw-semibold text-secondary">{{ institution.term_section|default:'Curso / Grupo' }}</label>
                         <select name="section_id" class="form-select" required>
                             {% for s in sections %}
-                            <option value="{{ s.id }}">{{ s.name }} (Grado {{ s.grade_level.name }})</option>
+                            <option value="{{ s.id }}">{{ s.name }} ({{ institution.term_grade|default:'Grado' }} {{ s.grade_level.name }})</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Asignatura</label>
+                        <label class="form-label small fw-semibold text-secondary">{{ institution.term_subject|default:'Asignatura' }}</label>
                         <select name="subject_id" class="form-select" required>
                             {% for subj in subjects %}
                             <option value="{{ subj.id }}">{{ subj.name }} ({{ subj.area.name }})</option>
@@ -157,7 +157,7 @@
                 {% csrf_token %}
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title fw-bold" id="createTeacherModalLabel">
-                        <i class="bi bi-person-plus-fill me-2"></i>Registrar Nuevo Docente
+                        <i class="bi bi-person-plus-fill me-2"></i>Registrar Nuevo(a) {{ institution.term_teacher|default:'Docente' }}
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>

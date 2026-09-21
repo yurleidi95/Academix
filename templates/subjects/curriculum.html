@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}Malla Curricular y Asignaturas | ACADEMIX{% endblock %}
+{% block title %}Malla Curricular y {{ institution.term_subjects|default:'Asignaturas' }} | ACADEMIX{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
-        <h3 class="fw-bold text-dark mb-0">Malla Curricular y Asignaturas</h3>
-        <p class="text-muted small mb-0">Áreas fundamentales de conocimiento, asignaturas e intensidades horarias</p>
+        <h3 class="fw-bold text-dark mb-0">Malla Curricular y {{ institution.term_subjects|default:'Asignaturas' }}</h3>
+        <p class="text-muted small mb-0">Áreas fundamentales de conocimiento, {{ institution.term_subjects|lower|default:'asignaturas' }} e intensidades horarias</p>
     </div>
 </div>
 
@@ -15,7 +15,7 @@
     <div class="col-lg-5">
         <div class="card ac-card p-4 h-100">
             <h5 class="fw-bold mb-3 d-flex align-items-center gap-2">
-                <i class="bi bi-book-half text-primary"></i> Áreas del Conocimiento
+                <i class="bi bi-book-half text-primary"></i> Áreas y {{ institution.term_subjects|default:'Asignaturas' }}
             </h5>
             <div class="accordion" id="accordionAreas">
                 {% for area in areas %}
@@ -35,7 +35,7 @@
                                     <span class="badge bg-light text-muted font-monospace border">{{ subj.code }}</span>
                                 </li>
                                 {% empty %}
-                                <li class="list-group-item text-muted py-1 small">Sin asignaturas vinculadas.</li>
+                                <li class="list-group-item text-muted py-1 small">Sin {{ institution.term_subjects|lower|default:'asignaturas' }} vinculadas.</li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -53,7 +53,7 @@
         <div class="card ac-card p-4 h-100">
             <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
                 <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
-                    <i class="bi bi-clock-history text-success"></i> Intensidad Horaria por Grado
+                    <i class="bi bi-clock-history text-success"></i> Intensidad Horaria por {{ institution.term_grade|default:'Grado' }}
                 </h5>
                 <div class="d-flex gap-2">
                     {% for grade in grades %}

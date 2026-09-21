@@ -10,13 +10,22 @@ from apps.courses.services import get_current_academic_year
 @login_required
 def teachers_list_view(request):
     """
-    Lista de docentes institucionales y gestión de carga académica.
+    Lista de docentes institucionales y gestión de carga académica para la institución activa.
     """
+    from apps.courses.models import InstitutionSetting
+    inst_type = InstitutionSetting.get_settings().institution_type
+
     current_year = get_current_academic_year()
     teachers = TeacherProfile.objects.select_related('user').all()
-    assignments = TeachingAssignment.objects.filter(academic_year=current_year).select_related('teacher__user', 'course_section', 'subject') if current_year else []
-    sections = CourseSection.objects.filter(academic_year=current_year) if current_year else []
-    subjects = Subject.objects.all()
+    assignments = TeachingAssignment.objects.filter(
+        academic_year=current_year,
+        course_section__grade_level__institution_type=inst_type
+    ).select_related('teacher__user', 'course_section', 'subject') if current_year else []
+    sections = CourseSection.objects.filter(
+        academic_year=current_year,
+        grade_level__institution_type=inst_type
+    ) if current_year else []
+    subjects = Subject.objects.filter(institution_type=inst_type)
 
     context = {
         'current_year': current_year,

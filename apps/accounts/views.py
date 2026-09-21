@@ -216,9 +216,23 @@ def dashboard_view(request):
     total_students_qs = CustomUser.objects.filter(role=CustomUser.Role.STUDENT)
     total_teachers_qs = CustomUser.objects.filter(role=CustomUser.Role.TEACHER)
 
+    from apps.courses.models import InstitutionSetting
+    inst_type = InstitutionSetting.get_settings().institution_type
+
+    inst_enrollments_qs = Enrollment.objects.filter(
+        academic_year=current_year,
+        course_section__grade_level__institution_type=inst_type
+    ) if current_year else Enrollment.objects.none()
+
+    active_students_count = inst_enrollments_qs.filter(status=Enrollment.Status.ACTIVE).values('student').distinct().count()
+    total_sections_count = CourseSection.objects.filter(
+        academic_year=current_year,
+        grade_level__institution_type=inst_type
+    ).count() if current_year else 0
+
     stats = {
         'total_users': total_users,
-        'active_students': total_students_qs.count(),
+        'active_students': active_students_count if active_students_count > 0 else CustomUser.objects.filter(role=CustomUser.Role.STUDENT).count(),
         'active_teachers': total_teachers_qs.count(),
         'current_year': current_year,
         'active_period': active_period,
@@ -226,8 +240,7 @@ def dashboard_view(request):
         'audit_events_today': AuditLog.objects.filter(
             timestamp__date=__import__('django').utils.timezone.now().date()
         ).count(),
-        'total_sections': CourseSection.objects.filter(
-            academic_year=current_year).count() if current_year else 0,
+        'total_sections': total_sections_count,
         'total_periods': AcademicPeriod.objects.filter(
             academic_year=current_year).count() if current_year else 0,
     }

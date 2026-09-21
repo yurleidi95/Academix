@@ -30,11 +30,20 @@ def reports_index_view(request):
         section = enrollment.course_section if enrollment else None
         return redirect('reports:student_bulletin', student_id=user.student_profile.id, period_id=active_period.id if active_period else 1)
 
+    from apps.courses.models import InstitutionSetting
+    inst_type = InstitutionSetting.get_settings().institution_type
+
     if user.is_teacher and hasattr(user, 'teacher_profile'):
         assignments = TeachingAssignment.objects.filter(teacher=user.teacher_profile, academic_year=current_year, is_active=True)
-        sections = CourseSection.objects.filter(id__in=assignments.values_list('course_section_id', flat=True)).distinct()
+        sections = CourseSection.objects.filter(
+            id__in=assignments.values_list('course_section_id', flat=True),
+            grade_level__institution_type=inst_type
+        ).distinct()
     else:
-        sections = CourseSection.objects.filter(academic_year=current_year).select_related('grade_level') if current_year else []
+        sections = CourseSection.objects.filter(
+            academic_year=current_year,
+            grade_level__institution_type=inst_type
+        ).select_related('grade_level') if current_year else []
 
     context = {
         'current_year': current_year,
@@ -119,11 +128,17 @@ def section_consolidated_view(request):
     """
     Sábana consolidada de calificaciones de una sección escolar para el periodo seleccionado.
     """
+    from apps.courses.models import InstitutionSetting
+    inst_type = InstitutionSetting.get_settings().institution_type
+
     section_id = request.GET.get('section_id')
     period_id = request.GET.get('period_id')
     current_year = get_current_academic_year()
     periods = AcademicPeriod.objects.filter(academic_year=current_year).order_by('number') if current_year else []
-    sections = CourseSection.objects.filter(academic_year=current_year).select_related('grade_level') if current_year else []
+    sections = CourseSection.objects.filter(
+        academic_year=current_year,
+        grade_level__institution_type=inst_type
+    ).select_related('grade_level') if current_year else []
 
     if not section_id or not period_id:
         context = {
@@ -133,7 +148,7 @@ def section_consolidated_view(request):
         }
         return render(request, 'reports/consolidated.html', context)
 
-    section = get_object_or_404(CourseSection, id=section_id)
+    section = get_object_or_404(CourseSection, id=section_id, grade_level__institution_type=inst_type)
     period = get_object_or_404(AcademicPeriod, id=period_id)
     data = build_section_consolidated_data(section, period)
 
@@ -166,11 +181,17 @@ def honor_roll_view(request):
     """
     Cuadro de honor con los mejores promedios y estadísticas directivas de rendimiento.
     """
+    from apps.courses.models import InstitutionSetting
+    inst_type = InstitutionSetting.get_settings().institution_type
+
     section_id = request.GET.get('section_id')
     period_id = request.GET.get('period_id')
     current_year = get_current_academic_year()
     periods = AcademicPeriod.objects.filter(academic_year=current_year).order_by('number') if current_year else []
-    sections = CourseSection.objects.filter(academic_year=current_year).select_related('grade_level') if current_year else []
+    sections = CourseSection.objects.filter(
+        academic_year=current_year,
+        grade_level__institution_type=inst_type
+    ).select_related('grade_level') if current_year else []
 
     if not section_id or not period_id:
         # Por defecto seleccionar primera sección y periodo activo
@@ -178,7 +199,7 @@ def honor_roll_view(request):
         section = sections.first() if sections.exists() else None
         period = active_period if active_period else (periods.first() if periods.exists() else None)
     else:
-        section = get_object_or_404(CourseSection, id=section_id)
+        section = get_object_or_404(CourseSection, id=section_id, grade_level__institution_type=inst_type)
         period = get_object_or_404(AcademicPeriod, id=period_id)
 
     data = build_honor_roll_data(section, period) if (section and period) else None

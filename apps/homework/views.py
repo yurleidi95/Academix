@@ -101,18 +101,27 @@ def homework_index_view(request):
         }
         return render(request, 'homework/student_homework.html', context)
 
-    # 3. Modo Docente / Directivo / Secretaría: Catálogo de Cursos
-    # El usuario solicitó: "que al momento de estar en el modulo de tareas que salgan los cursos"
+    from apps.courses.models import InstitutionSetting
+    inst_type = InstitutionSetting.get_settings().institution_type
+
+    # 3. Modo Docente / Directivo / Secretaría: Catálogo de Cursos de la institución activa
     if user.is_teacher and hasattr(user, 'teacher_profile'):
         assignments = TeachingAssignment.objects.filter(
             teacher=user.teacher_profile,
             academic_year=current_year,
+            course_section__grade_level__institution_type=inst_type,
             is_active=True
         ).select_related('course_section', 'subject')
         assigned_section_ids = assignments.values_list('course_section_id', flat=True)
-        sections = CourseSection.objects.filter(id__in=assigned_section_ids).select_related('grade_level', 'homeroom_teacher')
+        sections = CourseSection.objects.filter(
+            id__in=assigned_section_ids,
+            grade_level__institution_type=inst_type
+        ).select_related('grade_level', 'homeroom_teacher')
     else:
-        sections = CourseSection.objects.filter(academic_year=current_year).select_related('grade_level', 'homeroom_teacher') if current_year else []
+        sections = CourseSection.objects.filter(
+            academic_year=current_year,
+            grade_level__institution_type=inst_type
+        ).select_related('grade_level', 'homeroom_teacher') if current_year else []
 
     # Calcular estadísticas de tareas por curso para el periodo activo
     course_cards = []
@@ -127,7 +136,7 @@ def homework_index_view(request):
             'hw_count': hw_count,
         })
 
-    subjects = Subject.objects.all()
+    subjects = Subject.objects.filter(institution_type=inst_type)
 
     context = {
         'current_year': current_year,

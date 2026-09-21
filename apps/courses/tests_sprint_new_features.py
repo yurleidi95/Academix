@@ -70,22 +70,47 @@ class SprintNewFeaturesTests(TestCase):
         self.client = Client()
 
     def test_institution_adaptability_and_presets(self):
-        """Valida que el modelo de configuración institucional aplique presets correctamente."""
+        """Valida que el modelo de configuración institucional aplique presets correctamente para los 4 modos."""
         setting = InstitutionSetting.get_settings()
+        
+        # 1. Preset Colegio / Básica y Media
+        setting.apply_preset(InstitutionSetting.InstitutionType.COLEGIO)
+        setting.refresh_from_db()
         self.assertEqual(setting.term_student, 'Estudiante')
+        self.assertEqual(setting.term_teacher, 'Docente')
+        self.assertEqual(setting.term_grade, 'Grado')
+        self.assertEqual(setting.term_section, 'Curso')
+        self.assertEqual(setting.term_subject, 'Asignatura')
+        self.assertEqual(setting.term_director, 'Rector(a)')
 
-        # Aplicar preset SENA Técnico
+        # 2. Preset Universidad / Superior
+        setting.apply_preset(InstitutionSetting.InstitutionType.UNIVERSIDAD)
+        setting.refresh_from_db()
+        self.assertEqual(setting.term_student, 'Estudiante')
+        self.assertEqual(setting.term_teacher, 'Profesor(a)')
+        self.assertEqual(setting.term_grade, 'Semestre')
+        self.assertEqual(setting.term_section, 'Grupo')
+        self.assertEqual(setting.term_subject, 'Materia')
+        self.assertEqual(setting.term_director, 'Decano(a)')
+
+        # 3. Preset SENA Técnico
         setting.apply_preset(InstitutionSetting.InstitutionType.SENA_TECNICO)
         setting.refresh_from_db()
         self.assertEqual(setting.term_student, 'Aprendiz')
         self.assertEqual(setting.term_teacher, 'Instructor(a)')
+        self.assertEqual(setting.term_grade, 'Trimestre')
         self.assertEqual(setting.term_section, 'Ficha')
+        self.assertEqual(setting.term_subject, 'Competencia / Módulo')
 
-        # Aplicar preset Universidad
-        setting.apply_preset(InstitutionSetting.InstitutionType.UNIVERSIDAD)
+        # 4. Preset Academia / Cursos
+        setting.apply_preset(InstitutionSetting.InstitutionType.ACADEMIA)
         setting.refresh_from_db()
-        self.assertEqual(setting.term_teacher, 'Profesor(a)')
-        self.assertEqual(setting.term_section, 'Grupo')
+        self.assertEqual(setting.term_student, 'Alumno(a)')
+        self.assertEqual(setting.term_teacher, 'Tutor(a)')
+        self.assertEqual(setting.term_grade, 'Nivel')
+        self.assertEqual(setting.term_section, 'Grupo / Clase')
+        self.assertEqual(setting.term_subject, 'Módulo / Taller')
+        self.assertEqual(setting.term_director, 'Director(a)')
 
     def test_student_observations_permissions(self):
         """Valida que Rector, Secretaria y Docente puedan poner observaciones y que Padre/Estudiante no puedan."""

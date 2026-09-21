@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}Expedientes Estudiantiles y Matrículas | ACADEMIX{% endblock %}
+{% block title %}Expedientes de {{ institution.term_students|default:'Estudiantes' }} y Matrículas | ACADEMIX{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
-        <h3 class="fw-bold text-dark mb-0">Expedientes Estudiantiles y Matrículas</h3>
-        <p class="text-muted small mb-0">Gestión de matrículas escolares, asignación a grupos y datos de acudiente</p>
+        <h3 class="fw-bold text-dark mb-0">Expedientes de {{ institution.term_students|default:'Estudiantes' }} y Matrículas</h3>
+        <p class="text-muted small mb-0">Gestión de matrículas, asignación a {{ institution.term_sections|lower|default:'grupos' }} y datos de acudiente</p>
     </div>
     <div class="d-flex gap-2">
         {% if user.is_admin_role or user.is_rector or user.is_secretary or user.is_teacher %}
@@ -18,7 +18,7 @@
         {% if user.is_admin_role or user.is_rector or user.is_secretary %}
         <button class="btn btn-primary btn-sm d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="modal" data-bs-target="#createStudentModal">
             <i class="bi bi-person-plus-fill"></i>
-            <span>Nuevo Alumno</span>
+            <span>Nuevo(a) {{ institution.term_student|default:'Alumno' }}</span>
         </button>
         {% endif %}
     </div>
@@ -31,14 +31,14 @@
         <div class="col-md-6">
             <div class="input-group">
                 <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
-                <input type="text" name="q" class="form-control" placeholder="Buscar por nombre, apellido o código de estudiante..." value="{{ query }}">
+                <input type="text" name="q" class="form-control" placeholder="Buscar por nombre, apellido o código de {{ institution.term_student|lower|default:'estudiante' }}..." value="{{ query }}">
             </div>
         </div>
         <div class="col-md-4">
             <select name="section" class="form-select" onchange="this.form.submit()">
-                <option value="">-- Todos los grupos --</option>
+                <option value="">-- Todos los {{ institution.term_sections|lower|default:'grupos' }} --</option>
                 {% for sec in sections %}
-                <option value="{{ sec.id }}" {% if selected_section_id == sec.id|stringformat:"s" %}selected{% endif %}>{{ sec.name }} (Grado {{ sec.grade_level.name }})</option>
+                <option value="{{ sec.id }}" {% if selected_section_id == sec.id|stringformat:"s" %}selected{% endif %}>{{ sec.name }} ({{ institution.term_grade|default:'Grado' }} {{ sec.grade_level.name }})</option>
                 {% endfor %}
             </select>
         </div>
@@ -54,8 +54,8 @@
         <thead class="table-light small text-muted text-uppercase">
             <tr>
                 <th>Código</th>
-                <th>Estudiante</th>
-                <th>Grupo Escolar</th>
+                <th>{{ institution.term_student|default:'Estudiante' }}</th>
+                <th>{{ institution.term_section|default:'Grupo' }}</th>
                 <th>Acudiente / Contacto</th>
                 <th>Fecha Matrícula</th>
                 <th>Estado</th>
@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 {% csrf_token %}
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title fw-bold" id="createStudentModalLabel">
-                        <i class="bi bi-person-plus-fill me-2"></i>Registrar Nuevo Alumno
+                        <i class="bi bi-person-plus-fill me-2"></i>Registrar Nuevo(a) {{ institution.term_student|default:'Alumno' }}
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                 </div>
@@ -237,18 +237,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary">Grupo / Salón a Matricular *</label>
+                        <label class="form-label small fw-semibold text-secondary">{{ institution.term_section|default:'Grupo' }} a Matricular *</label>
                         <select name="section_id" class="form-select" required>
-                            <option value="" disabled selected>-- Seleccione el grupo destino --</option>
+                            <option value="" disabled selected>-- Seleccione el {{ institution.term_section|lower|default:'grupo' }} destino --</option>
                             {% for s in sections %}
-                            <option value="{{ s.id }}">{{ s.name }} (Grado {{ s.grade_level.name }})</option>
+                            <option value="{{ s.id }}">{{ s.name }} ({{ institution.term_grade|default:'Grado' }} {{ s.grade_level.name }})</option>
                             {% endfor %}
                         </select>
                     </div>
 
                     <div class="row g-2 mb-3">
                         <div class="col-sm-6">
-                            <label class="form-label small fw-semibold text-secondary">Código Estudiantil (Opcional)</label>
+                            <label class="form-label small fw-semibold text-secondary">Código (Opcional)</label>
                             <input type="text" name="student_code" class="form-control" placeholder="Auto-generado si vacío">
                         </div>
                         <div class="col-sm-6">
@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="mb-2">
                         <label class="form-label small fw-semibold text-secondary">Correo Institucional (Opcional)</label>
                         <input type="email" name="email" class="form-control" placeholder="Auto-generado si vacío">
-                        <div class="form-text small">La contraseña inicial del estudiante será su número de documento.</div>
+                        <div class="form-text small">La contraseña inicial del {{ institution.term_student|lower|default:'estudiante' }} será su número de documento.</div>
                     </div>
                 </div>
                 <div class="modal-footer bg-light">

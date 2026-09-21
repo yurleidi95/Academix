@@ -10,14 +10,24 @@ from apps.courses.services import get_current_academic_year
 @login_required
 def students_list_view(request):
     """
-    Directorio de expedientes estudiantiles y estado de matrículas.
+    Directorio de expedientes estudiantiles y estado de matrículas para la institución activa.
     """
+    from apps.courses.models import InstitutionSetting
+    inst_type = InstitutionSetting.get_settings().institution_type
+
     current_year = get_current_academic_year()
     section_id = request.GET.get('section')
     query = request.GET.get('q', '').strip()
 
-    sections = CourseSection.objects.filter(academic_year=current_year).select_related('grade_level') if current_year else []
-    enrollments = Enrollment.objects.filter(academic_year=current_year).select_related('student__user', 'student__parent', 'course_section__grade_level') if current_year else []
+    sections = CourseSection.objects.filter(
+        academic_year=current_year,
+        grade_level__institution_type=inst_type
+    ).select_related('grade_level') if current_year else []
+
+    enrollments = Enrollment.objects.filter(
+        academic_year=current_year,
+        course_section__grade_level__institution_type=inst_type
+    ).select_related('student__user', 'student__parent', 'course_section__grade_level') if current_year else []
 
     if section_id:
         enrollments = enrollments.filter(course_section_id=section_id)
@@ -31,7 +41,10 @@ def students_list_view(request):
         )
 
     # Estudiantes sin matricular en el año actual (para el modal de matrícula)
-    enrolled_student_ids = Enrollment.objects.filter(academic_year=current_year).values_list('student__user_id', flat=True) if current_year else []
+    enrolled_student_ids = Enrollment.objects.filter(
+        academic_year=current_year,
+        course_section__grade_level__institution_type=inst_type
+    ).values_list('student__user_id', flat=True) if current_year else []
     available_users = CustomUser.objects.filter(role=CustomUser.Role.STUDENT, is_active=True).exclude(id__in=enrolled_student_ids)
 
     context = {
@@ -300,14 +313,23 @@ def bulk_upload_students_view(request):
     current_year = get_current_academic_year()
     section_id = request.GET.get('section') or request.POST.get('section_id')
 
+    from apps.courses.models import InstitutionSetting
+    inst_type = InstitutionSetting.get_settings().institution_type
+
     if request.user.is_teacher and hasattr(request.user, 'teacher_profile'):
         from apps.teachers.models import TeachingAssignment
         assignments = TeachingAssignment.objects.filter(teacher=request.user.teacher_profile, academic_year=current_year, is_active=True)
-        sections = CourseSection.objects.filter(id__in=assignments.values_list('course_section_id', flat=True))
+        sections = CourseSection.objects.filter(
+            id__in=assignments.values_list('course_section_id', flat=True),
+            grade_level__institution_type=inst_type
+        )
     else:
-        sections = CourseSection.objects.filter(academic_year=current_year).select_related('grade_level') if current_year else []
+        sections = CourseSection.objects.filter(
+            academic_year=current_year,
+            grade_level__institution_type=inst_type
+        ).select_related('grade_level') if current_year else []
 
-    selected_section = CourseSection.objects.filter(id=section_id).first() if section_id else None
+    selected_section = CourseSection.objects.filter(id=section_id, grade_level__institution_type=inst_type).first() if section_id else None
 
     if request.method == 'POST':
         if not selected_section:

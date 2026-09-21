@@ -17,12 +17,15 @@ def curriculum_view(request):
     if not (request.user.is_teacher or request.user.is_admin_role or request.user.is_rector):
         raise PermissionDenied("Acceso denegado: La Malla Curricular es de acceso exclusivo para profesores.")
 
-    areas = KnowledgeArea.objects.prefetch_related('subjects').all()
-    grades = GradeLevel.objects.all().order_by('order')
+    from apps.courses.models import InstitutionSetting
+    inst_type = InstitutionSetting.get_settings().institution_type
+
+    areas = KnowledgeArea.objects.filter(institution_type=inst_type).prefetch_related('subjects')
+    grades = GradeLevel.objects.filter(institution_type=inst_type).order_by('order')
     selected_grade_id = request.GET.get('grade')
 
     if selected_grade_id:
-        active_grade = get_object_or_404(GradeLevel, id=selected_grade_id)
+        active_grade = get_object_or_404(GradeLevel, id=selected_grade_id, institution_type=inst_type)
     else:
         active_grade = grades.first()
 
@@ -31,7 +34,7 @@ def curriculum_view(request):
         existing_sub_ids = set(
             GradeSubject.objects.filter(grade_level=active_grade).values_list('subject_id', flat=True)
         )
-        all_subjects = Subject.objects.all()
+        all_subjects = Subject.objects.filter(institution_type=inst_type)
         to_create = []
         for s in all_subjects:
             if s.id not in existing_sub_ids:
