@@ -1,6 +1,6 @@
 -- ============================================================================
 -- ACADEMIX - RESPALDO Y COPIA COMPLETA DE BASE DE DATOS (MYSQL / MARIADB)
--- Generado: 2026-09-16 16:15:27
+-- Generado: 2026-09-25 07:29:38
 -- Motor de almacenamiento: InnoDB | Juego de caracteres: utf8mb4_unicode_ci
 -- Cumple con especificaciones técnicas del informe y protocolos de empresa
 -- ============================================================================
@@ -679,7 +679,7 @@ CREATE TABLE `auth_permission` (
   CONSTRAINT `fk_auth_permission_content_type_id` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcado de datos para la tabla `auth_permission` (120 registros)
+-- Volcado de datos para la tabla `auth_permission` (132 registros)
 INSERT INTO `auth_permission` (`id`, `content_type_id`, `codename`, `name`) VALUES
   (1, 1, 'add_logentry', 'Can add log entry'),
   (2, 1, 'change_logentry', 'Can change log entry'),
@@ -800,7 +800,19 @@ INSERT INTO `auth_permission` (`id`, `content_type_id`, `codename`, `name`) VALU
   (117, 30, 'add_institutionalactivity', 'Can add Actividad Institucional'),
   (118, 30, 'change_institutionalactivity', 'Can change Actividad Institucional'),
   (119, 30, 'delete_institutionalactivity', 'Can delete Actividad Institucional'),
-  (120, 30, 'view_institutionalactivity', 'Can view Actividad Institucional');
+  (120, 30, 'view_institutionalactivity', 'Can view Actividad Institucional'),
+  (121, 31, 'add_institutionsetting', 'Can add Configuración Institucional'),
+  (122, 31, 'change_institutionsetting', 'Can change Configuración Institucional'),
+  (123, 31, 'delete_institutionsetting', 'Can delete Configuración Institucional'),
+  (124, 31, 'view_institutionsetting', 'Can view Configuración Institucional'),
+  (125, 32, 'add_subjectnorm', 'Can add Norma / Competencia'),
+  (126, 32, 'change_subjectnorm', 'Can change Norma / Competencia'),
+  (127, 32, 'delete_subjectnorm', 'Can delete Norma / Competencia'),
+  (128, 32, 'view_subjectnorm', 'Can view Norma / Competencia'),
+  (129, 33, 'add_studentobservation', 'Can add Observación de Estudiante'),
+  (130, 33, 'change_studentobservation', 'Can change Observación de Estudiante'),
+  (131, 33, 'delete_studentobservation', 'Can delete Observación de Estudiante'),
+  (132, 33, 'view_studentobservation', 'Can view Observación de Estudiante');
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `courses_academicyear`
@@ -857,21 +869,49 @@ INSERT INTO `courses_coursesection` (`id`, `name`, `classroom`, `capacity`, `is_
 DROP TABLE IF EXISTS `courses_gradelevel`;
 CREATE TABLE `courses_gradelevel` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(50) NOT NULL,
-  `code` VARCHAR(10) NOT NULL,
+  `code` VARCHAR(25) NOT NULL,
   `level_stage` VARCHAR(20) NOT NULL,
   `order` INT NOT NULL,
+  `institution_type` VARCHAR(20) NOT NULL,
+  `name` VARCHAR(60) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Volcado de datos para la tabla `courses_gradelevel` (6 registros)
-INSERT INTO `courses_gradelevel` (`id`, `name`, `code`, `level_stage`, `order`) VALUES
-  (1, 'Sexto', '06', 'SECUNDARIA', 6),
-  (2, 'Séptimo', '07', 'SECUNDARIA', 7),
-  (3, 'Octavo', '08', 'SECUNDARIA', 8),
-  (4, 'Noveno', '09', 'SECUNDARIA', 9),
-  (5, 'Décimo', '10', 'MEDIA', 10),
-  (6, 'Once', '11', 'MEDIA', 11);
+INSERT INTO `courses_gradelevel` (`id`, `code`, `level_stage`, `order`, `institution_type`, `name`) VALUES
+  (1, '06', 'SECUNDARIA', 6, 'COLEGIO', 'Sexto'),
+  (2, '07', 'SECUNDARIA', 7, 'COLEGIO', 'Séptimo'),
+  (3, '08', 'SECUNDARIA', 8, 'COLEGIO', 'Octavo'),
+  (4, '09', 'SECUNDARIA', 9, 'COLEGIO', 'Noveno'),
+  (5, '10', 'MEDIA', 10, 'COLEGIO', 'Décimo'),
+  (6, '11', 'MEDIA', 11, 'COLEGIO', 'Once');
+
+-- ----------------------------------------------------------------------------
+-- Estructura de tabla para `courses_institutionsetting`
+-- ----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `courses_institutionsetting`;
+CREATE TABLE `courses_institutionsetting` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `institution_type` VARCHAR(20) NOT NULL,
+  `institution_name` VARCHAR(150) NOT NULL,
+  `slogan` VARCHAR(255) NOT NULL,
+  `term_student` VARCHAR(30) NOT NULL,
+  `term_students` VARCHAR(30) NOT NULL,
+  `term_teacher` VARCHAR(30) NOT NULL,
+  `term_teachers` VARCHAR(30) NOT NULL,
+  `term_grade` VARCHAR(30) NOT NULL,
+  `term_section` VARCHAR(30) NOT NULL,
+  `term_sections` VARCHAR(30) NOT NULL,
+  `term_subject` VARCHAR(30) NOT NULL,
+  `term_subjects` VARCHAR(30) NOT NULL,
+  `term_director` VARCHAR(30) NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcado de datos para la tabla `courses_institutionsetting` (1 registros)
+INSERT INTO `courses_institutionsetting` (`id`, `institution_type`, `institution_name`, `slogan`, `term_student`, `term_students`, `term_teacher`, `term_teachers`, `term_grade`, `term_section`, `term_sections`, `term_subject`, `term_subjects`, `term_director`, `updated_at`) VALUES
+  (1, 'COLEGIO', 'ACADEMIX', 'Sistema Integral de Gestión Académica y Control Escolar', 'Estudiante', 'Estudiantes', 'Docente', 'Docentes', 'Grado', 'Curso', 'Cursos', 'Asignatura', 'Asignaturas', 'Rector(a)', '2026-09-25 12:23:06.304135');
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `django_admin_log`
@@ -911,7 +951,7 @@ CREATE TABLE `django_content_type` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcado de datos para la tabla `django_content_type` (30 registros)
+-- Volcado de datos para la tabla `django_content_type` (33 registros)
 INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
   (1, 'admin', 'logentry'),
   (2, 'auth', 'permission'),
@@ -942,7 +982,10 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
   (27, 'rules', 'academicclosinglog'),
   (28, 'rules', 'annualfinalgrade'),
   (29, 'rules', 'promotionrule'),
-  (30, 'alerts', 'institutionalactivity');
+  (30, 'alerts', 'institutionalactivity'),
+  (31, 'courses', 'institutionsetting'),
+  (32, 'subjects', 'subjectnorm'),
+  (33, 'students', 'studentobservation');
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `django_migrations`
@@ -956,7 +999,7 @@ CREATE TABLE `django_migrations` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcado de datos para la tabla `django_migrations` (33 registros)
+-- Volcado de datos para la tabla `django_migrations` (45 registros)
 INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
   (1, 'contenttypes', '0001_initial', '2026-09-15 01:36:35.064034'),
   (2, 'contenttypes', '0002_remove_content_type_name', '2026-09-15 01:36:35.071158'),
@@ -990,7 +1033,19 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
   (30, 'rules', '0001_initial', '2026-09-15 02:54:01.939197'),
   (31, 'alerts', '0002_institutionalactivity', '2026-09-16 00:54:47.190109'),
   (32, 'grades', '0002_alter_graderecord_score', '2026-09-16 00:57:08.506176'),
-  (33, 'homework', '0002_alter_homeworksubmission_score', '2026-09-16 00:58:38.948416');
+  (33, 'homework', '0002_alter_homeworksubmission_score', '2026-09-16 00:58:38.948416'),
+  (34, 'courses', '0002_institutionsetting', '2026-09-25 12:21:12.425234'),
+  (35, 'courses', '0003_alter_gradelevel_options_gradelevel_institution_type_and_more', '2026-09-25 12:21:12.495479'),
+  (36, 'courses', '0004_alter_gradelevel_level_stage', '2026-09-25 12:21:12.505117'),
+  (37, 'grades', '0003_alter_periodfinalgrade_performance_level', '2026-09-25 12:21:12.540852'),
+  (38, 'grades', '0004_graderecord_is_locked', '2026-09-25 12:21:12.589064'),
+  (39, 'homework', '0003_homeworksubmission_is_locked', '2026-09-25 12:21:12.635890'),
+  (40, 'rules', '0002_academicclosinglog_rector_signature_authorized', '2026-09-25 12:21:12.707971'),
+  (41, 'students', '0002_studentobservation', '2026-09-25 12:21:12.796325'),
+  (42, 'students', '0003_alter_enrollment_status', '2026-09-25 12:21:12.855522'),
+  (43, 'students', '0004_enrollment_admission_requirement_info_and_more', '2026-09-25 12:21:12.958184'),
+  (44, 'subjects', '0002_alter_knowledgearea_options_alter_subject_options_and_more', '2026-09-25 12:21:13.141983'),
+  (45, 'subjects', '0003_alter_subject_options_subject_category_and_more', '2026-09-25 12:21:13.311994');
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `django_session`
@@ -1101,6 +1156,7 @@ CREATE TABLE `grades_graderecord` (
   `graded_by_id` BIGINT DEFAULT NULL,
   `student_id` BIGINT NOT NULL,
   `subject_id` BIGINT NOT NULL,
+  `is_locked` TINYINT(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_grades_graderecord_subject_id` (`subject_id`),
   CONSTRAINT `fk_grades_graderecord_subject_id` FOREIGN KEY (`subject_id`) REFERENCES `subjects_subject` (`id`),
@@ -1117,22 +1173,22 @@ CREATE TABLE `grades_graderecord` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Volcado de datos para la tabla `grades_graderecord` (15 registros)
-INSERT INTO `grades_graderecord` (`id`, `score`, `feedback`, `created_at`, `updated_at`, `academic_period_id`, `course_section_id`, `criterion_id`, `graded_by_id`, `student_id`, `subject_id`) VALUES
-  (1, 3.65, NULL, '2026-09-15 02:38:28.958939', '2026-09-15 14:49:35.243483', 1, 1, 1, 10, 1, 1),
-  (2, 5, NULL, '2026-09-15 02:38:28.978565', '2026-09-15 14:49:16.813955', 1, 1, 2, 10, 1, 1),
-  (3, 4.14, NULL, '2026-09-15 02:38:28.995203', '2026-09-15 14:49:59.036643', 1, 1, 3, 10, 1, 1),
-  (4, 0.4, NULL, '2026-09-16 12:17:19.772506', '2026-09-16 12:18:19.064245', 1, 3, 7, 8, 4, 5),
-  (5, 0.45, NULL, '2026-09-16 12:18:32.049104', '2026-09-16 12:18:37.609075', 1, 3, 8, 8, 4, 5),
-  (6, 0.51, NULL, '2026-09-16 12:18:46.290775', '2026-09-16 12:18:46.290823', 1, 3, 9, 8, 4, 5),
-  (7, 0.51, NULL, '2026-09-16 12:25:43.691037', '2026-09-16 12:25:54.969974', 1, 3, 7, 8, 5, 5),
-  (8, 0.58, NULL, '2026-09-16 12:26:04.507412', '2026-09-16 12:26:04.507459', 1, 3, 8, 8, 5, 5),
-  (9, 3.15, NULL, '2026-09-16 12:26:12.172033', '2026-09-16 12:26:37.274498', 1, 3, 9, 8, 5, 5),
-  (10, 2.62, NULL, '2026-09-16 12:41:04.287732', '2026-09-16 12:41:04.287776', 1, 1, 13, 8, 3, 2),
-  (11, 3.32, NULL, '2026-09-16 12:41:24.253053', '2026-09-16 12:41:24.253126', 1, 1, 14, 8, 3, 2),
-  (12, 4.21, NULL, '2026-09-16 12:41:49.000542', '2026-09-16 12:42:25.436651', 1, 1, 15, 8, 3, 2),
-  (13, 1.82, NULL, '2026-09-16 12:42:31.971246', '2026-09-16 12:42:42.818895', 1, 1, 13, 8, 2, 2),
-  (14, 2.28, NULL, '2026-09-16 12:42:56.963866', '2026-09-16 12:42:56.963914', 1, 1, 14, 8, 2, 2),
-  (15, 2.48, NULL, '2026-09-16 12:43:15.444158', '2026-09-16 12:43:15.444207', 1, 1, 15, 8, 2, 2);
+INSERT INTO `grades_graderecord` (`id`, `score`, `feedback`, `created_at`, `updated_at`, `academic_period_id`, `course_section_id`, `criterion_id`, `graded_by_id`, `student_id`, `subject_id`, `is_locked`) VALUES
+  (1, 3.65, NULL, '2026-09-15 02:38:28.958939', '2026-09-15 14:49:35.243483', 1, 1, 1, 10, 1, 1, 0),
+  (2, 5, NULL, '2026-09-15 02:38:28.978565', '2026-09-15 14:49:16.813955', 1, 1, 2, 10, 1, 1, 0),
+  (3, 4.14, NULL, '2026-09-15 02:38:28.995203', '2026-09-15 14:49:59.036643', 1, 1, 3, 10, 1, 1, 0),
+  (4, 0.4, NULL, '2026-09-16 12:17:19.772506', '2026-09-16 12:18:19.064245', 1, 3, 7, 8, 4, 5, 0),
+  (5, 0.45, NULL, '2026-09-16 12:18:32.049104', '2026-09-16 12:18:37.609075', 1, 3, 8, 8, 4, 5, 0),
+  (6, 0.51, NULL, '2026-09-16 12:18:46.290775', '2026-09-16 12:18:46.290823', 1, 3, 9, 8, 4, 5, 0),
+  (7, 0.51, NULL, '2026-09-16 12:25:43.691037', '2026-09-16 12:25:54.969974', 1, 3, 7, 8, 5, 5, 0),
+  (8, 0.58, NULL, '2026-09-16 12:26:04.507412', '2026-09-16 12:26:04.507459', 1, 3, 8, 8, 5, 5, 0),
+  (9, 3.15, NULL, '2026-09-16 12:26:12.172033', '2026-09-16 12:26:37.274498', 1, 3, 9, 8, 5, 5, 0),
+  (10, 2.62, NULL, '2026-09-16 12:41:04.287732', '2026-09-16 12:41:04.287776', 1, 1, 13, 8, 3, 2, 0),
+  (11, 3.32, NULL, '2026-09-16 12:41:24.253053', '2026-09-16 12:41:24.253126', 1, 1, 14, 8, 3, 2, 0),
+  (12, 4.21, NULL, '2026-09-16 12:41:49.000542', '2026-09-16 12:42:25.436651', 1, 1, 15, 8, 3, 2, 0),
+  (13, 1.82, NULL, '2026-09-16 12:42:31.971246', '2026-09-16 12:42:42.818895', 1, 1, 13, 8, 2, 2, 0),
+  (14, 2.28, NULL, '2026-09-16 12:42:56.963866', '2026-09-16 12:42:56.963914', 1, 1, 14, 8, 2, 2, 0),
+  (15, 2.48, NULL, '2026-09-16 12:43:15.444158', '2026-09-16 12:43:15.444207', 1, 1, 15, 8, 2, 2, 0);
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `grades_periodfinalgrade`
@@ -1226,6 +1282,7 @@ CREATE TABLE `homework_homeworksubmission` (
   `status` VARCHAR(20) NOT NULL,
   `homework_id` BIGINT NOT NULL,
   `student_id` BIGINT NOT NULL,
+  `is_locked` TINYINT(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_homework_homeworksubmission_student_id` (`student_id`),
   CONSTRAINT `fk_homework_homeworksubmission_student_id` FOREIGN KEY (`student_id`) REFERENCES `students_studentprofile` (`id`),
@@ -1234,11 +1291,11 @@ CREATE TABLE `homework_homeworksubmission` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Volcado de datos para la tabla `homework_homeworksubmission` (4 registros)
-INSERT INTO `homework_homeworksubmission` (`id`, `submission_text`, `attachment`, `submitted_at`, `score`, `teacher_feedback`, `status`, `homework_id`, `student_id`) VALUES
-  (1, 'Adjunto solución del taller.', '', '2026-09-15 02:38:29.019156', 4.5, 'Buen trabajo con las demostraciones.', 'GRADED', 1, 1),
-  (2, 'promt', 'homework_submissions/PROMPT_MAESTRO.md.pdf', '2026-09-16 12:33:02.928737', NULL, NULL, 'SUBMITTED', 1, 2),
-  (3, 'promt', 'homework_submissions/MY_FUTURE_PLANS.docx', '2026-09-16 12:37:09.480679', 4.54, 'Bien', 'GRADED', 2, 2),
-  (4, '', 'homework_submissions/HUELLAS.sql', '2026-09-16 15:55:22.685256', 1, NULL, 'GRADED', 4, 2);
+INSERT INTO `homework_homeworksubmission` (`id`, `submission_text`, `attachment`, `submitted_at`, `score`, `teacher_feedback`, `status`, `homework_id`, `student_id`, `is_locked`) VALUES
+  (1, 'Adjunto solución del taller.', '', '2026-09-15 02:38:29.019156', 4.5, 'Buen trabajo con las demostraciones.', 'GRADED', 1, 1, 0),
+  (2, 'promt', 'homework_submissions/PROMPT_MAESTRO.md.pdf', '2026-09-16 12:33:02.928737', NULL, NULL, 'SUBMITTED', 1, 2, 0),
+  (3, 'promt', 'homework_submissions/MY_FUTURE_PLANS.docx', '2026-09-16 12:37:09.480679', 4.54, 'Bien', 'GRADED', 2, 2, 0),
+  (4, '', 'homework_submissions/HUELLAS.sql', '2026-09-16 15:55:22.685256', 1, NULL, 'GRADED', 4, 2, 0);
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `periods_academicperiod`
@@ -1280,6 +1337,7 @@ CREATE TABLE `rules_academicclosinglog` (
   `academic_period_id` BIGINT DEFAULT NULL,
   `academic_year_id` BIGINT NOT NULL,
   `closed_by_id` BIGINT NOT NULL,
+  `rector_signature_authorized` TINYINT(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_rules_academicclosinglog_closed_by_id` (`closed_by_id`),
   CONSTRAINT `fk_rules_academicclosinglog_closed_by_id` FOREIGN KEY (`closed_by_id`) REFERENCES `accounts_customuser` (`id`),
@@ -1290,8 +1348,8 @@ CREATE TABLE `rules_academicclosinglog` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Volcado de datos para la tabla `rules_academicclosinglog` (1 registros)
-INSERT INTO `rules_academicclosinglog` (`id`, `closing_type`, `closed_at`, `total_students_evaluated`, `total_promoted`, `total_failed`, `observations`, `academic_period_id`, `academic_year_id`, `closed_by_id`) VALUES
-  (1, 'PERIOD', '2026-09-16 12:45:36.892631', 0, 0, 0, 'Cierre formal de periodo lectivo', 1, 1, 13);
+INSERT INTO `rules_academicclosinglog` (`id`, `closing_type`, `closed_at`, `total_students_evaluated`, `total_promoted`, `total_failed`, `observations`, `academic_period_id`, `academic_year_id`, `closed_by_id`, `rector_signature_authorized`) VALUES
+  (1, 'PERIOD', '2026-09-16 12:45:36.892631', 0, 0, 0, 'Cierre formal de periodo lectivo', 1, 1, 13, 1);
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `rules_annualfinalgrade`
@@ -1350,6 +1408,8 @@ CREATE TABLE `students_enrollment` (
   `academic_year_id` BIGINT NOT NULL,
   `course_section_id` BIGINT NOT NULL,
   `student_id` BIGINT NOT NULL,
+  `admission_requirement_info` VARCHAR(150) NOT NULL,
+  `financial_status` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_students_enrollment_student_id` (`student_id`),
   CONSTRAINT `fk_students_enrollment_student_id` FOREIGN KEY (`student_id`) REFERENCES `students_studentprofile` (`id`),
@@ -1360,13 +1420,41 @@ CREATE TABLE `students_enrollment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Volcado de datos para la tabla `students_enrollment` (6 registros)
-INSERT INTO `students_enrollment` (`id`, `enrollment_date`, `status`, `academic_year_id`, `course_section_id`, `student_id`) VALUES
-  (1, '2026-09-14', 'ACTIVE', 1, 1, 1),
-  (2, '2026-09-16', 'ACTIVE', 1, 1, 3),
-  (3, '2026-09-16', 'ACTIVE', 1, 1, 2),
-  (4, '2026-09-16', 'ACTIVE', 1, 3, 4),
-  (5, '2026-09-16', 'ACTIVE', 1, 3, 5),
-  (6, '2026-09-16', 'ACTIVE', 1, 2, 6);
+INSERT INTO `students_enrollment` (`id`, `enrollment_date`, `status`, `academic_year_id`, `course_section_id`, `student_id`, `admission_requirement_info`, `financial_status`) VALUES
+  (1, '2026-09-14', 'ACTIVE', 1, 1, 1, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
+  (2, '2026-09-16', 'ACTIVE', 1, 1, 3, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
+  (3, '2026-09-16', 'ACTIVE', 1, 1, 2, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
+  (4, '2026-09-16', 'ACTIVE', 1, 3, 4, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
+  (5, '2026-09-16', 'ACTIVE', 1, 3, 5, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
+  (6, '2026-09-16', 'ACTIVE', 1, 2, 6, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO');
+
+-- ----------------------------------------------------------------------------
+-- Estructura de tabla para `students_studentobservation`
+-- ----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `students_studentobservation`;
+CREATE TABLE `students_studentobservation` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `category` VARCHAR(25) NOT NULL,
+  `severity` VARCHAR(15) NOT NULL,
+  `title` VARCHAR(150) NOT NULL,
+  `description` LONGTEXT NOT NULL,
+  `commitments` TEXT DEFAULT NULL,
+  `parent_notified` TINYINT(1) NOT NULL,
+  `created_at` DATETIME NOT NULL,
+  `academic_period_id` BIGINT DEFAULT NULL,
+  `academic_year_id` BIGINT NOT NULL,
+  `author_id` BIGINT DEFAULT NULL,
+  `student_id` BIGINT NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_students_studentobservation_student_id` (`student_id`),
+  CONSTRAINT `fk_students_studentobservation_student_id` FOREIGN KEY (`student_id`) REFERENCES `students_studentprofile` (`id`),
+  KEY `idx_students_studentobservation_author_id` (`author_id`),
+  CONSTRAINT `fk_students_studentobservation_author_id` FOREIGN KEY (`author_id`) REFERENCES `accounts_customuser` (`id`),
+  KEY `idx_students_studentobservation_academic_year_id` (`academic_year_id`),
+  CONSTRAINT `fk_students_studentobservation_academic_year_id` FOREIGN KEY (`academic_year_id`) REFERENCES `courses_academicyear` (`id`),
+  KEY `idx_students_studentobservation_academic_period_id` (`academic_period_id`),
+  CONSTRAINT `fk_students_studentobservation_academic_period_id` FOREIGN KEY (`academic_period_id`) REFERENCES `periods_academicperiod` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `students_studentprofile`
@@ -1430,19 +1518,20 @@ INSERT INTO `subjects_gradesubject` (`id`, `weekly_hours`, `weight_percentage`, 
 DROP TABLE IF EXISTS `subjects_knowledgearea`;
 CREATE TABLE `subjects_knowledgearea` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(100) NOT NULL,
   `order` INT NOT NULL,
+  `institution_type` VARCHAR(20) NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Volcado de datos para la tabla `subjects_knowledgearea` (6 registros)
-INSERT INTO `subjects_knowledgearea` (`id`, `name`, `order`) VALUES
-  (1, 'Matemáticas', 1),
-  (2, 'Ciencias Naturales y Educación Ambiental', 2),
-  (3, 'Humanidades y Lengua Castellana', 3),
-  (4, 'Idioma Extranjero', 4),
-  (5, 'Tecnología e Informática', 5),
-  (6, 'Ciencias Sociales', 6);
+INSERT INTO `subjects_knowledgearea` (`id`, `order`, `institution_type`, `name`) VALUES
+  (1, 1, 'COLEGIO', 'Matemáticas'),
+  (2, 2, 'COLEGIO', 'Ciencias Naturales y Educación Ambiental'),
+  (3, 3, 'COLEGIO', 'Humanidades y Lengua Castellana'),
+  (4, 4, 'COLEGIO', 'Idioma Extranjero'),
+  (5, 5, 'COLEGIO', 'Tecnología e Informática'),
+  (6, 6, 'COLEGIO', 'Ciencias Sociales');
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `subjects_subject`
@@ -1450,25 +1539,45 @@ INSERT INTO `subjects_knowledgearea` (`id`, `name`, `order`) VALUES
 DROP TABLE IF EXISTS `subjects_subject`;
 CREATE TABLE `subjects_subject` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(100) NOT NULL,
-  `code` VARCHAR(20) NOT NULL,
+  `name` VARCHAR(120) NOT NULL,
+  `code` VARCHAR(30) NOT NULL,
   `description` LONGTEXT DEFAULT NULL,
   `area_id` BIGINT NOT NULL,
+  `institution_type` VARCHAR(20) NOT NULL,
+  `category` VARCHAR(20) NOT NULL,
+  `credits` INT NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_subjects_subject_area_id` (`area_id`),
   CONSTRAINT `fk_subjects_subject_area_id` FOREIGN KEY (`area_id`) REFERENCES `subjects_knowledgearea` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Volcado de datos para la tabla `subjects_subject` (8 registros)
-INSERT INTO `subjects_subject` (`id`, `name`, `code`, `description`, `area_id`) VALUES
-  (1, 'Matemáticas Fundamentales', 'MAT-01', NULL, 1),
-  (2, 'Geometría y Estadística', 'GEO-01', NULL, 1),
-  (3, 'Biología General', 'BIO-01', NULL, 2),
-  (4, 'Física Elemental', 'FIS-01', NULL, 2),
-  (5, 'Lengua Castellana', 'ESP-01', NULL, 3),
-  (6, 'Inglés Comunicativo', 'ING-01', NULL, 4),
-  (7, 'Tecnología e Informática', 'TEC-01', NULL, 5),
-  (8, 'Historia y Geografía', 'SOC-01', NULL, 6);
+INSERT INTO `subjects_subject` (`id`, `name`, `code`, `description`, `area_id`, `institution_type`, `category`, `credits`) VALUES
+  (1, 'Matemáticas Fundamentales', 'MAT-01', NULL, 1, 'COLEGIO', 'PRINCIPAL', 3),
+  (2, 'Geometría y Estadística', 'GEO-01', NULL, 1, 'COLEGIO', 'PRINCIPAL', 3),
+  (3, 'Biología General', 'BIO-01', NULL, 2, 'COLEGIO', 'PRINCIPAL', 3),
+  (4, 'Física Elemental', 'FIS-01', NULL, 2, 'COLEGIO', 'PRINCIPAL', 3),
+  (5, 'Lengua Castellana', 'ESP-01', NULL, 3, 'COLEGIO', 'PRINCIPAL', 3),
+  (6, 'Inglés Comunicativo', 'ING-01', NULL, 4, 'COLEGIO', 'PRINCIPAL', 3),
+  (7, 'Tecnología e Informática', 'TEC-01', NULL, 5, 'COLEGIO', 'PRINCIPAL', 3),
+  (8, 'Historia y Geografía', 'SOC-01', NULL, 6, 'COLEGIO', 'PRINCIPAL', 3);
+
+-- ----------------------------------------------------------------------------
+-- Estructura de tabla para `subjects_subjectnorm`
+-- ----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `subjects_subjectnorm`;
+CREATE TABLE `subjects_subjectnorm` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `code` VARCHAR(50) NOT NULL,
+  `title` VARCHAR(200) NOT NULL,
+  `description` LONGTEXT NOT NULL,
+  `order` INT NOT NULL,
+  `created_at` DATETIME NOT NULL,
+  `subject_id` BIGINT NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_subjects_subjectnorm_subject_id` (`subject_id`),
+  CONSTRAINT `fk_subjects_subjectnorm_subject_id` FOREIGN KEY (`subject_id`) REFERENCES `subjects_subject` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `teachers_teacherprofile`
