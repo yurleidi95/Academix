@@ -40,6 +40,9 @@ class AuditLog(models.Model):
         FINANCIAL_TRANSACTION = 'FINANCIAL_TRANSACTION', 'Transacción o Modificación Financiera'
         CONFIG_CHANGE = 'CONFIG_CHANGE', 'Cambio en Parametrización Institucional'
 
+    # Alias de compatibilidad
+    Action.CREATE = Action.INSERT
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,

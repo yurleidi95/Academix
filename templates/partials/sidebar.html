@@ -152,6 +152,12 @@
                 <span>Tareas y Actividades</span>
             </a>
         </li>
+        <li class="sidebar-item">
+            <a href="{% url 'reports:index' %}" class="sidebar-link {% if 'reports' in request.path %}active{% endif %}">
+                <i class="bi bi-file-earmark-pdf-fill text-danger"></i>
+                <span>Boletines de Periodo</span>
+            </a>
+        </li>
         {% endif %}
 
         <!-- Cierres y Promoción -->

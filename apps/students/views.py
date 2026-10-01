@@ -120,6 +120,14 @@ def create_student_view(request):
         section_id = request.POST.get('section_id')
         parent_id = request.POST.get('parent_id')
 
+        if doc_num and not doc_num.isdigit():
+            messages.error(request, 'El número de documento debe contener exclusivamente dígitos numéricos (sin letras ni símbolos).')
+            return redirect('students:list')
+
+        if phone and not phone.isdigit():
+            messages.error(request, 'El teléfono debe contener exclusivamente dígitos numéricos (sin letras ni símbolos).')
+            return redirect('students:list')
+
         # Si no se define código, auto-generar uno
         if not student_code:
             student_code = f"EST-{doc_num[-6:] if len(doc_num)>=6 else doc_num}"

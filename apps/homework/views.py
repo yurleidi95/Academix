@@ -69,9 +69,16 @@ def homework_index_view(request):
         return render(request, 'homework/parent_homework.html', context)
 
     # 2. Modo Estudiante: Consulta y entrega de actividades
-    if user.is_student and hasattr(user, 'student_profile'):
+    if user.is_student:
+        student_profile = getattr(user, 'student_profile', None)
+        if not student_profile:
+            student_profile, _ = StudentProfile.objects.get_or_create(
+                user=user,
+                defaults={'student_code': f'EST-{user.id:04d}'}
+            )
+
         enrollment = Enrollment.objects.filter(
-            student=user.student_profile,
+            student=student_profile,
             academic_year=current_year,
             status=Enrollment.Status.ACTIVE
         ).select_related('course_section__grade_level').first()
@@ -86,7 +93,7 @@ def homework_index_view(request):
             homeworks = Homework.objects.none()
 
         student_submissions = {}
-        subs = HomeworkSubmission.objects.filter(student=user.student_profile)
+        subs = HomeworkSubmission.objects.filter(student=student_profile)
         for s in subs:
             student_submissions[s.homework_id] = s
         for hw in homeworks:

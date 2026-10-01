@@ -30,9 +30,34 @@ def reports_index_view(request):
 
     user = request.user
     if user.is_student and hasattr(user, 'student_profile'):
-        enrollment = Enrollment.objects.filter(student=user.student_profile, academic_year=current_year).first()
-        section = enrollment.course_section if enrollment else None
-        return redirect('reports:student_bulletin', student_id=user.student_profile.id, period_id=active_period.id if active_period else 1)
+        closed_periods = AcademicPeriod.objects.filter(
+            academic_year=current_year,
+            status__in=['CLOSED', 'LOCKED']
+        ).order_by('number') if current_year else AcademicPeriod.objects.none()
+        target_period = closed_periods.last() or active_period
+        if target_period:
+            return redirect('reports:student_bulletin', student_id=user.student_profile.id, period_id=target_period.id)
+
+    if user.is_parent:
+        dependents = StudentProfile.objects.filter(parent=user).select_related('user')
+        closed_periods = AcademicPeriod.objects.filter(
+            academic_year=current_year,
+            status__in=['CLOSED', 'LOCKED']
+        ).order_by('number') if current_year else AcademicPeriod.objects.none()
+        open_periods = AcademicPeriod.objects.filter(
+            academic_year=current_year,
+            status__in=['ACTIVE', 'PENDING']
+        ).order_by('number') if current_year else AcademicPeriod.objects.none()
+
+        context = {
+            'current_year': current_year,
+            'dependents': dependents,
+            'closed_periods': closed_periods,
+            'open_periods': open_periods,
+            'active_period': active_period,
+            'periods': periods,
+        }
+        return render(request, 'reports/parent_reports.html', context)
 
     from apps.courses.models import InstitutionSetting
     inst_type = InstitutionSetting.get_settings().institution_type
@@ -79,6 +104,10 @@ def student_bulletin_view(request, student_id, period_id):
     if user.is_student and hasattr(user, 'student_profile') and user.student_profile.id != student.id:
         return HttpResponseForbidden("No está autorizado para visualizar boletines de otros estudiantes.")
 
+    if user.is_parent:
+        if student.parent_id != user.id and not StudentProfile.objects.filter(id=student.id, parent=user).exists():
+            return HttpResponseForbidden("No está autorizado para visualizar boletines de este estudiante.")
+
     # Alumnos y padres: solo pueden ver el boletín si el período está CERRADO o BLOQUEADO
     RESTRICTED_ROLES = user.is_student or user.is_parent
     PERIOD_OPEN = period.status not in ['CLOSED', 'LOCKED']
@@ -88,7 +117,7 @@ def student_bulletin_view(request, student_id, period_id):
             f'El boletín del período "{period.name}" aún no está disponible. '
             f'Solo podrá consultarlo una vez que el período sea cerrado oficialmente por la institución.'
         )
-        return redirect('accounts:dashboard')
+        return redirect('reports:index' if user.is_parent else 'accounts:dashboard')
 
     enrollment = Enrollment.objects.filter(student=student, academic_year=period.academic_year).first()
     if not enrollment:
@@ -134,6 +163,10 @@ def download_student_bulletin_pdf_view(request, student_id, period_id):
     if user.is_student and hasattr(user, 'student_profile') and user.student_profile.id != student.id:
         return HttpResponseForbidden("No tiene autorización para descargar boletines de otros estudiantes.")
 
+    if user.is_parent:
+        if student.parent_id != user.id and not StudentProfile.objects.filter(id=student.id, parent=user).exists():
+            return HttpResponseForbidden("No tiene autorización para descargar boletines de este estudiante.")
+
     # 2. Control de visibilidad de periodos abiertos para estudiantes y acudientes
     RESTRICTED_ROLES = user.is_student or user.is_parent
     PERIOD_OPEN = period.status not in ['CLOSED', 'LOCKED']
@@ -142,7 +175,7 @@ def download_student_bulletin_pdf_view(request, student_id, period_id):
             request,
             f'El boletín oficial del período "{period.name}" aún no se encuentra cerrado por la institución.'
         )
-        return redirect('accounts:dashboard')
+        return redirect('reports:index' if user.is_parent else 'accounts:dashboard')
 
     enrollment = Enrollment.objects.filter(student=student, academic_year=period.academic_year).first()
     if not enrollment:

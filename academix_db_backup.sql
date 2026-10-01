@@ -1,6 +1,6 @@
 -- ============================================================================
 -- ACADEMIX - RESPALDO Y COPIA COMPLETA DE BASE DE DATOS (MYSQL / MARIADB)
--- Generado: 2026-09-25 07:29:38
+-- Generado: 2026-10-01 10:49:00
 -- Motor de almacenamiento: InnoDB | Juego de caracteres: utf8mb4_unicode_ci
 -- Cumple con especificaciones técnicas del informe y protocolos de empresa
 -- ============================================================================
@@ -40,25 +40,35 @@ CREATE TABLE `accounts_customuser` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcado de datos para la tabla `accounts_customuser` (17 registros)
+-- Volcado de datos para la tabla `accounts_customuser` (27 registros)
 INSERT INTO `accounts_customuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`, `role`, `document_type`, `document_number`, `phone`, `address`, `avatar`, `must_change_password`, `created_at`, `updated_at`) VALUES
-  (1, 'pbkdf2_sha256$870000$Tr5gVnG7myCUQalTOk9sgd$P5642czYYAN//6Djk/uoe3Mvku/T4Tinb1EBPkone+c=', '2026-09-15 02:15:14.660254', 1, 'admin', 'Administrador', 'Principal', 'admin@academix.edu.co', 1, 1, '2026-09-15 01:36:44.568904', 'ADMIN', 'CC', '1000000001', '3001234567', 'Sede Principal ACADEMIX', '', 0, '2026-09-15 01:36:44.873864', '2026-09-15 01:36:44.873864'),
-  (2, 'pbkdf2_sha256$870000$l9l4mk6cNDgnxVclt8OVW3$sOuMJOiN5/oJkhv24fXt1rHt5UO4lL/0kMYELpf2NnE=', '2026-09-15 02:58:55.532901', 0, 'rector', 'Ramiro', 'Rectoría', 'rector@academix.edu.co', 1, 1, '2026-09-15 01:36:44.891411', 'RECTOR', 'CC', '1000000002', '3100000000', 'Ciudad Escolar', '', 0, '2026-09-15 01:36:45.208956', '2026-09-15 01:36:45.208956'),
+  (1, 'pbkdf2_sha256$870000$Tr5gVnG7myCUQalTOk9sgd$P5642czYYAN//6Djk/uoe3Mvku/T4Tinb1EBPkone+c=', '2026-09-25 15:39:31.000769', 1, 'admin', 'Administrador', 'Principal', 'admin@academix.edu.co', 1, 1, '2026-09-15 01:36:44.568904', 'ADMIN', 'CC', '1000000001', '3001234567', 'Sede Principal ACADEMIX', '', 0, '2026-09-15 01:36:44.873864', '2026-09-15 01:36:44.873864'),
+  (2, 'pbkdf2_sha256$870000$l9l4mk6cNDgnxVclt8OVW3$sOuMJOiN5/oJkhv24fXt1rHt5UO4lL/0kMYELpf2NnE=', '2026-09-25 15:24:43.476435', 0, 'rector', 'Ramiro', 'Rectoría', 'rector@academix.edu.co', 1, 1, '2026-09-15 01:36:44.891411', 'RECTOR', 'CC', '1000000002', '3100000000', 'Ciudad Escolar', '', 0, '2026-09-15 01:36:45.208956', '2026-09-15 01:36:45.208956'),
   (3, 'pbkdf2_sha256$870000$vnjzoyRDnTCdWVc8Y1OeLC$SJi21Rg3RsLiNKWA9MeZxCYxlEP0TZVDo7XHFs1jkSw=', NULL, 0, 'secretaria', 'Sonia', 'Secretaría', 'secretaria@academix.edu.co', 0, 1, '2026-09-15 01:36:45.221365', 'SECRETARIA', 'CC', '1000000003', '3100000000', 'Ciudad Escolar', '', 0, '2026-09-15 01:36:45.539291', '2026-09-15 01:36:45.539291'),
-  (4, 'pbkdf2_sha256$870000$KY4PlstJzA4B4eD2Wju3q8$OY8XcIijfk465Pbd4EO9ewN11msxq5nv1xhqc6VhyoI=', '2026-09-15 02:59:08.389055', 0, 'docente', 'Diego', 'Docente', 'docente@academix.edu.co', 0, 1, '2026-09-15 01:36:45.556742', 'TEACHER', 'CC', '1000000004', '3100000000', 'Ciudad Escolar', '', 0, '2026-09-15 01:36:45.866757', '2026-09-15 01:36:45.866757'),
-  (5, 'pbkdf2_sha256$870000$LN16pr7FIQbGQVHym0hgXm$nEbAjTWL9jHgjSmSf2RQzyLtvqYmCYlgKzgrGLMYJXU=', '2026-09-15 02:59:09.619669', 0, 'estudiante', 'Esteban', 'Estudiante', 'estudiante@academix.edu.co', 0, 1, '2026-09-15 01:36:45.879857', 'STUDENT', 'CC', '1000000005', '3100000000', 'Ciudad Escolar', '', 0, '2026-09-15 01:36:46.185529', '2026-09-15 01:36:46.185529'),
-  (6, 'pbkdf2_sha256$870000$zIKwEDUbl3RdFYu8lnn0qu$iqEqBR7vRqneUFR2iFHGQrkBG6aWsC479xpHwcrlLmA=', NULL, 0, 'acudiente', 'Patricia', 'Padre de Familia', 'acudiente@academix.edu.co', 0, 1, '2026-09-15 01:36:46.193143', 'PARENT', 'CC', '1000000006', '3100000000', 'Ciudad Escolar', '', 0, '2026-09-15 01:36:46.506262', '2026-09-15 01:36:46.506262'),
-  (8, 'pbkdf2_sha256$870000$FxVNw2gXHxriauk9r4X2hw$lRULUOyEcSg2O3fJIRNaFdUghBsJ1yCKVhdHcy7Uy2Y=', '2026-09-16 15:55:50.478656', 0, 'dulce', 'Dulce', 'Docente', 'dulce@academix.edu.co', 0, 1, '2026-09-15 13:55:21.541776', 'TEACHER', 'CC', '1000000007', '3110000001', 'Sede Principal', '', 0, '2026-09-15 13:55:22.367120', '2026-09-15 14:00:48.889575'),
-  (9, 'pbkdf2_sha256$870000$IzdokndLW4EGCgiK4CaTDE$bNu1v6zbLnVfF2dGXzCeQbL3pDLu4DQrAEuX2CcHHgE=', '2026-09-16 15:54:53.276716', 0, 'yesi', 'Yesi', 'Cabrera', 'yesi@academix.edu.co', 0, 1, '2026-09-15 13:55:22.406274', 'STUDENT', 'CC', '1000000008', '3001372139', 'Sede Principal', '', 0, '2026-09-15 13:55:23.291750', '2026-09-15 14:27:24.333161'),
-  (10, 'pbkdf2_sha256$870000$ndhvJzpHZwlBYDRaaakT7W$w42qfsoyTNaA3wHCLVFBIrFkjFLvDJPLph951Xszy5g=', '2026-09-16 15:48:06.850754', 0, 'nurys', 'Nurys', 'Secretaria', 'nurys@academix.edu.co', 0, 1, '2026-09-15 13:55:23.321736', 'SECRETARIA', 'CC', '1000000009', '3110000003', 'Sede Principal', '', 0, '2026-09-15 13:55:24.208523', '2026-09-15 15:23:24.639957'),
-  (11, 'pbkdf2_sha256$870000$evgcnJo89A7Hpj5ue96u4H$bMuYFfgvm8sznCU4bblFDckoocz2rNTxqhQrKyHvFo4=', NULL, 0, 'est_1221467456', 'Elizareth', 'Cabrera', 'eli@gmail.com', 0, 1, '2026-09-16 11:27:43.949022', 'STUDENT', 'TI', '1221467456', '3001372139', NULL, '', 1, '2026-09-16 11:27:45.069390', '2026-09-16 11:27:45.069420'),
-  (12, 'pbkdf2_sha256$870000$gfKlPVFG0gzsaHsgY6tbZi$VhrIPQEUO015QIiCh8z3gQYf7+zSsxoen6U42tBwtok=', '2026-09-16 16:02:29.553818', 1, 'admini', '', '', 'admini@gmail.com', 1, 1, '2026-09-16 12:07:12.355032', 'STUDENT', 'CC', NULL, NULL, NULL, '', 0, '2026-09-16 12:07:13.098967', '2026-09-16 12:07:13.098983'),
+  (4, 'pbkdf2_sha256$870000$KY4PlstJzA4B4eD2Wju3q8$OY8XcIijfk465Pbd4EO9ewN11msxq5nv1xhqc6VhyoI=', '2026-09-25 15:27:20.034765', 0, 'docente', 'Diego', 'Docente', 'docente@academix.edu.co', 0, 1, '2026-09-15 01:36:45.556742', 'TEACHER', 'CC', '1000000004', '3100000000', 'Ciudad Escolar', '', 0, '2026-09-15 01:36:45.866757', '2026-09-15 01:36:45.866757'),
+  (5, 'pbkdf2_sha256$870000$LN16pr7FIQbGQVHym0hgXm$nEbAjTWL9jHgjSmSf2RQzyLtvqYmCYlgKzgrGLMYJXU=', '2026-10-01 15:26:35.773262', 0, 'estudiante', 'Esteban', 'Estudiante', 'estudiante@academix.edu.co', 0, 1, '2026-09-15 01:36:45.879857', 'STUDENT', 'CC', '1000000005', '3100000000', 'Ciudad Escolar', '', 0, '2026-09-15 01:36:46.185529', '2026-09-15 01:36:46.185529'),
+  (6, 'pbkdf2_sha256$870000$zIKwEDUbl3RdFYu8lnn0qu$iqEqBR7vRqneUFR2iFHGQrkBG6aWsC479xpHwcrlLmA=', '2026-10-01 15:48:21.772271', 0, 'acudiente', 'Patricia', 'Padre de Familia', 'acudiente@academix.edu.co', 0, 1, '2026-09-15 01:36:46.193143', 'PARENT', 'CC', '1000000006', '3100000000', 'Ciudad Escolar', '', 0, '2026-09-15 01:36:46.506262', '2026-09-15 01:36:46.506262'),
+  (8, 'pbkdf2_sha256$870000$FxVNw2gXHxriauk9r4X2hw$lRULUOyEcSg2O3fJIRNaFdUghBsJ1yCKVhdHcy7Uy2Y=', '2026-10-01 15:11:36.319075', 0, 'dulce', 'Dulce', 'Docente', 'dulce@academix.edu.co', 0, 1, '2026-09-15 13:55:21.541776', 'TEACHER', 'CC', '1000000007', '3110000001', 'Sede Principal', '', 0, '2026-09-15 13:55:22.367120', '2026-09-15 14:00:48.889575'),
+  (9, 'pbkdf2_sha256$870000$IzdokndLW4EGCgiK4CaTDE$bNu1v6zbLnVfF2dGXzCeQbL3pDLu4DQrAEuX2CcHHgE=', '2026-10-01 15:26:36.109526', 0, 'yesi', 'Yesi', 'Cabrera', 'yesi@academix.edu.co', 0, 1, '2026-09-15 13:55:22.406274', 'STUDENT', 'CC', '1000000008', '3001372139', 'Sede Principal', '', 0, '2026-09-15 13:55:23.291750', '2026-09-15 14:27:24.333161'),
+  (10, 'pbkdf2_sha256$870000$ndhvJzpHZwlBYDRaaakT7W$w42qfsoyTNaA3wHCLVFBIrFkjFLvDJPLph951Xszy5g=', '2026-10-01 15:15:30.139834', 0, 'nurys', 'Nurys', 'Secretaria', 'nurys@academix.edu.co', 0, 1, '2026-09-15 13:55:23.321736', 'SECRETARIA', 'CC', '1000000009', '3110000003', 'Sede Principal', '', 0, '2026-09-15 13:55:24.208523', '2026-09-15 15:23:24.639957'),
+  (11, 'pbkdf2_sha256$870000$evgcnJo89A7Hpj5ue96u4H$bMuYFfgvm8sznCU4bblFDckoocz2rNTxqhQrKyHvFo4=', '2026-10-01 15:26:36.237481', 0, 'est_1221467456', 'Elizareth', 'Cabrera', 'eli@gmail.com', 0, 1, '2026-09-16 11:27:43.949022', 'STUDENT', 'TI', '1221467456', '3001372139', NULL, '', 1, '2026-09-16 11:27:45.069390', '2026-09-16 11:27:45.069420'),
+  (12, 'pbkdf2_sha256$870000$gfKlPVFG0gzsaHsgY6tbZi$VhrIPQEUO015QIiCh8z3gQYf7+zSsxoen6U42tBwtok=', '2026-10-01 15:48:21.415655', 1, 'admini', '', '', 'admini@gmail.com', 1, 1, '2026-09-16 12:07:12.355032', 'STUDENT', 'CC', NULL, NULL, NULL, '', 0, '2026-09-16 12:07:13.098967', '2026-09-16 12:07:13.098983'),
   (13, 'pbkdf2_sha256$870000$lQd4nfzWKQL8jRHPFj67j7$d7ZkBAFoliVR5ANnAMn1t905ZNOQOv8H5nOm2F41t3c=', '2026-09-16 14:47:17.961666', 0, 'yurleidilondono@gmail.com', 'Yurleidi', 'Londoño', 'yurleidilondono@gmail.com', 0, 1, '2027-09-16 12:11:21', 'RECTOR', 'CC', '123456789', '300154896', 'Calle 22 carrera23', '', 0, '2026-09-16 12:11:22.613011', '2026-09-16 12:14:04.189534'),
   (14, 'pbkdf2_sha256$870000$tH5aIgzlEIZjq536pVTyEF$1vRSuA1W6yyYJcRfpu1BpmYZ504hEKdzV1F+yKMBkHs=', NULL, 0, 'est_1245678980', 'Camilo', 'Mendoza', 'camilo@gmail.com', 0, 1, '2026-09-16 12:16:50.169495', 'STUDENT', 'TI', '1245678980', '3124567843', NULL, '', 1, '2026-09-16 12:16:51.424143', '2026-09-16 12:16:51.424162'),
   (15, 'pbkdf2_sha256$870000$OPff12PI8ibKrIE32mlkZq$+9e0iXCcTQgDrsf+lixHVeNxF0VyYd0v5ZosmGJmzoo=', '2026-09-16 12:23:30.480886', 0, 'Ana@gmail.com', 'Ana', 'Retamozo', 'ana@gmail.com', 0, 1, '2027-09-16 12:20:24', 'PARENT', 'CC', '111245623', '3001245889', 'Calle 22 carrera23', '', 0, '2026-09-16 12:20:25.493870', '2026-09-16 12:22:55.211448'),
-  (16, 'pbkdf2_sha256$870000$dPGnadmo0zPpwzCMTFk8MU$OAeZ/pbeC4i9waYMtePxFWvkP4/XpDoDth99a5S0+IE=', NULL, 0, 'est_12214537245', 'Alanna', 'Acosta', 'Alanna@gmail.com', 0, 1, '2026-09-16 12:23:36.727656', 'STUDENT', 'TI', '12214537245', '3209786543', NULL, '', 1, '2026-09-16 12:23:37.872305', '2026-09-16 12:23:37.872328'),
+  (16, 'pbkdf2_sha256$870000$dPGnadmo0zPpwzCMTFk8MU$OAeZ/pbeC4i9waYMtePxFWvkP4/XpDoDth99a5S0+IE=', '2026-10-01 15:24:02.810275', 0, 'est_12214537245', 'Alanna', 'Acosta', 'Alanna@gmail.com', 0, 1, '2026-09-16 12:23:36.727656', 'STUDENT', 'TI', '12214537245', '3209786543', NULL, '', 1, '2026-09-16 12:23:37.872305', '2026-09-16 12:23:37.872328'),
   (17, 'pbkdf2_sha256$870000$6HpYlPSBJFiljolZjspDY1$Rpx5LxHe4KMnpD2AW8I42nnMJnm5gx8NVh6y0NG0kms=', NULL, 0, 'doc_1234534234', 'Claudia', 'gomez', 'claudia@gmail.com', 0, 1, '2026-09-16 15:49:57.124372', 'TEACHER', 'CC', '1234534234', '3001245889', NULL, '', 1, '2026-09-16 15:49:58.331657', '2026-09-16 15:49:58.331720'),
-  (18, 'pbkdf2_sha256$870000$yQKla7r6ctO6cpAlel9SSK$Su6xsyGid5NrbrjZbqgjpc6HGbMUA8Ei1dm0aET4hYo=', NULL, 0, 'est_1223454323', 'Andres', 'Cantillo', 'andres@gmail.com', 0, 1, '2026-09-16 15:52:51.124952', 'STUDENT', 'TI', '1223454323', '3245678907', NULL, '', 1, '2026-09-16 15:52:52.387441', '2026-09-16 15:52:52.387478');
+  (18, 'pbkdf2_sha256$870000$yQKla7r6ctO6cpAlel9SSK$Su6xsyGid5NrbrjZbqgjpc6HGbMUA8Ei1dm0aET4hYo=', NULL, 0, 'est_1223454323', 'Andres', 'Cantillo', 'andres@gmail.com', 0, 1, '2026-09-16 15:52:51.124952', 'STUDENT', 'TI', '1223454323', '3245678907', NULL, '', 1, '2026-09-16 15:52:52.387441', '2026-09-16 15:52:52.387478'),
+  (19, 'pbkdf2_sha256$870000$VViRfOJZeL46yXKsG8l9Kw$va1eQnUCHiDJmatwvEqjToSfPBO3eWmCYJLJETzpHPQ=', NULL, 0, 'univ_10200001', 'Daniel', 'Ospina Restrepo', 'daniel.ospina@universidad.edu.co', 0, 1, '2026-09-25 13:02:37.729528', 'STUDENT', 'CC', '10200001', NULL, NULL, '', 0, '2026-09-25 13:02:37.733611', '2026-10-01 15:06:14.757956'),
+  (20, 'pbkdf2_sha256$870000$xlvTyrwKwg5bU9wHY0YMiD$YLEmROvs3MziOlcqyeOiu8r81s6FAb3PsY2rc+i44RE=', NULL, 0, 'univ_10200002', 'Juliana', 'Duque Londoño', 'juliana.duque@universidad.edu.co', 0, 1, '2026-09-25 13:02:37.753047', 'STUDENT', 'CC', '10200002', NULL, NULL, '', 0, '2026-09-25 13:02:37.753366', '2026-10-01 15:06:10.687834'),
+  (21, 'pbkdf2_sha256$870000$jjGLpLSoiz178xpvnq1YuJ$wy9S2NqoB/XK0fQAcip8uI4bHQVWbsKoKWP7ycLPHtM=', NULL, 0, 'univ_10200003', 'Andrés Felipe', 'Torres Benítez', 'andrésfelipe.torres@universidad.edu.co', 0, 1, '2026-09-25 13:02:37.761373', 'STUDENT', 'CC', '10200003', NULL, NULL, '', 0, '2026-09-25 13:02:37.761617', '2026-10-01 15:06:17.850855'),
+  (22, 'pbkdf2_sha256$870000$4rnD5V21j7Ftam6xIg7gqw$2VrcQ1Q+bvi2A8YOFtkPUe1lfHNp8i8MUrmD2YUr/ZA=', NULL, 0, 'aprendiz_987000101', 'Sebastián', 'Castro Ramos', 'sebastián.castro@sena.edu.co', 0, 1, '2026-09-25 13:02:40.480040', 'STUDENT', 'TI', '987000101', NULL, NULL, '', 0, '2026-09-25 13:02:40.480326', '2026-10-01 15:06:09.660428'),
+  (23, 'pbkdf2_sha256$870000$d1AdhFDYSFwnzyL8KgUfto$oRLJ+YIcH0QGK1L33V0FduDFeiAVbqwx52lWrHlFb3o=', NULL, 0, 'aprendiz_987000102', 'Valeria', 'Gómez Jaramillo', 'valeria.gómez@sena.edu.co', 0, 1, '2026-09-25 13:02:40.486732', 'STUDENT', 'TI', '987000102', NULL, NULL, '', 0, '2026-09-25 13:02:40.487020', '2026-10-01 15:06:11.648268'),
+  (24, 'pbkdf2_sha256$870000$6vxpz7xIYJ4oJXEdEPRKf9$tg/pJZW+03DSE8TLt4+VO5Fq1PJdw+luMl6Wx5TGQBc=', NULL, 0, 'aprendiz_987000103', 'Mateo', 'Ríos Quintana', 'mateo.ríos@sena.edu.co', 0, 1, '2026-09-25 13:02:40.493505', 'STUDENT', 'CC', '987000103', NULL, NULL, '', 0, '2026-09-25 13:02:40.493781', '2026-10-01 15:06:16.866085'),
+  (25, 'pbkdf2_sha256$870000$HPisJv3Qo1xgNuA662rAfE$eWwg1hkZMSJxJJgeyf0Ehj/x5+Yj/WaSFIN0ZH2SI+U=', NULL, 0, 'aprendiz_987000104', 'Camila', 'Hernández Paz', 'camila.hernández@sena.edu.co', 0, 1, '2026-09-25 13:02:40.499325', 'STUDENT', 'CC', '987000104', NULL, NULL, '', 0, '2026-09-25 13:02:40.499573', '2026-10-01 15:06:12.705879'),
+  (26, 'pbkdf2_sha256$870000$x802WZMYqFxL9ZIJvy0XRg$KSHCcTOT1tcezJIsf/8kLso0r/FK4G7LnT+inTudcBo=', NULL, 0, 'acad_10300001', 'Natalia', 'Vargas Salazar', 'natalia.vargas salazar@academia.edu.co', 0, 1, '2026-09-25 13:02:42.077559', 'STUDENT', 'CC', '10300001', NULL, NULL, '', 0, '2026-09-25 13:02:42.077868', '2026-10-01 15:06:18.843318'),
+  (27, 'pbkdf2_sha256$870000$j39bSJ2ZmHQRJYvivfnNSZ$7QpXN2KfUWT3SkllUHar2Ydgu4ev9mJjo1t2d8WtsHk=', NULL, 0, 'acad_10300002', 'Felipe', 'Jaramillo Osorio', 'felipe.jaramillo osorio@academia.edu.co', 0, 1, '2026-09-25 13:02:42.084522', 'STUDENT', 'CC', '10300002', NULL, NULL, '', 0, '2026-09-25 13:02:42.084781', '2026-10-01 15:06:13.728808'),
+  (28, 'pbkdf2_sha256$870000$CohuI2tdTWrViotKmwX1px$wjKqEgJQvf8GT+CxY2GfBU5MGFg8FuHFgxKfb+MbZtk=', NULL, 0, 'acad_10300003', 'Carolina', 'Rivas Montoya', 'carolina.rivas montoya@academia.edu.co', 0, 1, '2026-09-25 13:02:42.091728', 'STUDENT', 'CC', '10300003', NULL, NULL, '', 0, '2026-09-25 13:02:42.092032', '2026-10-01 15:06:15.732799');
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `accounts_customuser_groups`
@@ -237,6 +247,20 @@ INSERT INTO `accounts_customuser_user_permissions` (`id`, `customuser_id`, `perm
   (124, 15, 119);
 
 -- ----------------------------------------------------------------------------
+-- Estructura de tabla para `accounts_systemthemesettings`
+-- ----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `accounts_systemthemesettings`;
+CREATE TABLE `accounts_systemthemesettings` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `theme_data` LONGTEXT NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  `updated_by_id` BIGINT DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_accounts_systemthemesettings_updated_by_id` (`updated_by_id`),
+  CONSTRAINT `fk_accounts_systemthemesettings_updated_by_id` FOREIGN KEY (`updated_by_id`) REFERENCES `accounts_customuser` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------------------------------------------------------
 -- Estructura de tabla para `alerts_institutionalactivity`
 -- ----------------------------------------------------------------------------
 DROP TABLE IF EXISTS `alerts_institutionalactivity`;
@@ -291,11 +315,11 @@ INSERT INTO `alerts_systemalert` (`id`, `title`, `message`, `level`, `target_rol
   (7, '🔴 ALERTA DE REPROBACIÓN POR INASISTENCIA: Esteban Estudiante', 'El estudiante ha acumulado un 50.00% de inasistencias en Matemáticas Fundamentales (Periodo 1). Se encuentra en causal de reprobación.', 'BLOCK', NULL, 0, 1, '2026-09-15 15:20:44.744241', 6),
   (8, '🔴 ALERTA DE REPROBACIÓN POR INASISTENCIA: Esteban Estudiante', 'El estudiante ha acumulado un 25.00% de inasistencias en Matemáticas Fundamentales (Periodo 1). Se encuentra en causal de reprobación.', 'BLOCK', NULL, 0, 1, '2026-09-15 15:20:48.037517', 6),
   (9, '🟡 AVISO DE AUSENTISMO: Esteban Estudiante', 'El estudiante registra un 16.50% de inasistencias en Matemáticas Fundamentales. Se recomienda contactar a acudiente.', 'WARNING', NULL, 1, 1, '2026-09-15 15:20:49.760104', 6),
-  (10, '📅 Actividad Institucional: Entrega de informe', 'Fecha: 2026-09-17 a las 10:00 | Lugar: Instalaciones del Colegio. entrega de informe', 'INFO', 'STUDENT', 1, 1, '2026-09-16 11:57:34.678087', NULL),
-  (11, '📅 Actividad Institucional: Entrega de informe', 'Fecha: 2026-09-17 a las 10:00 | Lugar: Instalaciones del Colegio. entrega de informe', 'INFO', 'TEACHER', 1, 1, '2026-09-16 11:57:34.680658', NULL),
+  (10, '📅 Actividad Institucional: Entrega de informe', 'Fecha: 2026-09-17 a las 10:00 | Lugar: Instalaciones del Colegio. entrega de informe', 'INFO', 'STUDENT', 1, 0, '2026-09-16 11:57:34.678087', NULL),
+  (11, '📅 Actividad Institucional: Entrega de informe', 'Fecha: 2026-09-17 a las 10:00 | Lugar: Instalaciones del Colegio. entrega de informe', 'INFO', 'TEACHER', 1, 0, '2026-09-16 11:57:34.680658', NULL),
   (12, '📅 Actividad Institucional: Entrega de informe', 'Fecha: 2026-09-17 a las 10:00 | Lugar: Instalaciones del Colegio. entrega de informe', 'INFO', 'PARENT', 1, 1, '2026-09-16 11:57:34.681724', NULL),
-  (13, '📅 Actividad Institucional: Entrega de informe', 'Fecha: 2026-09-17 a las 10:00 | Lugar: Instalaciones del Colegio. entrega de informe', 'INFO', 'SECRETARIA', 1, 1, '2026-09-16 11:57:34.682825', NULL),
-  (14, '📅 Actividad Institucional: Reunión de Docentes', 'Fecha: 2026-09-18 a las 08:48 | Lugar: Instalaciones del Colegio. Puntualidad por favor', 'INFO', 'TEACHER', 1, 1, '2026-09-16 12:48:28.451443', NULL);
+  (13, '📅 Actividad Institucional: Entrega de informe', 'Fecha: 2026-09-17 a las 10:00 | Lugar: Instalaciones del Colegio. entrega de informe', 'INFO', 'SECRETARIA', 1, 0, '2026-09-16 11:57:34.682825', NULL),
+  (14, '📅 Actividad Institucional: Reunión de Docentes', 'Fecha: 2026-09-18 a las 08:48 | Lugar: Instalaciones del Colegio. Puntualidad por favor', 'INFO', 'TEACHER', 1, 0, '2026-09-16 12:48:28.451443', NULL);
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `attendance_attendancerecord`
@@ -383,7 +407,6 @@ DROP TABLE IF EXISTS `audit_auditlog`;
 CREATE TABLE `audit_auditlog` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `timestamp` DATETIME NOT NULL,
-  `action` VARCHAR(25) NOT NULL,
   `table_name` VARCHAR(100) NOT NULL,
   `record_id` INT DEFAULT NULL,
   `old_values` TEXT DEFAULT NULL,
@@ -391,245 +414,286 @@ CREATE TABLE `audit_auditlog` (
   `ip_address` VARCHAR(39) DEFAULT NULL,
   `reason` TEXT DEFAULT NULL,
   `user_id` BIGINT DEFAULT NULL,
+  `user_agent` VARCHAR(255) DEFAULT NULL,
+  `action` VARCHAR(30) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_audit_auditlog_user_id` (`user_id`),
   CONSTRAINT `fk_audit_auditlog_user_id` FOREIGN KEY (`user_id`) REFERENCES `accounts_customuser` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcado de datos para la tabla `audit_auditlog` (232 registros)
-INSERT INTO `audit_auditlog` (`id`, `timestamp`, `action`, `table_name`, `record_id`, `old_values`, `new_values`, `ip_address`, `reason`, `user_id`) VALUES
-  (1, '2026-09-15 01:51:47.399351', 'LOGIN', 'CustomUser', '1', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 1),
-  (2, '2026-09-15 02:03:45.336775', 'UPDATE', 'AcademicYear', '1', NULL, '{"year": 2026, "is_current": true, "status": "ACTIVE"}', NULL, 'Establecido año 2026 como año lectivo vigente', NULL),
-  (3, '2026-09-15 02:03:45.432306', 'INSERT', 'GradeSubject', '1', NULL, '{"grade": "Sexto", "subject": "Matem\\u00e1ticas Fundamentales", "weekly_hours": 4, "weight_percentage": "100.00"}', NULL, 'Configuración curricular: Matemáticas Fundamentales en grado Sexto (4h/sem)', NULL),
-  (4, '2026-09-15 02:03:45.447180', 'INSERT', 'GradeSubject', '2', NULL, '{"grade": "Sexto", "subject": "Geometr\\u00eda y Estad\\u00edstica", "weekly_hours": 4, "weight_percentage": "100.00"}', NULL, 'Configuración curricular: Geometría y Estadística en grado Sexto (4h/sem)', NULL),
-  (5, '2026-09-15 02:03:45.475675', 'INSERT', 'GradeSubject', '3', NULL, '{"grade": "Sexto", "subject": "Biolog\\u00eda General", "weekly_hours": 4, "weight_percentage": "100.00"}', NULL, 'Configuración curricular: Biología General en grado Sexto (4h/sem)', NULL),
-  (6, '2026-09-15 02:03:45.487617', 'INSERT', 'GradeSubject', '4', NULL, '{"grade": "Sexto", "subject": "F\\u00edsica Elemental", "weekly_hours": 4, "weight_percentage": "100.00"}', NULL, 'Configuración curricular: Física Elemental en grado Sexto (4h/sem)', NULL),
-  (7, '2026-09-15 02:03:45.517066', 'INSERT', 'GradeSubject', '5', NULL, '{"grade": "Sexto", "subject": "Lengua Castellana", "weekly_hours": 4, "weight_percentage": "100.00"}', NULL, 'Configuración curricular: Lengua Castellana en grado Sexto (4h/sem)', NULL),
-  (8, '2026-09-15 02:03:45.542381', 'INSERT', 'GradeSubject', '6', NULL, '{"grade": "Sexto", "subject": "Ingl\\u00e9s Comunicativo", "weekly_hours": 4, "weight_percentage": "100.00"}', NULL, 'Configuración curricular: Inglés Comunicativo en grado Sexto (4h/sem)', NULL),
-  (9, '2026-09-15 02:03:45.565601', 'INSERT', 'GradeSubject', '7', NULL, '{"grade": "Sexto", "subject": "Tecnolog\\u00eda e Inform\\u00e1tica", "weekly_hours": 4, "weight_percentage": "100.00"}', NULL, 'Configuración curricular: Tecnología e Informática en grado Sexto (4h/sem)', NULL),
-  (10, '2026-09-15 02:03:45.591812', 'INSERT', 'GradeSubject', '8', NULL, '{"grade": "Sexto", "subject": "Historia y Geograf\\u00eda", "weekly_hours": 4, "weight_percentage": "100.00"}', NULL, 'Configuración curricular: Historia y Geografía en grado Sexto (4h/sem)', NULL),
-  (11, '2026-09-15 02:03:45.630105', 'INSERT', 'TeachingAssignment', '1', NULL, '{"teacher": "Diego Docente", "section": "6-A", "subject": "Matem\\u00e1ticas Fundamentales", "year": 2026}', NULL, 'Asignación académica de Matemáticas Fundamentales en 6-A a docente', NULL),
-  (12, '2026-09-15 02:03:45.640180', 'INSERT', 'TeachingAssignment', '2', NULL, '{"teacher": "Diego Docente", "section": "6-B", "subject": "Matem\\u00e1ticas Fundamentales", "year": 2026}', NULL, 'Asignación académica de Matemáticas Fundamentales en 6-B a docente', NULL),
-  (13, '2026-09-15 02:03:45.659684', 'INSERT', 'Enrollment', '1', NULL, '{"student": "Esteban Estudiante", "code": "EST-2026-0001", "section": "6-A", "year": 2026, "status": "ACTIVE"}', NULL, 'Matrícula de estudiante estudiante en curso 6-A (2026)', NULL),
-  (14, '2026-09-15 02:07:13.732420', 'LOGIN', 'CustomUser', '1', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 1),
-  (15, '2026-09-15 02:11:15.760930', 'LOGIN', 'CustomUser', '1', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 1),
-  (16, '2026-09-15 02:12:00.921221', 'LOGIN', 'CustomUser', '1', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 1),
-  (17, '2026-09-15 02:12:10.639661', 'LOGIN', 'CustomUser', '1', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 1),
-  (18, '2026-09-15 02:12:22.857783', 'LOGIN', 'CustomUser', '1', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 1),
-  (19, '2026-09-15 02:14:15.631387', 'LOGIN', 'CustomUser', '1', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 1),
-  (20, '2026-09-15 02:15:03.714118', 'LOGIN', 'CustomUser', '1', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 1),
-  (21, '2026-09-15 02:15:03.752702', 'PERIOD_CLOSE', 'AcademicPeriod', '1', '{"status": "ACTIVE"}', '{"status": "CLOSED"}', '127.0.0.1', 'Cierre preventivo de prueba', 1),
-  (22, '2026-09-15 02:15:14.661259', 'LOGIN', 'CustomUser', '1', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 1),
-  (23, '2026-09-15 02:15:14.692515', 'UPDATE', 'AcademicPeriod', '1', '{"status": "CLOSED"}', '{"status": "ACTIVE"}', '127.0.0.1', 'Reapertura para operación normal', 1),
-  (24, '2026-09-15 02:24:48.010242', 'LOGIN', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4),
-  (25, '2026-09-15 02:28:48.134592', 'LOGIN', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4),
-  (26, '2026-09-15 02:28:48.305566', 'UPDATE', 'AttendanceRecord', '1', '{"status": "PRESENT"}', '{"status": "UNJUSTIFIED", "justification": null}', '127.0.0.1', 'Asistencia actualizada para estudiante: UNJUSTIFIED', 4),
-  (27, '2026-09-15 02:28:48.344478', 'UPDATE', 'AttendanceSession', '1', NULL, '{"bulk_action": "ALL_PRESENT"}', '127.0.0.1', 'Marcado masivo de presentes en grupo 6-A para Matemáticas Fundamentales', 4),
-  (28, '2026-09-15 02:38:28.964720', 'INSERT', 'GradeRecord', '1', '{"score": null}', '{"score": "4.50", "criterion": "Evaluaciones y Quices"}', NULL, 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 4.50', NULL),
-  (29, '2026-09-15 02:38:28.981286', 'INSERT', 'GradeRecord', '2', '{"score": null}', '{"score": "4.00", "criterion": "Talleres y Actividades"}', NULL, 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 4.00', NULL),
-  (30, '2026-09-15 02:38:28.996709', 'INSERT', 'GradeRecord', '3', '{"score": null}', '{"score": "4.80", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', NULL, 'Calificación registrada para estudiante en Actitudinal y Autoevaluación (MAT-01): 4.80', NULL),
-  (31, '2026-09-15 02:38:29.009956', 'INSERT', 'Homework', '1', NULL, '{"title": "Taller #1: Operaciones con Conjuntos", "section": "6-A", "subject": "MAT-01"}', NULL, 'Asignación de tarea: Taller #1: Operaciones con Conjuntos para grupo 6-A', NULL),
-  (32, '2026-09-15 02:38:29.021226', 'INSERT', 'HomeworkSubmission', '1', NULL, '{"student": "estudiante", "homework": "Taller #1: Operaciones con Conjuntos", "status": "SUBMITTED"}', NULL, 'Entrega de tarea Taller #1: Operaciones con Conjuntos por estudiante', NULL),
-  (33, '2026-09-15 02:38:29.034651', 'UPDATE', 'HomeworkSubmission', '1', NULL, '{"score": "4.50", "feedback": "Buen trabajo con las demostraciones.", "status": "GRADED"}', NULL, 'Calificación de tarea Taller #1: Operaciones con Conjuntos para estudiante: 4.50', NULL),
-  (34, '2026-09-15 02:39:56.366080', 'LOGIN', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4),
-  (35, '2026-09-15 02:40:07.744496', 'LOGIN', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4),
-  (36, '2026-09-15 02:40:22.910980', 'LOGIN', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4),
-  (37, '2026-09-15 02:40:32.839074', 'LOGIN', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4),
-  (38, '2026-09-15 02:40:32.928074', 'UPDATE', 'GradeRecord', '1', '{"score": "4.50"}', '{"score": "4.80", "criterion": "Evaluaciones y Quices"}', '127.0.0.1', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 4.80', 4),
-  (39, '2026-09-15 02:40:38.970240', 'LOGIN', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4),
-  (40, '2026-09-15 02:40:39.070125', 'UPDATE', 'GradeRecord', '1', '{"score": "4.80"}', '{"score": "4.80", "criterion": "Evaluaciones y Quices"}', '127.0.0.1', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 4.80', 4),
-  (41, '2026-09-15 02:40:45.618538', 'LOGIN', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4),
-  (42, '2026-09-15 02:40:45.712104', 'UPDATE', 'GradeRecord', '1', '{"score": "4.80"}', '{"score": "4.80", "criterion": "Evaluaciones y Quices"}', '127.0.0.1', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 4.80', 4),
-  (43, '2026-09-15 02:41:09.047653', 'LOGIN', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4),
-  (44, '2026-09-15 02:41:09.149920', 'UPDATE', 'GradeRecord', '1', '{"score": "4.80"}', '{"score": "4.80", "criterion": "Evaluaciones y Quices"}', '127.0.0.1', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 4.80', 4),
-  (45, '2026-09-15 02:41:27.044863', 'LOGIN', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4),
-  (46, '2026-09-15 02:41:27.147539', 'UPDATE', 'GradeRecord', '1', '{"score": "4.80"}', '{"score": "4.80", "criterion": "Evaluaciones y Quices"}', '127.0.0.1', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 4.80', 4),
-  (47, '2026-09-15 02:41:27.720789', 'LOGIN', 'CustomUser', '5', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 5),
-  (48, '2026-09-15 02:58:55.532901', 'LOGIN', 'CustomUser', '2', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 2),
-  (49, '2026-09-15 02:58:56.694951', 'LOGIN', 'CustomUser', '5', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 5),
-  (50, '2026-09-15 02:59:08.389055', 'LOGIN', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4),
-  (51, '2026-09-15 02:59:08.815908', 'UPDATE', 'GradeRecord', '1', '{"score": "4.80"}', '{"score": "4.80", "criterion": "Evaluaciones y Quices"}', '127.0.0.1', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 4.80', 4),
-  (52, '2026-09-15 02:59:09.619669', 'LOGIN', 'CustomUser', '5', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 5),
-  (53, '2026-09-15 12:05:26.225672', 'LOGIN', 'CustomUser', '7', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', NULL),
-  (54, '2026-09-15 13:09:29.037991', 'LOGOUT', 'CustomUser', '7', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', NULL),
-  (55, '2026-09-15 13:50:39.210001', 'FAILED_LOGIN', 'CustomUser', NULL, NULL, '{"attempted_username": " Padre"}', '10.8.182.242', 'Intento fallido de autenticación para usuario:  Padre', NULL),
-  (56, '2026-09-15 13:52:15.934755', 'FAILED_LOGIN', 'CustomUser', NULL, NULL, '{"attempted_username": "Admin"}', '10.8.182.242', 'Intento fallido de autenticación para usuario: Admin', NULL),
-  (57, '2026-09-15 13:56:22.961560', 'LOGIN', 'CustomUser', '9', NULL, NULL, '10.8.182.242', 'Inicio de sesión exitoso en la plataforma', 9),
-  (58, '2026-09-15 13:56:37.506453', 'LOGIN', 'CustomUser', '10', NULL, NULL, '10.8.182.202', 'Inicio de sesión exitoso en la plataforma', 10),
-  (59, '2026-09-15 13:56:38.353113', 'LOGIN', 'CustomUser', '8', NULL, NULL, '10.8.182.41', 'Inicio de sesión exitoso en la plataforma', 8),
-  (60, '2026-09-15 13:58:36.435881', 'LOGIN', 'CustomUser', '7', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', NULL),
-  (61, '2026-09-15 13:59:51.488986', 'LOGIN', 'CustomUser', '9', NULL, NULL, '10.8.182.62', 'Inicio de sesión exitoso en la plataforma', 9),
-  (62, '2026-09-15 14:00:24.831896', 'UPDATE', 'GradeRecord', '1', '{"score": "4.80"}', '{"score": "1.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.62', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 1.00', 9),
-  (63, '2026-09-15 14:00:25.538993', 'UPDATE', 'GradeRecord', '1', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.62', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 1.00', 9),
-  (64, '2026-09-15 14:00:27.888877', 'UPDATE', 'GradeRecord', '2', '{"score": "4.00"}', '{"score": "1.00", "criterion": "Talleres y Actividades"}', '10.8.182.62', 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 1.00', 9),
-  (65, '2026-09-15 14:00:28.344047', 'UPDATE', 'GradeRecord', '2', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Talleres y Actividades"}', '10.8.182.62', 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 1.00', 9),
-  (66, '2026-09-15 14:00:31.173273', 'UPDATE', 'GradeRecord', '3', '{"score": "4.80"}', '{"score": "1.00", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.62', 'Calificación registrada para estudiante en Actitudinal y Autoevaluación (MAT-01): 1.00', 9),
-  (67, '2026-09-15 14:00:31.591632', 'UPDATE', 'GradeRecord', '3', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.62', 'Calificación registrada para estudiante en Actitudinal y Autoevaluación (MAT-01): 1.00', 9),
-  (68, '2026-09-15 14:00:46.688824', 'UPDATE', 'CustomUser', '8', '{"phone": "3110000001", "address": "Sede Principal", "email": "dulce@academix.edu.co"}', '{"phone": "3110000001", "address": "Sede Principal", "email": "dulce@academix.edu.co"}', '10.8.182.41', 'Actualización de datos personales de perfil', 8),
-  (69, '2026-09-15 14:00:47.896303', 'UPDATE', 'CustomUser', '8', '{"phone": "3110000001", "address": "Sede Principal", "email": "dulce@academix.edu.co"}', '{"phone": "3110000001", "address": "Sede Principal", "email": "dulce@academix.edu.co"}', '10.8.182.41', 'Actualización de datos personales de perfil', 8),
-  (70, '2026-09-15 14:00:48.891590', 'UPDATE', 'CustomUser', '8', '{"phone": "3110000001", "address": "Sede Principal", "email": "dulce@academix.edu.co"}', '{"phone": "3110000001", "address": "Sede Principal", "email": "dulce@academix.edu.co"}', '10.8.182.41', 'Actualización de datos personales de perfil', 8),
-  (71, '2026-09-15 14:27:11.261773', 'UPDATE', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9),
-  (72, '2026-09-15 14:27:13.798655', 'UPDATE', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9),
-  (73, '2026-09-15 14:27:19.634248', 'UPDATE', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9),
-  (74, '2026-09-15 14:27:20.022290', 'UPDATE', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9),
-  (75, '2026-09-15 14:27:20.221577', 'UPDATE', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9),
-  (76, '2026-09-15 14:27:20.459741', 'UPDATE', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9),
-  (77, '2026-09-15 14:27:20.715206', 'UPDATE', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9),
-  (78, '2026-09-15 14:27:21.094951', 'UPDATE', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9),
-  (79, '2026-09-15 14:27:21.400354', 'UPDATE', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9),
-  (80, '2026-09-15 14:27:21.685881', 'UPDATE', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9),
-  (81, '2026-09-15 14:27:21.950721', 'UPDATE', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9),
-  (82, '2026-09-15 14:27:22.231668', 'UPDATE', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9),
-  (83, '2026-09-15 14:27:22.387721', 'UPDATE', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9),
-  (84, '2026-09-15 14:27:22.540085', 'UPDATE', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9),
-  (85, '2026-09-15 14:27:22.959258', 'UPDATE', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9),
-  (86, '2026-09-15 14:27:23.542544', 'UPDATE', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9),
-  (87, '2026-09-15 14:27:24.100777', 'UPDATE', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9),
-  (88, '2026-09-15 14:27:24.335267', 'UPDATE', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9),
-  (89, '2026-09-15 14:48:08.467008', 'UPDATE', 'GradeRecord', '1', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.202', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 1.00', 10),
-  (90, '2026-09-15 14:48:09.334121', 'UPDATE', 'GradeRecord', '1', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.202', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 1.00', 10),
-  (91, '2026-09-15 14:48:11.273562', 'UPDATE', 'GradeRecord', '1', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.202', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 1.00', 10),
-  (92, '2026-09-15 14:48:16.762613', 'UPDATE', 'GradeRecord', '2', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Talleres y Actividades"}', '10.8.182.202', 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 1.00', 10),
-  (93, '2026-09-15 14:48:17.311018', 'UPDATE', 'GradeRecord', '2', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Talleres y Actividades"}', '10.8.182.202', 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 1.00', 10),
-  (94, '2026-09-15 14:48:17.840883', 'UPDATE', 'GradeRecord', '2', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Talleres y Actividades"}', '10.8.182.202', 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 1.00', 10),
-  (95, '2026-09-15 14:48:18.370910', 'UPDATE', 'GradeRecord', '2', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Talleres y Actividades"}', '10.8.182.202', 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 1.00', 10),
-  (96, '2026-09-15 14:48:18.939283', 'UPDATE', 'GradeRecord', '2', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Talleres y Actividades"}', '10.8.182.202', 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 1.00', 10),
-  (97, '2026-09-15 14:48:25.307849', 'UPDATE', 'GradeRecord', '2', '{"score": "1.00"}', '{"score": "2.17", "criterion": "Talleres y Actividades"}', '10.8.182.202', 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 2.17', 10),
-  (98, '2026-09-15 14:48:35.242571', 'UPDATE', 'GradeRecord', '1', '{"score": "1.00"}', '{"score": "2.37", "criterion": "Evaluaciones y Quices"}', '10.8.182.202', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 2.37', 10),
-  (99, '2026-09-15 14:48:53.044614', 'UPDATE', 'GradeRecord', '3', '{"score": "1.00"}', '{"score": "3.84", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.202', 'Calificación registrada para estudiante en Actitudinal y Autoevaluación (MAT-01): 3.84', 10),
-  (100, '2026-09-15 14:49:16.816312', 'UPDATE', 'GradeRecord', '2', '{"score": "2.17"}', '{"score": "5.00", "criterion": "Talleres y Actividades"}', '10.8.182.202', 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 5.00', 10),
-  (101, '2026-09-15 14:49:35.245922', 'UPDATE', 'GradeRecord', '1', '{"score": "2.37"}', '{"score": "3.65", "criterion": "Evaluaciones y Quices"}', '10.8.182.202', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 3.65', 10),
-  (102, '2026-09-15 14:49:39.739249', 'UPDATE', 'GradeRecord', '3', '{"score": "3.84"}', '{"score": "1.35", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.202', 'Calificación registrada para estudiante en Actitudinal y Autoevaluación (MAT-01): 1.35', 10),
-  (103, '2026-09-15 14:49:59.039891', 'UPDATE', 'GradeRecord', '3', '{"score": "1.35"}', '{"score": "4.14", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.202', 'Calificación registrada para estudiante en Actitudinal y Autoevaluación (MAT-01): 4.14', 10),
-  (104, '2026-09-15 15:18:27.349551', 'LOGOUT', 'CustomUser', '9', NULL, NULL, '10.8.182.62', 'Cierre de sesión manual voluntario', 9),
-  (105, '2026-09-15 15:18:41.552700', 'LOGIN', 'CustomUser', '10', NULL, NULL, '10.8.182.62', 'Inicio de sesión exitoso en la plataforma', 10),
-  (106, '2026-09-15 15:20:36.794201', 'UPDATE', 'AttendanceRecord', '2', '{"status": "PRESENT"}', '{"status": "UNJUSTIFIED", "justification": null}', '10.8.182.202', 'Asistencia actualizada para estudiante: UNJUSTIFIED', 10),
-  (107, '2026-09-15 15:20:38.301679', 'UPDATE', 'AttendanceRecord', '2', '{"status": "UNJUSTIFIED"}', '{"status": "JUSTIFIED", "justification": null}', '10.8.182.202', 'Asistencia actualizada para estudiante: JUSTIFIED', 10),
-  (108, '2026-09-15 15:20:39.555905', 'UPDATE', 'AttendanceRecord', '2', '{"status": "JUSTIFIED"}', '{"status": "LATE", "justification": null}', '10.8.182.202', 'Asistencia actualizada para estudiante: LATE', 10),
-  (109, '2026-09-15 15:20:44.739466', 'UPDATE', 'AttendanceRecord', '2', '{"status": "LATE"}', '{"status": "UNJUSTIFIED", "justification": null}', '10.8.182.202', 'Asistencia actualizada para estudiante: UNJUSTIFIED', 10),
-  (110, '2026-09-15 15:20:48.031155', 'UPDATE', 'AttendanceRecord', '2', '{"status": "UNJUSTIFIED"}', '{"status": "JUSTIFIED", "justification": null}', '10.8.182.202', 'Asistencia actualizada para estudiante: JUSTIFIED', 10),
-  (111, '2026-09-15 15:20:49.753457', 'UPDATE', 'AttendanceRecord', '2', '{"status": "JUSTIFIED"}', '{"status": "LATE", "justification": null}', '10.8.182.202', 'Asistencia actualizada para estudiante: LATE', 10),
-  (112, '2026-09-15 15:20:59.229509', 'UPDATE', 'AttendanceSession', '2', NULL, '{"bulk_action": "ALL_PRESENT"}', '10.8.182.202', 'Marcado masivo de presentes en grupo 6-A para Matemáticas Fundamentales', 10),
-  (113, '2026-09-15 15:21:00.319285', 'UPDATE', 'AttendanceSession', '2', NULL, '{"bulk_action": "ALL_PRESENT"}', '10.8.182.202', 'Marcado masivo de presentes en grupo 6-A para Matemáticas Fundamentales', 10),
-  (114, '2026-09-15 15:23:22.522222', 'UPDATE', 'CustomUser', '10', '{"phone": "3110000003", "address": "Sede Principal", "email": "nurys@academix.edu.co"}', '{"phone": "3110000003", "address": "Sede Principal", "email": "nurys@academix.edu.co"}', '10.8.182.202', 'Actualización de datos personales de perfil', 10),
-  (115, '2026-09-15 15:23:24.642271', 'UPDATE', 'CustomUser', '10', '{"phone": "3110000003", "address": "Sede Principal", "email": "nurys@academix.edu.co"}', '{"phone": "3110000003", "address": "Sede Principal", "email": "nurys@academix.edu.co"}', '10.8.182.202', 'Actualización de datos personales de perfil', 10),
-  (116, '2026-09-16 00:55:31.954969', 'LOGIN', 'CustomUser', '7', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', NULL),
-  (117, '2026-09-16 11:27:45.093163', 'INSERT', 'Enrollment', '2', NULL, '{"student": "Elizareth Cabrera", "code": "236654", "section": "6-A", "year": 2026, "status": "ACTIVE"}', '10.8.182.62', 'Matrícula de estudiante est_1221467456 en curso 6-A (2026)', 10),
-  (118, '2026-09-16 11:27:45.096716', 'CREATE_STUDENT', 'StudentProfile', '3', NULL, '{"username": "est_1221467456", "student_code": "236654", "section": "6-A"}', '10.8.182.62', 'Registro de nuevo alumno por nurys', 10),
-  (119, '2026-09-16 11:28:00.222009', 'INSERT', 'Enrollment', '3', NULL, '{"student": "Yesi Cabrera", "code": "EST-2026-0002", "section": "6-A", "year": 2026, "status": "ACTIVE"}', '10.8.182.62', 'Matrícula de estudiante yesi en curso 6-A (2026)', 10),
-  (120, '2026-09-16 11:49:57.233098', 'LOGIN', 'CustomUser', '8', NULL, NULL, '10.8.182.41', 'Inicio de sesión exitoso en la plataforma', 8),
-  (121, '2026-09-16 11:53:50.372166', 'LOGOUT', 'CustomUser', '10', NULL, NULL, '10.8.182.62', 'Cierre de sesión manual voluntario', 10),
-  (122, '2026-09-16 11:54:16.908580', 'FAILED_LOGIN', 'CustomUser', NULL, NULL, '{"attempted_username": "docente"}', '10.8.182.62', 'Intento fallido de autenticación para usuario: docente', NULL),
-  (123, '2026-09-16 11:54:44.444751', 'LOGIN', 'CustomUser', '10', NULL, NULL, '10.8.182.62', 'Inicio de sesión exitoso en la plataforma', 10),
-  (124, '2026-09-16 11:55:12.383666', 'LOGIN', 'CustomUser', '9', NULL, NULL, '10.8.182.62', 'Inicio de sesión exitoso en la plataforma', 9),
-  (125, '2026-09-16 12:06:38.448969', 'INSERT', 'Homework', '2', NULL, '{"title": "Evaluaci\\u00f3n escrita", "section": "6-A", "subject": "ESP-01"}', '10.8.182.41', 'Asignación de tarea: Evaluación escrita para grupo 6-A', 8),
-  (126, '2026-09-16 12:08:34.385049', 'INSERT', 'TeachingAssignment', '3', NULL, '{"teacher": "Dulce Docente", "section": "7-A", "subject": "Lengua Castellana", "year": 2026}', '10.8.182.62', 'Asignación académica de Lengua Castellana en 7-A a dulce', 10),
-  (127, '2026-09-16 12:11:31.005601', 'INSERT', 'Homework', '3', NULL, '{"title": "Evaluaci\\u00f3n escrita", "section": "7-A", "subject": "ESP-01"}', '10.8.182.41', 'Asignación de tarea: Evaluación escrita para grupo 7-A', 8),
-  (128, '2026-09-16 12:14:22.707135', 'FAILED_LOGIN', 'CustomUser', NULL, NULL, '{"attempted_username": "yurledi"}', '127.0.0.1', 'Intento fallido de autenticación para usuario: yurledi', NULL),
-  (129, '2026-09-16 12:14:35.328642', 'LOGIN', 'CustomUser', '13', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 13),
-  (130, '2026-09-16 12:16:51.449028', 'INSERT', 'Enrollment', '4', NULL, '{"student": "Camilo Mendoza", "code": "452314", "section": "7-A", "year": 2026, "status": "ACTIVE"}', '10.8.182.62', 'Matrícula de estudiante est_1245678980 en curso 7-A (2026)', 10),
-  (131, '2026-09-16 12:16:51.450498', 'CREATE_STUDENT', 'StudentProfile', '4', NULL, '{"username": "est_1245678980", "student_code": "452314", "section": "7-A"}', '10.8.182.62', 'Registro de nuevo alumno por nurys', 10),
-  (132, '2026-09-16 12:17:19.795381', 'INSERT', 'GradeRecord', '4', '{"score": null}', '{"score": "0.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.00', 8),
-  (133, '2026-09-16 12:17:20.287829', 'UPDATE', 'GradeRecord', '4', '{"score": null}', '{"score": "0.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.00', 8),
-  (134, '2026-09-16 12:17:21.370797', 'UPDATE', 'GradeRecord', '4', '{"score": null}', '{"score": "0.08", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.08', 8),
-  (135, '2026-09-16 12:17:24.178829', 'UPDATE', 'GradeRecord', '4', '{"score": "0.08"}', '{"score": "0.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.00', 8),
-  (136, '2026-09-16 12:17:24.811447', 'UPDATE', 'GradeRecord', '4', '{"score": null}', '{"score": "0.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.00', 8),
-  (137, '2026-09-16 12:17:25.319260', 'UPDATE', 'GradeRecord', '4', '{"score": null}', '{"score": "0.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.00', 8),
-  (138, '2026-09-16 12:17:31.262721', 'UPDATE', 'GradeRecord', '4', '{"score": null}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (139, '2026-09-16 12:17:31.957785', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (140, '2026-09-16 12:17:32.614143', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (141, '2026-09-16 12:17:33.317272', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (142, '2026-09-16 12:17:33.622591', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (143, '2026-09-16 12:17:34.333848', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (144, '2026-09-16 12:17:35.155085', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (145, '2026-09-16 12:17:36.517305', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (146, '2026-09-16 12:17:37.089793', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (147, '2026-09-16 12:17:37.394172', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (148, '2026-09-16 12:17:37.857467', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (149, '2026-09-16 12:17:39.337074', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (150, '2026-09-16 12:17:42.204017', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (151, '2026-09-16 12:17:42.701662', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (152, '2026-09-16 12:17:43.352209', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (153, '2026-09-16 12:17:44.052478', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (154, '2026-09-16 12:17:44.781384', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (155, '2026-09-16 12:17:45.299248', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (156, '2026-09-16 12:17:45.788157', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (157, '2026-09-16 12:17:46.419647', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (158, '2026-09-16 12:17:47.705246', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.02", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.02', 8),
-  (159, '2026-09-16 12:17:48.254545', 'UPDATE', 'GradeRecord', '4', '{"score": "0.02"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (160, '2026-09-16 12:17:50.310025', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (161, '2026-09-16 12:17:50.840638', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (162, '2026-09-16 12:17:51.576265', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (163, '2026-09-16 12:17:52.257230', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (164, '2026-09-16 12:17:52.758854', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (165, '2026-09-16 12:17:53.273325', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (166, '2026-09-16 12:18:06.988818', 'UPDATE', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.08", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.08', 8),
-  (167, '2026-09-16 12:18:19.067184', 'UPDATE', 'GradeRecord', '4', '{"score": "0.08"}', '{"score": "0.40", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.40', 8),
-  (168, '2026-09-16 12:18:32.052404', 'INSERT', 'GradeRecord', '5', '{"score": null}', '{"score": "0.01", "criterion": "Talleres y Actividades"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Talleres y Actividades (ESP-01): 0.01', 8),
-  (169, '2026-09-16 12:18:33.814299', 'UPDATE', 'GradeRecord', '5', '{"score": "0.01"}', '{"score": "0.17", "criterion": "Talleres y Actividades"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Talleres y Actividades (ESP-01): 0.17', 8),
-  (170, '2026-09-16 12:18:37.611767', 'UPDATE', 'GradeRecord', '5', '{"score": "0.17"}', '{"score": "0.45", "criterion": "Talleres y Actividades"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Talleres y Actividades (ESP-01): 0.45', 8),
-  (171, '2026-09-16 12:18:46.294215', 'INSERT', 'GradeRecord', '6', '{"score": null}', '{"score": "0.51", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Actitudinal y Autoevaluación (ESP-01): 0.51', 8),
-  (172, '2026-09-16 12:23:19.529561', 'FAILED_LOGIN', 'CustomUser', NULL, NULL, '{"attempted_username": "Ana@gmail.com"}', '10.8.182.30', 'Intento fallido de autenticación para usuario: Ana@gmail.com', NULL),
-  (173, '2026-09-16 12:23:30.481989', 'LOGIN', 'CustomUser', '15', NULL, NULL, '10.8.182.30', 'Inicio de sesión exitoso en la plataforma', 15),
-  (174, '2026-09-16 12:23:37.887508', 'INSERT', 'Enrollment', '5', NULL, '{"student": "Alanna Acosta", "code": "236745", "section": "7-A", "year": 2026, "status": "ACTIVE"}', '10.8.182.62', 'Matrícula de estudiante est_12214537245 en curso 7-A (2026)', 10),
-  (175, '2026-09-16 12:23:37.889558', 'CREATE_STUDENT', 'StudentProfile', '5', NULL, '{"username": "est_12214537245", "student_code": "236745", "section": "7-A"}', '10.8.182.62', 'Registro de nuevo alumno por nurys', 10),
-  (176, '2026-09-16 12:25:43.693683', 'INSERT', 'GradeRecord', '7', '{"score": null}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_12214537245 en Evaluaciones y Quices (ESP-01): 0.01', 8),
-  (177, '2026-09-16 12:25:47.824158', 'UPDATE', 'GradeRecord', '7', '{"score": "0.01"}', '{"score": "0.60", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_12214537245 en Evaluaciones y Quices (ESP-01): 0.60', 8),
-  (178, '2026-09-16 12:25:50.480730', 'UPDATE', 'GradeRecord', '7', '{"score": "0.60"}', '{"score": "0.17", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_12214537245 en Evaluaciones y Quices (ESP-01): 0.17', 8),
-  (179, '2026-09-16 12:25:51.758239', 'UPDATE', 'GradeRecord', '7', '{"score": "0.17"}', '{"score": "0.15", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_12214537245 en Evaluaciones y Quices (ESP-01): 0.15', 8),
-  (180, '2026-09-16 12:25:54.972948', 'UPDATE', 'GradeRecord', '7', '{"score": "0.15"}', '{"score": "0.51", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_12214537245 en Evaluaciones y Quices (ESP-01): 0.51', 8),
-  (181, '2026-09-16 12:26:04.510176', 'INSERT', 'GradeRecord', '8', '{"score": null}', '{"score": "0.58", "criterion": "Talleres y Actividades"}', '10.8.182.41', 'Calificación registrada para est_12214537245 en Talleres y Actividades (ESP-01): 0.58', 8),
-  (182, '2026-09-16 12:26:12.174703', 'INSERT', 'GradeRecord', '9', '{"score": null}', '{"score": "0.53", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.41', 'Calificación registrada para est_12214537245 en Actitudinal y Autoevaluación (ESP-01): 0.53', 8),
-  (183, '2026-09-16 12:26:37.277662', 'UPDATE', 'GradeRecord', '9', '{"score": "0.53"}', '{"score": "3.15", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.41', 'Calificación registrada para est_12214537245 en Actitudinal y Autoevaluación (ESP-01): 3.15', 8),
-  (184, '2026-09-16 12:31:52.992292', 'UPDATE', 'AttendanceSession', '6', NULL, '{"bulk_action": "ALL_PRESENT"}', '10.8.182.41', 'Marcado masivo de presentes en grupo 7-A para Lengua Castellana', 8),
-  (185, '2026-09-16 12:31:54.454482', 'UPDATE', 'AttendanceSession', '6', NULL, '{"bulk_action": "ALL_PRESENT"}', '10.8.182.41', 'Marcado masivo de presentes en grupo 7-A para Lengua Castellana', 8),
-  (186, '2026-09-16 12:33:02.931429', 'INSERT', 'HomeworkSubmission', '2', NULL, '{"student": "yesi", "homework": "Taller #1: Operaciones con Conjuntos", "status": "SUBMITTED"}', '10.8.182.62', 'Entrega de tarea Taller #1: Operaciones con Conjuntos por yesi', 9),
-  (187, '2026-09-16 12:34:58.117707', 'INSERT', 'TeachingAssignment', '4', NULL, '{"teacher": "Dulce Docente", "section": "6-A", "subject": "Geometr\\u00eda y Estad\\u00edstica", "year": 2026}', '10.8.182.62', 'Asignación académica de Geometría y Estadística en 6-A a dulce', 10),
-  (188, '2026-09-16 12:37:09.484099', 'INSERT', 'HomeworkSubmission', '3', NULL, '{"student": "yesi", "homework": "Evaluaci\\u00f3n escrita", "status": "SUBMITTED"}', '10.8.182.62', 'Entrega de tarea Evaluación escrita por yesi', 9),
-  (189, '2026-09-16 12:38:05.102258', 'UPDATE', 'HomeworkSubmission', '3', NULL, '{"score": "4.54", "feedback": "Bien", "status": "GRADED"}', '10.8.182.41', 'Calificación de tarea Evaluación escrita para yesi: 4.54', 8),
-  (190, '2026-09-16 12:41:04.290281', 'INSERT', 'GradeRecord', '10', '{"score": null}', '{"score": "2.62", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1221467456 en Evaluaciones y Quices (GEO-01): 2.62', 8),
-  (191, '2026-09-16 12:41:24.258884', 'INSERT', 'GradeRecord', '11', '{"score": null}', '{"score": "3.32", "criterion": "Talleres y Actividades"}', '10.8.182.41', 'Calificación registrada para est_1221467456 en Talleres y Actividades (GEO-01): 3.32', 8),
-  (192, '2026-09-16 12:41:49.004357', 'INSERT', 'GradeRecord', '12', '{"score": null}', '{"score": "2.76", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.41', 'Calificación registrada para est_1221467456 en Actitudinal y Autoevaluación (GEO-01): 2.76', 8),
-  (193, '2026-09-16 12:41:54.699539', 'UPDATE', 'GradeRecord', '12', '{"score": "2.76"}', '{"score": "0.80", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.41', 'Calificación registrada para est_1221467456 en Actitudinal y Autoevaluación (GEO-01): 0.80', 8),
-  (194, '2026-09-16 12:42:03.209231', 'UPDATE', 'GradeRecord', '12', '{"score": "0.80"}', '{"score": "0.64", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.41', 'Calificación registrada para est_1221467456 en Actitudinal y Autoevaluación (GEO-01): 0.64', 8),
-  (195, '2026-09-16 12:42:25.440579', 'UPDATE', 'GradeRecord', '12', '{"score": "0.64"}', '{"score": "4.21", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.41', 'Calificación registrada para est_1221467456 en Actitudinal y Autoevaluación (GEO-01): 4.21', 8),
-  (196, '2026-09-16 12:42:31.974780', 'INSERT', 'GradeRecord', '13', '{"score": null}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para yesi en Evaluaciones y Quices (GEO-01): 0.01', 8),
-  (197, '2026-09-16 12:42:42.821648', 'UPDATE', 'GradeRecord', '13', '{"score": "0.01"}', '{"score": "1.82", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para yesi en Evaluaciones y Quices (GEO-01): 1.82', 8),
-  (198, '2026-09-16 12:42:56.967063', 'INSERT', 'GradeRecord', '14', '{"score": null}', '{"score": "2.28", "criterion": "Talleres y Actividades"}', '10.8.182.41', 'Calificación registrada para yesi en Talleres y Actividades (GEO-01): 2.28', 8),
-  (199, '2026-09-16 12:43:15.447215', 'INSERT', 'GradeRecord', '15', '{"score": null}', '{"score": "2.48", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.41', 'Calificación registrada para yesi en Actitudinal y Autoevaluación (GEO-01): 2.48', 8),
-  (200, '2026-09-16 12:45:36.897069', 'UPDATE', 'AcademicPeriod', '1', '{"status": "ACTIVE"}', '{"status": "CLOSED"}', '127.0.0.1', 'Cierre formal del periodo Periodo 1 (2026): Cierre formal de periodo lectivo', 13),
-  (201, '2026-09-16 12:46:02.767597', 'UPDATE', 'AcademicPeriod', '2', '{"status": "CLOSED"}', '{"status": "ACTIVE"}', '127.0.0.1', 'REAPERTURA EXTRAORDINARIA del periodo Periodo 2: Nuevo periodo', 13),
-  (202, '2026-09-16 13:01:27.702690', 'UPDATE', 'AttendanceSession', '8', NULL, '{"bulk_action": "ALL_PRESENT"}', '10.8.182.41', 'Marcado masivo de presentes en grupo 6-A para Geometría y Estadística', 8),
-  (203, '2026-09-16 13:03:54.220656', 'UPDATE', 'AttendanceSession', '8', NULL, '{"bulk_action": "ALL_PRESENT"}', '10.8.182.41', 'Marcado masivo de presentes en grupo 6-A para Geometría y Estadística', 8),
-  (204, '2026-09-16 13:50:16.384286', 'LOGOUT', 'CustomUser', '13', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 13),
-  (205, '2026-09-16 14:42:05.713472', 'LOGOUT', 'CustomUser', '12', NULL, NULL, '10.8.182.62', 'Cierre de sesión manual voluntario', 12),
-  (206, '2026-09-16 14:42:14.040272', 'LOGIN', 'CustomUser', '12', NULL, NULL, '10.8.182.62', 'Inicio de sesión exitoso en la plataforma', 12),
-  (207, '2026-09-16 14:43:01.699016', 'LOGOUT', 'CustomUser', '15', NULL, NULL, '10.8.182.30', 'Cierre de sesión manual voluntario', 15),
-  (208, '2026-09-16 14:43:09.884334', 'LOGIN', 'CustomUser', '12', NULL, NULL, '10.8.182.30', 'Inicio de sesión exitoso en la plataforma', 12),
-  (209, '2026-09-16 14:44:08.666734', 'INSERT', 'CourseSection', '4', NULL, '{"name": "8-C", "year": 2026, "grade": "Octavo", "capacity": 35}', '10.8.182.30', 'Creación de sección académica 8-C', 12),
-  (210, '2026-09-16 14:44:34.453275', 'UPDATE', 'AcademicPeriod', '1', '{"status": "CLOSED"}', '{"status": "ACTIVE"}', '10.8.182.30', 'Apertura operativa de periodo', 12),
-  (211, '2026-09-16 14:44:38.254309', 'PERIOD_CLOSE', 'AcademicPeriod', '2', '{"status": "ACTIVE"}', '{"status": "CLOSED"}', '10.8.182.30', 'Cierre de periodo académico', 12),
-  (212, '2026-09-16 14:44:57.223696', 'INSERT', 'TeachingAssignment', '5', NULL, '{"teacher": "Dulce Docente", "section": "8-C", "subject": "Ingl\\u00e9s Comunicativo", "year": 2026}', '10.8.182.30', 'Asignación académica de Inglés Comunicativo en 8-C a dulce', 12),
-  (213, '2026-09-16 14:47:17.962479', 'LOGIN', 'CustomUser', '13', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 13),
-  (214, '2026-09-16 15:46:35.276502', 'LOGOUT', 'CustomUser', '13', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 13),
-  (215, '2026-09-16 15:46:54.154820', 'LOGIN', 'CustomUser', '8', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 8),
-  (216, '2026-09-16 15:47:53.690409', 'LOGOUT', 'CustomUser', '8', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 8),
-  (217, '2026-09-16 15:48:06.853262', 'LOGIN', 'CustomUser', '10', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 10),
-  (218, '2026-09-16 15:49:58.351818', 'CREATE_TEACHER', 'TeacherProfile', '3', NULL, '{"username": "doc_1234534234", "specialty": "Fisica"}', '127.0.0.1', 'Registro de nuevo docente por nurys', 10),
-  (219, '2026-09-16 15:50:24.188399', 'INSERT', 'TeachingAssignment', '6', NULL, '{"teacher": "Claudia gomez", "section": "6-A", "subject": "F\\u00edsica Elemental", "year": 2026}', '127.0.0.1', 'Asignación académica de Física Elemental en 6-A a doc_1234534234', 10),
-  (220, '2026-09-16 15:51:14.507099', 'INSERT', 'TeachingAssignment', '7', NULL, '{"teacher": "Claudia gomez", "section": "6-B", "subject": "Lengua Castellana", "year": 2026}', '127.0.0.1', 'Asignación académica de Lengua Castellana en 6-B a doc_1234534234', 10),
-  (221, '2026-09-16 15:52:52.416107', 'INSERT', 'Enrollment', '6', NULL, '{"student": "Andres Cantillo", "code": "234567", "section": "6-B", "year": 2026, "status": "ACTIVE"}', '127.0.0.1', 'Matrícula de estudiante est_1223454323 en curso 6-B (2026)', 10),
-  (222, '2026-09-16 15:52:52.419709', 'CREATE_STUDENT', 'StudentProfile', '6', NULL, '{"username": "est_1223454323", "student_code": "234567", "section": "6-B"}', '127.0.0.1', 'Registro de nuevo alumno por nurys', 10),
-  (223, '2026-09-16 15:53:14.442990', 'LOGOUT', 'CustomUser', '10', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 10),
-  (224, '2026-09-16 15:53:25.619244', 'LOGIN', 'CustomUser', '8', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 8),
-  (225, '2026-09-16 15:54:28.508461', 'INSERT', 'Homework', '4', NULL, '{"title": "trabajo de la oracion", "section": "6-A", "subject": "ESP-01"}', '127.0.0.1', 'Asignación de tarea: trabajo de la oracion para grupo 6-A', 8),
-  (226, '2026-09-16 15:54:41.496615', 'LOGOUT', 'CustomUser', '8', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 8),
-  (227, '2026-09-16 15:54:53.278723', 'LOGIN', 'CustomUser', '9', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 9),
-  (228, '2026-09-16 15:55:22.688766', 'INSERT', 'HomeworkSubmission', '4', NULL, '{"student": "yesi", "homework": "trabajo de la oracion", "status": "SUBMITTED"}', '127.0.0.1', 'Entrega de tarea trabajo de la oracion por yesi', 9),
-  (229, '2026-09-16 15:55:38.168833', 'LOGOUT', 'CustomUser', '9', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 9),
-  (230, '2026-09-16 15:55:50.479685', 'LOGIN', 'CustomUser', '8', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 8),
-  (231, '2026-09-16 15:57:24.228869', 'UPDATE', 'HomeworkSubmission', '4', NULL, '{"score": "1.00", "feedback": "", "status": "GRADED"}', '127.0.0.1', 'Calificación de tarea trabajo de la oracion para yesi: 1.00', 8),
-  (232, '2026-09-16 16:31:52.610439', 'LOGOUT', 'CustomUser', '12', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 12);
+-- Volcado de datos para la tabla `audit_auditlog` (271 registros)
+INSERT INTO `audit_auditlog` (`id`, `timestamp`, `table_name`, `record_id`, `old_values`, `new_values`, `ip_address`, `reason`, `user_id`, `user_agent`, `action`) VALUES
+  (1, '2026-09-15 01:51:47.399351', 'CustomUser', '1', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 1, NULL, 'LOGIN'),
+  (2, '2026-09-15 02:03:45.336775', 'AcademicYear', '1', NULL, '{"year": 2026, "is_current": true, "status": "ACTIVE"}', NULL, 'Establecido año 2026 como año lectivo vigente', NULL, NULL, 'UPDATE'),
+  (3, '2026-09-15 02:03:45.432306', 'GradeSubject', '1', NULL, '{"grade": "Sexto", "subject": "Matem\\u00e1ticas Fundamentales", "weekly_hours": 4, "weight_percentage": "100.00"}', NULL, 'Configuración curricular: Matemáticas Fundamentales en grado Sexto (4h/sem)', NULL, NULL, 'INSERT'),
+  (4, '2026-09-15 02:03:45.447180', 'GradeSubject', '2', NULL, '{"grade": "Sexto", "subject": "Geometr\\u00eda y Estad\\u00edstica", "weekly_hours": 4, "weight_percentage": "100.00"}', NULL, 'Configuración curricular: Geometría y Estadística en grado Sexto (4h/sem)', NULL, NULL, 'INSERT'),
+  (5, '2026-09-15 02:03:45.475675', 'GradeSubject', '3', NULL, '{"grade": "Sexto", "subject": "Biolog\\u00eda General", "weekly_hours": 4, "weight_percentage": "100.00"}', NULL, 'Configuración curricular: Biología General en grado Sexto (4h/sem)', NULL, NULL, 'INSERT'),
+  (6, '2026-09-15 02:03:45.487617', 'GradeSubject', '4', NULL, '{"grade": "Sexto", "subject": "F\\u00edsica Elemental", "weekly_hours": 4, "weight_percentage": "100.00"}', NULL, 'Configuración curricular: Física Elemental en grado Sexto (4h/sem)', NULL, NULL, 'INSERT'),
+  (7, '2026-09-15 02:03:45.517066', 'GradeSubject', '5', NULL, '{"grade": "Sexto", "subject": "Lengua Castellana", "weekly_hours": 4, "weight_percentage": "100.00"}', NULL, 'Configuración curricular: Lengua Castellana en grado Sexto (4h/sem)', NULL, NULL, 'INSERT'),
+  (8, '2026-09-15 02:03:45.542381', 'GradeSubject', '6', NULL, '{"grade": "Sexto", "subject": "Ingl\\u00e9s Comunicativo", "weekly_hours": 4, "weight_percentage": "100.00"}', NULL, 'Configuración curricular: Inglés Comunicativo en grado Sexto (4h/sem)', NULL, NULL, 'INSERT'),
+  (9, '2026-09-15 02:03:45.565601', 'GradeSubject', '7', NULL, '{"grade": "Sexto", "subject": "Tecnolog\\u00eda e Inform\\u00e1tica", "weekly_hours": 4, "weight_percentage": "100.00"}', NULL, 'Configuración curricular: Tecnología e Informática en grado Sexto (4h/sem)', NULL, NULL, 'INSERT'),
+  (10, '2026-09-15 02:03:45.591812', 'GradeSubject', '8', NULL, '{"grade": "Sexto", "subject": "Historia y Geograf\\u00eda", "weekly_hours": 4, "weight_percentage": "100.00"}', NULL, 'Configuración curricular: Historia y Geografía en grado Sexto (4h/sem)', NULL, NULL, 'INSERT'),
+  (11, '2026-09-15 02:03:45.630105', 'TeachingAssignment', '1', NULL, '{"teacher": "Diego Docente", "section": "6-A", "subject": "Matem\\u00e1ticas Fundamentales", "year": 2026}', NULL, 'Asignación académica de Matemáticas Fundamentales en 6-A a docente', NULL, NULL, 'INSERT'),
+  (12, '2026-09-15 02:03:45.640180', 'TeachingAssignment', '2', NULL, '{"teacher": "Diego Docente", "section": "6-B", "subject": "Matem\\u00e1ticas Fundamentales", "year": 2026}', NULL, 'Asignación académica de Matemáticas Fundamentales en 6-B a docente', NULL, NULL, 'INSERT'),
+  (13, '2026-09-15 02:03:45.659684', 'Enrollment', '1', NULL, '{"student": "Esteban Estudiante", "code": "EST-2026-0001", "section": "6-A", "year": 2026, "status": "ACTIVE"}', NULL, 'Matrícula de estudiante estudiante en curso 6-A (2026)', NULL, NULL, 'INSERT'),
+  (14, '2026-09-15 02:07:13.732420', 'CustomUser', '1', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 1, NULL, 'LOGIN'),
+  (15, '2026-09-15 02:11:15.760930', 'CustomUser', '1', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 1, NULL, 'LOGIN'),
+  (16, '2026-09-15 02:12:00.921221', 'CustomUser', '1', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 1, NULL, 'LOGIN'),
+  (17, '2026-09-15 02:12:10.639661', 'CustomUser', '1', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 1, NULL, 'LOGIN'),
+  (18, '2026-09-15 02:12:22.857783', 'CustomUser', '1', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 1, NULL, 'LOGIN'),
+  (19, '2026-09-15 02:14:15.631387', 'CustomUser', '1', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 1, NULL, 'LOGIN'),
+  (20, '2026-09-15 02:15:03.714118', 'CustomUser', '1', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 1, NULL, 'LOGIN'),
+  (21, '2026-09-15 02:15:03.752702', 'AcademicPeriod', '1', '{"status": "ACTIVE"}', '{"status": "CLOSED"}', '127.0.0.1', 'Cierre preventivo de prueba', 1, NULL, 'PERIOD_CLOSE'),
+  (22, '2026-09-15 02:15:14.661259', 'CustomUser', '1', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 1, NULL, 'LOGIN'),
+  (23, '2026-09-15 02:15:14.692515', 'AcademicPeriod', '1', '{"status": "CLOSED"}', '{"status": "ACTIVE"}', '127.0.0.1', 'Reapertura para operación normal', 1, NULL, 'UPDATE'),
+  (24, '2026-09-15 02:24:48.010242', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4, NULL, 'LOGIN'),
+  (25, '2026-09-15 02:28:48.134592', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4, NULL, 'LOGIN'),
+  (26, '2026-09-15 02:28:48.305566', 'AttendanceRecord', '1', '{"status": "PRESENT"}', '{"status": "UNJUSTIFIED", "justification": null}', '127.0.0.1', 'Asistencia actualizada para estudiante: UNJUSTIFIED', 4, NULL, 'UPDATE'),
+  (27, '2026-09-15 02:28:48.344478', 'AttendanceSession', '1', NULL, '{"bulk_action": "ALL_PRESENT"}', '127.0.0.1', 'Marcado masivo de presentes en grupo 6-A para Matemáticas Fundamentales', 4, NULL, 'UPDATE'),
+  (28, '2026-09-15 02:38:28.964720', 'GradeRecord', '1', '{"score": null}', '{"score": "4.50", "criterion": "Evaluaciones y Quices"}', NULL, 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 4.50', NULL, NULL, 'INSERT'),
+  (29, '2026-09-15 02:38:28.981286', 'GradeRecord', '2', '{"score": null}', '{"score": "4.00", "criterion": "Talleres y Actividades"}', NULL, 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 4.00', NULL, NULL, 'INSERT'),
+  (30, '2026-09-15 02:38:28.996709', 'GradeRecord', '3', '{"score": null}', '{"score": "4.80", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', NULL, 'Calificación registrada para estudiante en Actitudinal y Autoevaluación (MAT-01): 4.80', NULL, NULL, 'INSERT'),
+  (31, '2026-09-15 02:38:29.009956', 'Homework', '1', NULL, '{"title": "Taller #1: Operaciones con Conjuntos", "section": "6-A", "subject": "MAT-01"}', NULL, 'Asignación de tarea: Taller #1: Operaciones con Conjuntos para grupo 6-A', NULL, NULL, 'INSERT'),
+  (32, '2026-09-15 02:38:29.021226', 'HomeworkSubmission', '1', NULL, '{"student": "estudiante", "homework": "Taller #1: Operaciones con Conjuntos", "status": "SUBMITTED"}', NULL, 'Entrega de tarea Taller #1: Operaciones con Conjuntos por estudiante', NULL, NULL, 'INSERT'),
+  (33, '2026-09-15 02:38:29.034651', 'HomeworkSubmission', '1', NULL, '{"score": "4.50", "feedback": "Buen trabajo con las demostraciones.", "status": "GRADED"}', NULL, 'Calificación de tarea Taller #1: Operaciones con Conjuntos para estudiante: 4.50', NULL, NULL, 'UPDATE'),
+  (34, '2026-09-15 02:39:56.366080', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4, NULL, 'LOGIN'),
+  (35, '2026-09-15 02:40:07.744496', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4, NULL, 'LOGIN'),
+  (36, '2026-09-15 02:40:22.910980', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4, NULL, 'LOGIN'),
+  (37, '2026-09-15 02:40:32.839074', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4, NULL, 'LOGIN'),
+  (38, '2026-09-15 02:40:32.928074', 'GradeRecord', '1', '{"score": "4.50"}', '{"score": "4.80", "criterion": "Evaluaciones y Quices"}', '127.0.0.1', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 4.80', 4, NULL, 'UPDATE'),
+  (39, '2026-09-15 02:40:38.970240', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4, NULL, 'LOGIN'),
+  (40, '2026-09-15 02:40:39.070125', 'GradeRecord', '1', '{"score": "4.80"}', '{"score": "4.80", "criterion": "Evaluaciones y Quices"}', '127.0.0.1', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 4.80', 4, NULL, 'UPDATE'),
+  (41, '2026-09-15 02:40:45.618538', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4, NULL, 'LOGIN'),
+  (42, '2026-09-15 02:40:45.712104', 'GradeRecord', '1', '{"score": "4.80"}', '{"score": "4.80", "criterion": "Evaluaciones y Quices"}', '127.0.0.1', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 4.80', 4, NULL, 'UPDATE'),
+  (43, '2026-09-15 02:41:09.047653', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4, NULL, 'LOGIN'),
+  (44, '2026-09-15 02:41:09.149920', 'GradeRecord', '1', '{"score": "4.80"}', '{"score": "4.80", "criterion": "Evaluaciones y Quices"}', '127.0.0.1', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 4.80', 4, NULL, 'UPDATE'),
+  (45, '2026-09-15 02:41:27.044863', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4, NULL, 'LOGIN'),
+  (46, '2026-09-15 02:41:27.147539', 'GradeRecord', '1', '{"score": "4.80"}', '{"score": "4.80", "criterion": "Evaluaciones y Quices"}', '127.0.0.1', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 4.80', 4, NULL, 'UPDATE'),
+  (47, '2026-09-15 02:41:27.720789', 'CustomUser', '5', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 5, NULL, 'LOGIN'),
+  (48, '2026-09-15 02:58:55.532901', 'CustomUser', '2', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 2, NULL, 'LOGIN'),
+  (49, '2026-09-15 02:58:56.694951', 'CustomUser', '5', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 5, NULL, 'LOGIN'),
+  (50, '2026-09-15 02:59:08.389055', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 4, NULL, 'LOGIN'),
+  (51, '2026-09-15 02:59:08.815908', 'GradeRecord', '1', '{"score": "4.80"}', '{"score": "4.80", "criterion": "Evaluaciones y Quices"}', '127.0.0.1', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 4.80', 4, NULL, 'UPDATE'),
+  (52, '2026-09-15 02:59:09.619669', 'CustomUser', '5', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 5, NULL, 'LOGIN'),
+  (53, '2026-09-15 12:05:26.225672', 'CustomUser', '7', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', NULL, NULL, 'LOGIN'),
+  (54, '2026-09-15 13:09:29.037991', 'CustomUser', '7', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', NULL, NULL, 'LOGOUT'),
+  (55, '2026-09-15 13:50:39.210001', 'CustomUser', NULL, NULL, '{"attempted_username": " Padre"}', '10.8.182.242', 'Intento fallido de autenticación para usuario:  Padre', NULL, NULL, 'FAILED_LOGIN'),
+  (56, '2026-09-15 13:52:15.934755', 'CustomUser', NULL, NULL, '{"attempted_username": "Admin"}', '10.8.182.242', 'Intento fallido de autenticación para usuario: Admin', NULL, NULL, 'FAILED_LOGIN'),
+  (57, '2026-09-15 13:56:22.961560', 'CustomUser', '9', NULL, NULL, '10.8.182.242', 'Inicio de sesión exitoso en la plataforma', 9, NULL, 'LOGIN'),
+  (58, '2026-09-15 13:56:37.506453', 'CustomUser', '10', NULL, NULL, '10.8.182.202', 'Inicio de sesión exitoso en la plataforma', 10, NULL, 'LOGIN'),
+  (59, '2026-09-15 13:56:38.353113', 'CustomUser', '8', NULL, NULL, '10.8.182.41', 'Inicio de sesión exitoso en la plataforma', 8, NULL, 'LOGIN'),
+  (60, '2026-09-15 13:58:36.435881', 'CustomUser', '7', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', NULL, NULL, 'LOGIN'),
+  (61, '2026-09-15 13:59:51.488986', 'CustomUser', '9', NULL, NULL, '10.8.182.62', 'Inicio de sesión exitoso en la plataforma', 9, NULL, 'LOGIN'),
+  (62, '2026-09-15 14:00:24.831896', 'GradeRecord', '1', '{"score": "4.80"}', '{"score": "1.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.62', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 1.00', 9, NULL, 'UPDATE'),
+  (63, '2026-09-15 14:00:25.538993', 'GradeRecord', '1', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.62', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 1.00', 9, NULL, 'UPDATE'),
+  (64, '2026-09-15 14:00:27.888877', 'GradeRecord', '2', '{"score": "4.00"}', '{"score": "1.00", "criterion": "Talleres y Actividades"}', '10.8.182.62', 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 1.00', 9, NULL, 'UPDATE'),
+  (65, '2026-09-15 14:00:28.344047', 'GradeRecord', '2', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Talleres y Actividades"}', '10.8.182.62', 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 1.00', 9, NULL, 'UPDATE'),
+  (66, '2026-09-15 14:00:31.173273', 'GradeRecord', '3', '{"score": "4.80"}', '{"score": "1.00", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.62', 'Calificación registrada para estudiante en Actitudinal y Autoevaluación (MAT-01): 1.00', 9, NULL, 'UPDATE'),
+  (67, '2026-09-15 14:00:31.591632', 'GradeRecord', '3', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.62', 'Calificación registrada para estudiante en Actitudinal y Autoevaluación (MAT-01): 1.00', 9, NULL, 'UPDATE'),
+  (68, '2026-09-15 14:00:46.688824', 'CustomUser', '8', '{"phone": "3110000001", "address": "Sede Principal", "email": "dulce@academix.edu.co"}', '{"phone": "3110000001", "address": "Sede Principal", "email": "dulce@academix.edu.co"}', '10.8.182.41', 'Actualización de datos personales de perfil', 8, NULL, 'UPDATE'),
+  (69, '2026-09-15 14:00:47.896303', 'CustomUser', '8', '{"phone": "3110000001", "address": "Sede Principal", "email": "dulce@academix.edu.co"}', '{"phone": "3110000001", "address": "Sede Principal", "email": "dulce@academix.edu.co"}', '10.8.182.41', 'Actualización de datos personales de perfil', 8, NULL, 'UPDATE'),
+  (70, '2026-09-15 14:00:48.891590', 'CustomUser', '8', '{"phone": "3110000001", "address": "Sede Principal", "email": "dulce@academix.edu.co"}', '{"phone": "3110000001", "address": "Sede Principal", "email": "dulce@academix.edu.co"}', '10.8.182.41', 'Actualización de datos personales de perfil', 8, NULL, 'UPDATE'),
+  (71, '2026-09-15 14:27:11.261773', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9, NULL, 'UPDATE'),
+  (72, '2026-09-15 14:27:13.798655', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9, NULL, 'UPDATE'),
+  (73, '2026-09-15 14:27:19.634248', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9, NULL, 'UPDATE'),
+  (74, '2026-09-15 14:27:20.022290', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9, NULL, 'UPDATE'),
+  (75, '2026-09-15 14:27:20.221577', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9, NULL, 'UPDATE'),
+  (76, '2026-09-15 14:27:20.459741', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9, NULL, 'UPDATE'),
+  (77, '2026-09-15 14:27:20.715206', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9, NULL, 'UPDATE'),
+  (78, '2026-09-15 14:27:21.094951', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9, NULL, 'UPDATE'),
+  (79, '2026-09-15 14:27:21.400354', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9, NULL, 'UPDATE'),
+  (80, '2026-09-15 14:27:21.685881', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9, NULL, 'UPDATE'),
+  (81, '2026-09-15 14:27:21.950721', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9, NULL, 'UPDATE'),
+  (82, '2026-09-15 14:27:22.231668', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9, NULL, 'UPDATE'),
+  (83, '2026-09-15 14:27:22.387721', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9, NULL, 'UPDATE'),
+  (84, '2026-09-15 14:27:22.540085', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9, NULL, 'UPDATE'),
+  (85, '2026-09-15 14:27:22.959258', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9, NULL, 'UPDATE'),
+  (86, '2026-09-15 14:27:23.542544', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9, NULL, 'UPDATE'),
+  (87, '2026-09-15 14:27:24.100777', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9, NULL, 'UPDATE'),
+  (88, '2026-09-15 14:27:24.335267', 'CustomUser', '9', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '{"phone": "3001372139", "address": "Sede Principal", "email": "yesi@academix.edu.co"}', '10.8.182.62', 'Actualización de datos personales de perfil', 9, NULL, 'UPDATE'),
+  (89, '2026-09-15 14:48:08.467008', 'GradeRecord', '1', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.202', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 1.00', 10, NULL, 'UPDATE'),
+  (90, '2026-09-15 14:48:09.334121', 'GradeRecord', '1', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.202', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 1.00', 10, NULL, 'UPDATE'),
+  (91, '2026-09-15 14:48:11.273562', 'GradeRecord', '1', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.202', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 1.00', 10, NULL, 'UPDATE'),
+  (92, '2026-09-15 14:48:16.762613', 'GradeRecord', '2', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Talleres y Actividades"}', '10.8.182.202', 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 1.00', 10, NULL, 'UPDATE'),
+  (93, '2026-09-15 14:48:17.311018', 'GradeRecord', '2', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Talleres y Actividades"}', '10.8.182.202', 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 1.00', 10, NULL, 'UPDATE'),
+  (94, '2026-09-15 14:48:17.840883', 'GradeRecord', '2', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Talleres y Actividades"}', '10.8.182.202', 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 1.00', 10, NULL, 'UPDATE'),
+  (95, '2026-09-15 14:48:18.370910', 'GradeRecord', '2', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Talleres y Actividades"}', '10.8.182.202', 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 1.00', 10, NULL, 'UPDATE'),
+  (96, '2026-09-15 14:48:18.939283', 'GradeRecord', '2', '{"score": "1.00"}', '{"score": "1.00", "criterion": "Talleres y Actividades"}', '10.8.182.202', 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 1.00', 10, NULL, 'UPDATE'),
+  (97, '2026-09-15 14:48:25.307849', 'GradeRecord', '2', '{"score": "1.00"}', '{"score": "2.17", "criterion": "Talleres y Actividades"}', '10.8.182.202', 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 2.17', 10, NULL, 'UPDATE'),
+  (98, '2026-09-15 14:48:35.242571', 'GradeRecord', '1', '{"score": "1.00"}', '{"score": "2.37", "criterion": "Evaluaciones y Quices"}', '10.8.182.202', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 2.37', 10, NULL, 'UPDATE'),
+  (99, '2026-09-15 14:48:53.044614', 'GradeRecord', '3', '{"score": "1.00"}', '{"score": "3.84", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.202', 'Calificación registrada para estudiante en Actitudinal y Autoevaluación (MAT-01): 3.84', 10, NULL, 'UPDATE'),
+  (100, '2026-09-15 14:49:16.816312', 'GradeRecord', '2', '{"score": "2.17"}', '{"score": "5.00", "criterion": "Talleres y Actividades"}', '10.8.182.202', 'Calificación registrada para estudiante en Talleres y Actividades (MAT-01): 5.00', 10, NULL, 'UPDATE'),
+  (101, '2026-09-15 14:49:35.245922', 'GradeRecord', '1', '{"score": "2.37"}', '{"score": "3.65", "criterion": "Evaluaciones y Quices"}', '10.8.182.202', 'Calificación registrada para estudiante en Evaluaciones y Quices (MAT-01): 3.65', 10, NULL, 'UPDATE'),
+  (102, '2026-09-15 14:49:39.739249', 'GradeRecord', '3', '{"score": "3.84"}', '{"score": "1.35", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.202', 'Calificación registrada para estudiante en Actitudinal y Autoevaluación (MAT-01): 1.35', 10, NULL, 'UPDATE'),
+  (103, '2026-09-15 14:49:59.039891', 'GradeRecord', '3', '{"score": "1.35"}', '{"score": "4.14", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.202', 'Calificación registrada para estudiante en Actitudinal y Autoevaluación (MAT-01): 4.14', 10, NULL, 'UPDATE'),
+  (104, '2026-09-15 15:18:27.349551', 'CustomUser', '9', NULL, NULL, '10.8.182.62', 'Cierre de sesión manual voluntario', 9, NULL, 'LOGOUT'),
+  (105, '2026-09-15 15:18:41.552700', 'CustomUser', '10', NULL, NULL, '10.8.182.62', 'Inicio de sesión exitoso en la plataforma', 10, NULL, 'LOGIN'),
+  (106, '2026-09-15 15:20:36.794201', 'AttendanceRecord', '2', '{"status": "PRESENT"}', '{"status": "UNJUSTIFIED", "justification": null}', '10.8.182.202', 'Asistencia actualizada para estudiante: UNJUSTIFIED', 10, NULL, 'UPDATE'),
+  (107, '2026-09-15 15:20:38.301679', 'AttendanceRecord', '2', '{"status": "UNJUSTIFIED"}', '{"status": "JUSTIFIED", "justification": null}', '10.8.182.202', 'Asistencia actualizada para estudiante: JUSTIFIED', 10, NULL, 'UPDATE'),
+  (108, '2026-09-15 15:20:39.555905', 'AttendanceRecord', '2', '{"status": "JUSTIFIED"}', '{"status": "LATE", "justification": null}', '10.8.182.202', 'Asistencia actualizada para estudiante: LATE', 10, NULL, 'UPDATE'),
+  (109, '2026-09-15 15:20:44.739466', 'AttendanceRecord', '2', '{"status": "LATE"}', '{"status": "UNJUSTIFIED", "justification": null}', '10.8.182.202', 'Asistencia actualizada para estudiante: UNJUSTIFIED', 10, NULL, 'UPDATE'),
+  (110, '2026-09-15 15:20:48.031155', 'AttendanceRecord', '2', '{"status": "UNJUSTIFIED"}', '{"status": "JUSTIFIED", "justification": null}', '10.8.182.202', 'Asistencia actualizada para estudiante: JUSTIFIED', 10, NULL, 'UPDATE'),
+  (111, '2026-09-15 15:20:49.753457', 'AttendanceRecord', '2', '{"status": "JUSTIFIED"}', '{"status": "LATE", "justification": null}', '10.8.182.202', 'Asistencia actualizada para estudiante: LATE', 10, NULL, 'UPDATE'),
+  (112, '2026-09-15 15:20:59.229509', 'AttendanceSession', '2', NULL, '{"bulk_action": "ALL_PRESENT"}', '10.8.182.202', 'Marcado masivo de presentes en grupo 6-A para Matemáticas Fundamentales', 10, NULL, 'UPDATE'),
+  (113, '2026-09-15 15:21:00.319285', 'AttendanceSession', '2', NULL, '{"bulk_action": "ALL_PRESENT"}', '10.8.182.202', 'Marcado masivo de presentes en grupo 6-A para Matemáticas Fundamentales', 10, NULL, 'UPDATE'),
+  (114, '2026-09-15 15:23:22.522222', 'CustomUser', '10', '{"phone": "3110000003", "address": "Sede Principal", "email": "nurys@academix.edu.co"}', '{"phone": "3110000003", "address": "Sede Principal", "email": "nurys@academix.edu.co"}', '10.8.182.202', 'Actualización de datos personales de perfil', 10, NULL, 'UPDATE'),
+  (115, '2026-09-15 15:23:24.642271', 'CustomUser', '10', '{"phone": "3110000003", "address": "Sede Principal", "email": "nurys@academix.edu.co"}', '{"phone": "3110000003", "address": "Sede Principal", "email": "nurys@academix.edu.co"}', '10.8.182.202', 'Actualización de datos personales de perfil', 10, NULL, 'UPDATE'),
+  (116, '2026-09-16 00:55:31.954969', 'CustomUser', '7', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', NULL, NULL, 'LOGIN'),
+  (117, '2026-09-16 11:27:45.093163', 'Enrollment', '2', NULL, '{"student": "Elizareth Cabrera", "code": "236654", "section": "6-A", "year": 2026, "status": "ACTIVE"}', '10.8.182.62', 'Matrícula de estudiante est_1221467456 en curso 6-A (2026)', 10, NULL, 'INSERT'),
+  (118, '2026-09-16 11:27:45.096716', 'StudentProfile', '3', NULL, '{"username": "est_1221467456", "student_code": "236654", "section": "6-A"}', '10.8.182.62', 'Registro de nuevo alumno por nurys', 10, NULL, 'CREATE_STUDENT'),
+  (119, '2026-09-16 11:28:00.222009', 'Enrollment', '3', NULL, '{"student": "Yesi Cabrera", "code": "EST-2026-0002", "section": "6-A", "year": 2026, "status": "ACTIVE"}', '10.8.182.62', 'Matrícula de estudiante yesi en curso 6-A (2026)', 10, NULL, 'INSERT'),
+  (120, '2026-09-16 11:49:57.233098', 'CustomUser', '8', NULL, NULL, '10.8.182.41', 'Inicio de sesión exitoso en la plataforma', 8, NULL, 'LOGIN'),
+  (121, '2026-09-16 11:53:50.372166', 'CustomUser', '10', NULL, NULL, '10.8.182.62', 'Cierre de sesión manual voluntario', 10, NULL, 'LOGOUT'),
+  (122, '2026-09-16 11:54:16.908580', 'CustomUser', NULL, NULL, '{"attempted_username": "docente"}', '10.8.182.62', 'Intento fallido de autenticación para usuario: docente', NULL, NULL, 'FAILED_LOGIN'),
+  (123, '2026-09-16 11:54:44.444751', 'CustomUser', '10', NULL, NULL, '10.8.182.62', 'Inicio de sesión exitoso en la plataforma', 10, NULL, 'LOGIN'),
+  (124, '2026-09-16 11:55:12.383666', 'CustomUser', '9', NULL, NULL, '10.8.182.62', 'Inicio de sesión exitoso en la plataforma', 9, NULL, 'LOGIN'),
+  (125, '2026-09-16 12:06:38.448969', 'Homework', '2', NULL, '{"title": "Evaluaci\\u00f3n escrita", "section": "6-A", "subject": "ESP-01"}', '10.8.182.41', 'Asignación de tarea: Evaluación escrita para grupo 6-A', 8, NULL, 'INSERT'),
+  (126, '2026-09-16 12:08:34.385049', 'TeachingAssignment', '3', NULL, '{"teacher": "Dulce Docente", "section": "7-A", "subject": "Lengua Castellana", "year": 2026}', '10.8.182.62', 'Asignación académica de Lengua Castellana en 7-A a dulce', 10, NULL, 'INSERT'),
+  (127, '2026-09-16 12:11:31.005601', 'Homework', '3', NULL, '{"title": "Evaluaci\\u00f3n escrita", "section": "7-A", "subject": "ESP-01"}', '10.8.182.41', 'Asignación de tarea: Evaluación escrita para grupo 7-A', 8, NULL, 'INSERT'),
+  (128, '2026-09-16 12:14:22.707135', 'CustomUser', NULL, NULL, '{"attempted_username": "yurledi"}', '127.0.0.1', 'Intento fallido de autenticación para usuario: yurledi', NULL, NULL, 'FAILED_LOGIN'),
+  (129, '2026-09-16 12:14:35.328642', 'CustomUser', '13', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 13, NULL, 'LOGIN'),
+  (130, '2026-09-16 12:16:51.449028', 'Enrollment', '4', NULL, '{"student": "Camilo Mendoza", "code": "452314", "section": "7-A", "year": 2026, "status": "ACTIVE"}', '10.8.182.62', 'Matrícula de estudiante est_1245678980 en curso 7-A (2026)', 10, NULL, 'INSERT'),
+  (131, '2026-09-16 12:16:51.450498', 'StudentProfile', '4', NULL, '{"username": "est_1245678980", "student_code": "452314", "section": "7-A"}', '10.8.182.62', 'Registro de nuevo alumno por nurys', 10, NULL, 'CREATE_STUDENT'),
+  (132, '2026-09-16 12:17:19.795381', 'GradeRecord', '4', '{"score": null}', '{"score": "0.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.00', 8, NULL, 'INSERT'),
+  (133, '2026-09-16 12:17:20.287829', 'GradeRecord', '4', '{"score": null}', '{"score": "0.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.00', 8, NULL, 'UPDATE'),
+  (134, '2026-09-16 12:17:21.370797', 'GradeRecord', '4', '{"score": null}', '{"score": "0.08", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.08', 8, NULL, 'UPDATE'),
+  (135, '2026-09-16 12:17:24.178829', 'GradeRecord', '4', '{"score": "0.08"}', '{"score": "0.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.00', 8, NULL, 'UPDATE'),
+  (136, '2026-09-16 12:17:24.811447', 'GradeRecord', '4', '{"score": null}', '{"score": "0.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.00', 8, NULL, 'UPDATE'),
+  (137, '2026-09-16 12:17:25.319260', 'GradeRecord', '4', '{"score": null}', '{"score": "0.00", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.00', 8, NULL, 'UPDATE'),
+  (138, '2026-09-16 12:17:31.262721', 'GradeRecord', '4', '{"score": null}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (139, '2026-09-16 12:17:31.957785', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (140, '2026-09-16 12:17:32.614143', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (141, '2026-09-16 12:17:33.317272', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (142, '2026-09-16 12:17:33.622591', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (143, '2026-09-16 12:17:34.333848', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (144, '2026-09-16 12:17:35.155085', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (145, '2026-09-16 12:17:36.517305', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (146, '2026-09-16 12:17:37.089793', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (147, '2026-09-16 12:17:37.394172', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (148, '2026-09-16 12:17:37.857467', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (149, '2026-09-16 12:17:39.337074', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (150, '2026-09-16 12:17:42.204017', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (151, '2026-09-16 12:17:42.701662', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (152, '2026-09-16 12:17:43.352209', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (153, '2026-09-16 12:17:44.052478', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (154, '2026-09-16 12:17:44.781384', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (155, '2026-09-16 12:17:45.299248', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (156, '2026-09-16 12:17:45.788157', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (157, '2026-09-16 12:17:46.419647', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (158, '2026-09-16 12:17:47.705246', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.02", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.02', 8, NULL, 'UPDATE'),
+  (159, '2026-09-16 12:17:48.254545', 'GradeRecord', '4', '{"score": "0.02"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (160, '2026-09-16 12:17:50.310025', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (161, '2026-09-16 12:17:50.840638', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (162, '2026-09-16 12:17:51.576265', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (163, '2026-09-16 12:17:52.257230', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (164, '2026-09-16 12:17:52.758854', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (165, '2026-09-16 12:17:53.273325', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'UPDATE'),
+  (166, '2026-09-16 12:18:06.988818', 'GradeRecord', '4', '{"score": "0.01"}', '{"score": "0.08", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.08', 8, NULL, 'UPDATE'),
+  (167, '2026-09-16 12:18:19.067184', 'GradeRecord', '4', '{"score": "0.08"}', '{"score": "0.40", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Evaluaciones y Quices (ESP-01): 0.40', 8, NULL, 'UPDATE'),
+  (168, '2026-09-16 12:18:32.052404', 'GradeRecord', '5', '{"score": null}', '{"score": "0.01", "criterion": "Talleres y Actividades"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Talleres y Actividades (ESP-01): 0.01', 8, NULL, 'INSERT'),
+  (169, '2026-09-16 12:18:33.814299', 'GradeRecord', '5', '{"score": "0.01"}', '{"score": "0.17", "criterion": "Talleres y Actividades"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Talleres y Actividades (ESP-01): 0.17', 8, NULL, 'UPDATE'),
+  (170, '2026-09-16 12:18:37.611767', 'GradeRecord', '5', '{"score": "0.17"}', '{"score": "0.45", "criterion": "Talleres y Actividades"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Talleres y Actividades (ESP-01): 0.45', 8, NULL, 'UPDATE'),
+  (171, '2026-09-16 12:18:46.294215', 'GradeRecord', '6', '{"score": null}', '{"score": "0.51", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.41', 'Calificación registrada para est_1245678980 en Actitudinal y Autoevaluación (ESP-01): 0.51', 8, NULL, 'INSERT'),
+  (172, '2026-09-16 12:23:19.529561', 'CustomUser', NULL, NULL, '{"attempted_username": "Ana@gmail.com"}', '10.8.182.30', 'Intento fallido de autenticación para usuario: Ana@gmail.com', NULL, NULL, 'FAILED_LOGIN'),
+  (173, '2026-09-16 12:23:30.481989', 'CustomUser', '15', NULL, NULL, '10.8.182.30', 'Inicio de sesión exitoso en la plataforma', 15, NULL, 'LOGIN'),
+  (174, '2026-09-16 12:23:37.887508', 'Enrollment', '5', NULL, '{"student": "Alanna Acosta", "code": "236745", "section": "7-A", "year": 2026, "status": "ACTIVE"}', '10.8.182.62', 'Matrícula de estudiante est_12214537245 en curso 7-A (2026)', 10, NULL, 'INSERT'),
+  (175, '2026-09-16 12:23:37.889558', 'StudentProfile', '5', NULL, '{"username": "est_12214537245", "student_code": "236745", "section": "7-A"}', '10.8.182.62', 'Registro de nuevo alumno por nurys', 10, NULL, 'CREATE_STUDENT'),
+  (176, '2026-09-16 12:25:43.693683', 'GradeRecord', '7', '{"score": null}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_12214537245 en Evaluaciones y Quices (ESP-01): 0.01', 8, NULL, 'INSERT'),
+  (177, '2026-09-16 12:25:47.824158', 'GradeRecord', '7', '{"score": "0.01"}', '{"score": "0.60", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_12214537245 en Evaluaciones y Quices (ESP-01): 0.60', 8, NULL, 'UPDATE'),
+  (178, '2026-09-16 12:25:50.480730', 'GradeRecord', '7', '{"score": "0.60"}', '{"score": "0.17", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_12214537245 en Evaluaciones y Quices (ESP-01): 0.17', 8, NULL, 'UPDATE'),
+  (179, '2026-09-16 12:25:51.758239', 'GradeRecord', '7', '{"score": "0.17"}', '{"score": "0.15", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_12214537245 en Evaluaciones y Quices (ESP-01): 0.15', 8, NULL, 'UPDATE'),
+  (180, '2026-09-16 12:25:54.972948', 'GradeRecord', '7', '{"score": "0.15"}', '{"score": "0.51", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_12214537245 en Evaluaciones y Quices (ESP-01): 0.51', 8, NULL, 'UPDATE'),
+  (181, '2026-09-16 12:26:04.510176', 'GradeRecord', '8', '{"score": null}', '{"score": "0.58", "criterion": "Talleres y Actividades"}', '10.8.182.41', 'Calificación registrada para est_12214537245 en Talleres y Actividades (ESP-01): 0.58', 8, NULL, 'INSERT'),
+  (182, '2026-09-16 12:26:12.174703', 'GradeRecord', '9', '{"score": null}', '{"score": "0.53", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.41', 'Calificación registrada para est_12214537245 en Actitudinal y Autoevaluación (ESP-01): 0.53', 8, NULL, 'INSERT'),
+  (183, '2026-09-16 12:26:37.277662', 'GradeRecord', '9', '{"score": "0.53"}', '{"score": "3.15", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.41', 'Calificación registrada para est_12214537245 en Actitudinal y Autoevaluación (ESP-01): 3.15', 8, NULL, 'UPDATE'),
+  (184, '2026-09-16 12:31:52.992292', 'AttendanceSession', '6', NULL, '{"bulk_action": "ALL_PRESENT"}', '10.8.182.41', 'Marcado masivo de presentes en grupo 7-A para Lengua Castellana', 8, NULL, 'UPDATE'),
+  (185, '2026-09-16 12:31:54.454482', 'AttendanceSession', '6', NULL, '{"bulk_action": "ALL_PRESENT"}', '10.8.182.41', 'Marcado masivo de presentes en grupo 7-A para Lengua Castellana', 8, NULL, 'UPDATE'),
+  (186, '2026-09-16 12:33:02.931429', 'HomeworkSubmission', '2', NULL, '{"student": "yesi", "homework": "Taller #1: Operaciones con Conjuntos", "status": "SUBMITTED"}', '10.8.182.62', 'Entrega de tarea Taller #1: Operaciones con Conjuntos por yesi', 9, NULL, 'INSERT'),
+  (187, '2026-09-16 12:34:58.117707', 'TeachingAssignment', '4', NULL, '{"teacher": "Dulce Docente", "section": "6-A", "subject": "Geometr\\u00eda y Estad\\u00edstica", "year": 2026}', '10.8.182.62', 'Asignación académica de Geometría y Estadística en 6-A a dulce', 10, NULL, 'INSERT'),
+  (188, '2026-09-16 12:37:09.484099', 'HomeworkSubmission', '3', NULL, '{"student": "yesi", "homework": "Evaluaci\\u00f3n escrita", "status": "SUBMITTED"}', '10.8.182.62', 'Entrega de tarea Evaluación escrita por yesi', 9, NULL, 'INSERT'),
+  (189, '2026-09-16 12:38:05.102258', 'HomeworkSubmission', '3', NULL, '{"score": "4.54", "feedback": "Bien", "status": "GRADED"}', '10.8.182.41', 'Calificación de tarea Evaluación escrita para yesi: 4.54', 8, NULL, 'UPDATE'),
+  (190, '2026-09-16 12:41:04.290281', 'GradeRecord', '10', '{"score": null}', '{"score": "2.62", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para est_1221467456 en Evaluaciones y Quices (GEO-01): 2.62', 8, NULL, 'INSERT'),
+  (191, '2026-09-16 12:41:24.258884', 'GradeRecord', '11', '{"score": null}', '{"score": "3.32", "criterion": "Talleres y Actividades"}', '10.8.182.41', 'Calificación registrada para est_1221467456 en Talleres y Actividades (GEO-01): 3.32', 8, NULL, 'INSERT'),
+  (192, '2026-09-16 12:41:49.004357', 'GradeRecord', '12', '{"score": null}', '{"score": "2.76", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.41', 'Calificación registrada para est_1221467456 en Actitudinal y Autoevaluación (GEO-01): 2.76', 8, NULL, 'INSERT'),
+  (193, '2026-09-16 12:41:54.699539', 'GradeRecord', '12', '{"score": "2.76"}', '{"score": "0.80", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.41', 'Calificación registrada para est_1221467456 en Actitudinal y Autoevaluación (GEO-01): 0.80', 8, NULL, 'UPDATE'),
+  (194, '2026-09-16 12:42:03.209231', 'GradeRecord', '12', '{"score": "0.80"}', '{"score": "0.64", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.41', 'Calificación registrada para est_1221467456 en Actitudinal y Autoevaluación (GEO-01): 0.64', 8, NULL, 'UPDATE'),
+  (195, '2026-09-16 12:42:25.440579', 'GradeRecord', '12', '{"score": "0.64"}', '{"score": "4.21", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.41', 'Calificación registrada para est_1221467456 en Actitudinal y Autoevaluación (GEO-01): 4.21', 8, NULL, 'UPDATE'),
+  (196, '2026-09-16 12:42:31.974780', 'GradeRecord', '13', '{"score": null}', '{"score": "0.01", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para yesi en Evaluaciones y Quices (GEO-01): 0.01', 8, NULL, 'INSERT'),
+  (197, '2026-09-16 12:42:42.821648', 'GradeRecord', '13', '{"score": "0.01"}', '{"score": "1.82", "criterion": "Evaluaciones y Quices"}', '10.8.182.41', 'Calificación registrada para yesi en Evaluaciones y Quices (GEO-01): 1.82', 8, NULL, 'UPDATE'),
+  (198, '2026-09-16 12:42:56.967063', 'GradeRecord', '14', '{"score": null}', '{"score": "2.28", "criterion": "Talleres y Actividades"}', '10.8.182.41', 'Calificación registrada para yesi en Talleres y Actividades (GEO-01): 2.28', 8, NULL, 'INSERT'),
+  (199, '2026-09-16 12:43:15.447215', 'GradeRecord', '15', '{"score": null}', '{"score": "2.48", "criterion": "Actitudinal y Autoevaluaci\\u00f3n"}', '10.8.182.41', 'Calificación registrada para yesi en Actitudinal y Autoevaluación (GEO-01): 2.48', 8, NULL, 'INSERT'),
+  (200, '2026-09-16 12:45:36.897069', 'AcademicPeriod', '1', '{"status": "ACTIVE"}', '{"status": "CLOSED"}', '127.0.0.1', 'Cierre formal del periodo Periodo 1 (2026): Cierre formal de periodo lectivo', 13, NULL, 'UPDATE'),
+  (201, '2026-09-16 12:46:02.767597', 'AcademicPeriod', '2', '{"status": "CLOSED"}', '{"status": "ACTIVE"}', '127.0.0.1', 'REAPERTURA EXTRAORDINARIA del periodo Periodo 2: Nuevo periodo', 13, NULL, 'UPDATE'),
+  (202, '2026-09-16 13:01:27.702690', 'AttendanceSession', '8', NULL, '{"bulk_action": "ALL_PRESENT"}', '10.8.182.41', 'Marcado masivo de presentes en grupo 6-A para Geometría y Estadística', 8, NULL, 'UPDATE'),
+  (203, '2026-09-16 13:03:54.220656', 'AttendanceSession', '8', NULL, '{"bulk_action": "ALL_PRESENT"}', '10.8.182.41', 'Marcado masivo de presentes en grupo 6-A para Geometría y Estadística', 8, NULL, 'UPDATE'),
+  (204, '2026-09-16 13:50:16.384286', 'CustomUser', '13', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 13, NULL, 'LOGOUT'),
+  (205, '2026-09-16 14:42:05.713472', 'CustomUser', '12', NULL, NULL, '10.8.182.62', 'Cierre de sesión manual voluntario', 12, NULL, 'LOGOUT'),
+  (206, '2026-09-16 14:42:14.040272', 'CustomUser', '12', NULL, NULL, '10.8.182.62', 'Inicio de sesión exitoso en la plataforma', 12, NULL, 'LOGIN'),
+  (207, '2026-09-16 14:43:01.699016', 'CustomUser', '15', NULL, NULL, '10.8.182.30', 'Cierre de sesión manual voluntario', 15, NULL, 'LOGOUT'),
+  (208, '2026-09-16 14:43:09.884334', 'CustomUser', '12', NULL, NULL, '10.8.182.30', 'Inicio de sesión exitoso en la plataforma', 12, NULL, 'LOGIN'),
+  (209, '2026-09-16 14:44:08.666734', 'CourseSection', '4', NULL, '{"name": "8-C", "year": 2026, "grade": "Octavo", "capacity": 35}', '10.8.182.30', 'Creación de sección académica 8-C', 12, NULL, 'INSERT'),
+  (210, '2026-09-16 14:44:34.453275', 'AcademicPeriod', '1', '{"status": "CLOSED"}', '{"status": "ACTIVE"}', '10.8.182.30', 'Apertura operativa de periodo', 12, NULL, 'UPDATE'),
+  (211, '2026-09-16 14:44:38.254309', 'AcademicPeriod', '2', '{"status": "ACTIVE"}', '{"status": "CLOSED"}', '10.8.182.30', 'Cierre de periodo académico', 12, NULL, 'PERIOD_CLOSE'),
+  (212, '2026-09-16 14:44:57.223696', 'TeachingAssignment', '5', NULL, '{"teacher": "Dulce Docente", "section": "8-C", "subject": "Ingl\\u00e9s Comunicativo", "year": 2026}', '10.8.182.30', 'Asignación académica de Inglés Comunicativo en 8-C a dulce', 12, NULL, 'INSERT'),
+  (213, '2026-09-16 14:47:17.962479', 'CustomUser', '13', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 13, NULL, 'LOGIN'),
+  (214, '2026-09-16 15:46:35.276502', 'CustomUser', '13', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 13, NULL, 'LOGOUT'),
+  (215, '2026-09-16 15:46:54.154820', 'CustomUser', '8', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 8, NULL, 'LOGIN'),
+  (216, '2026-09-16 15:47:53.690409', 'CustomUser', '8', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 8, NULL, 'LOGOUT'),
+  (217, '2026-09-16 15:48:06.853262', 'CustomUser', '10', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 10, NULL, 'LOGIN'),
+  (218, '2026-09-16 15:49:58.351818', 'TeacherProfile', '3', NULL, '{"username": "doc_1234534234", "specialty": "Fisica"}', '127.0.0.1', 'Registro de nuevo docente por nurys', 10, NULL, 'CREATE_TEACHER'),
+  (219, '2026-09-16 15:50:24.188399', 'TeachingAssignment', '6', NULL, '{"teacher": "Claudia gomez", "section": "6-A", "subject": "F\\u00edsica Elemental", "year": 2026}', '127.0.0.1', 'Asignación académica de Física Elemental en 6-A a doc_1234534234', 10, NULL, 'INSERT'),
+  (220, '2026-09-16 15:51:14.507099', 'TeachingAssignment', '7', NULL, '{"teacher": "Claudia gomez", "section": "6-B", "subject": "Lengua Castellana", "year": 2026}', '127.0.0.1', 'Asignación académica de Lengua Castellana en 6-B a doc_1234534234', 10, NULL, 'INSERT'),
+  (221, '2026-09-16 15:52:52.416107', 'Enrollment', '6', NULL, '{"student": "Andres Cantillo", "code": "234567", "section": "6-B", "year": 2026, "status": "ACTIVE"}', '127.0.0.1', 'Matrícula de estudiante est_1223454323 en curso 6-B (2026)', 10, NULL, 'INSERT'),
+  (222, '2026-09-16 15:52:52.419709', 'StudentProfile', '6', NULL, '{"username": "est_1223454323", "student_code": "234567", "section": "6-B"}', '127.0.0.1', 'Registro de nuevo alumno por nurys', 10, NULL, 'CREATE_STUDENT'),
+  (223, '2026-09-16 15:53:14.442990', 'CustomUser', '10', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 10, NULL, 'LOGOUT'),
+  (224, '2026-09-16 15:53:25.619244', 'CustomUser', '8', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 8, NULL, 'LOGIN'),
+  (225, '2026-09-16 15:54:28.508461', 'Homework', '4', NULL, '{"title": "trabajo de la oracion", "section": "6-A", "subject": "ESP-01"}', '127.0.0.1', 'Asignación de tarea: trabajo de la oracion para grupo 6-A', 8, NULL, 'INSERT'),
+  (226, '2026-09-16 15:54:41.496615', 'CustomUser', '8', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 8, NULL, 'LOGOUT'),
+  (227, '2026-09-16 15:54:53.278723', 'CustomUser', '9', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 9, NULL, 'LOGIN'),
+  (228, '2026-09-16 15:55:22.688766', 'HomeworkSubmission', '4', NULL, '{"student": "yesi", "homework": "trabajo de la oracion", "status": "SUBMITTED"}', '127.0.0.1', 'Entrega de tarea trabajo de la oracion por yesi', 9, NULL, 'INSERT'),
+  (229, '2026-09-16 15:55:38.168833', 'CustomUser', '9', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 9, NULL, 'LOGOUT'),
+  (230, '2026-09-16 15:55:50.479685', 'CustomUser', '8', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso en la plataforma', 8, NULL, 'LOGIN'),
+  (231, '2026-09-16 15:57:24.228869', 'HomeworkSubmission', '4', NULL, '{"score": "1.00", "feedback": "", "status": "GRADED"}', '127.0.0.1', 'Calificación de tarea trabajo de la oracion para yesi: 1.00', 8, NULL, 'UPDATE'),
+  (232, '2026-09-16 16:31:52.610439', 'CustomUser', '12', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 12, NULL, 'LOGOUT'),
+  (233, '2026-09-25 12:56:12.051393', 'CustomUser', NULL, NULL, '{"attempted_username": "yurleidi", "role": "RECTOR"}', '127.0.0.1', 'Intento fallido de autenticación: Credenciales inválidas. Verifique su usuario y contraseña.', NULL, NULL, 'FAILED_LOGIN'),
+  (234, '2026-09-25 12:56:33.818168', 'CustomUser', NULL, NULL, '{"attempted_username": "yurleidi", "role": "RECTOR"}', '127.0.0.1', 'Intento fallido de autenticación: Credenciales inválidas. Verifique su usuario y contraseña.', NULL, NULL, 'FAILED_LOGIN'),
+  (235, '2026-09-25 12:57:07.502984', 'CustomUser', NULL, NULL, '{"attempted_username": "nurys", "role": "SECRETARIA"}', '127.0.0.1', 'Intento fallido de autenticación: Credenciales inválidas. Verifique su usuario y contraseña.', NULL, NULL, 'FAILED_LOGIN'),
+  (236, '2026-09-25 12:57:46.778271', 'CustomUser', NULL, NULL, '{"attempted_username": "Nurys", "role": "SECRETARIA"}', '127.0.0.1', 'Intento fallido de autenticación: Credenciales inválidas. Verifique su usuario y contraseña.', NULL, NULL, 'FAILED_LOGIN'),
+  (237, '2026-09-25 13:00:49.696308', 'CustomUser', NULL, NULL, '{"attempted_username": "profe", "role": "TEACHER"}', '127.0.0.1', 'Intento fallido de autenticación: Credenciales inválidas. Verifique su usuario y contraseña.', NULL, NULL, 'FAILED_LOGIN'),
+  (238, '2026-09-25 13:01:00.931282', 'CustomUser', NULL, NULL, '{"attempted_username": "profe", "role": "TEACHER"}', '127.0.0.1', 'Intento fallido de autenticación: Credenciales inválidas. Verifique su usuario y contraseña.', NULL, NULL, 'FAILED_LOGIN'),
+  (239, '2026-09-25 13:02:09.097297', 'CustomUser', NULL, NULL, '{"attempted_username": "yurledi", "role": "RECTOR"}', '127.0.0.1', 'Intento fallido de autenticación: Credenciales inválidas. Verifique su usuario y contraseña.', NULL, NULL, 'FAILED_LOGIN'),
+  (240, '2026-09-25 13:16:48.312827', 'CustomUser', NULL, NULL, '{"attempted_username": "rector", "role": "RECTOR"}', '127.0.0.1', 'Intento fallido de autenticación: Credenciales inválidas. Verifique su usuario y contraseña.', NULL, NULL, 'FAILED_LOGIN'),
+  (241, '2026-09-25 13:19:02.727555', 'CustomUser', '11', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso. Modelo institucional: Colegio / Escuela (Básica y Media)', 11, NULL, 'LOGIN'),
+  (242, '2026-09-25 13:23:38.587606', 'CustomUser', '11', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 11, NULL, 'LOGOUT'),
+  (243, '2026-09-25 13:26:00.799125', 'CustomUser', NULL, NULL, '{"attempted_username": "yurleidilondono@gmail.com", "role": "TEACHER"}', '127.0.0.1', 'Intento fallido de autenticación: Credenciales inválidas. Verifique su usuario y contraseña.', NULL, NULL, 'FAILED_LOGIN'),
+  (244, '2026-09-25 13:26:20.482471', 'CustomUser', NULL, NULL, '{"attempted_username": "yurleidilondono@gmail.com", "role": "RECTOR"}', '127.0.0.1', 'Intento fallido de autenticación: Credenciales inválidas. Verifique su usuario y contraseña.', NULL, NULL, 'FAILED_LOGIN'),
+  (245, '2026-09-25 13:29:28.785259', 'CustomUser', NULL, NULL, '{"attempted_username": "yurleidilondono@gmail.com", "role": "RECTOR"}', '127.0.0.1', 'Intento fallido de autenticación: Credenciales inválidas. Verifique su usuario y contraseña.', NULL, NULL, 'FAILED_LOGIN'),
+  (246, '2026-09-25 13:31:46.693985', 'CustomUser', NULL, NULL, '{"attempted_username": "yurleidilondono@gmail.com", "role": "RECTOR"}', '127.0.0.1', 'Intento fallido de autenticación: Credenciales inválidas. Verifique su usuario y contraseña.', NULL, NULL, 'FAILED_LOGIN'),
+  (247, '2026-09-25 13:33:59.881360', 'CustomUser', '10', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso. Modelo institucional: Colegio / Escuela (Básica y Media)', 10, NULL, 'LOGIN'),
+  (248, '2026-09-25 13:39:44.099763', 'CustomUser', '10', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 10, NULL, 'LOGOUT'),
+  (249, '2026-09-25 13:40:59.928413', 'CustomUser', '2', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso. Modelo institucional: Colegio / Escuela (Básica y Media)', 2, NULL, 'LOGIN'),
+  (250, '2026-09-25 13:51:30.871386', 'CustomUser', '2', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 2, NULL, 'LOGOUT'),
+  (251, '2026-09-25 15:24:43.500191', 'CustomUser', '2', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso. Modelo institucional: Colegio / Escuela (Básica y Media)', 2, NULL, 'LOGIN'),
+  (252, '2026-09-25 15:26:37.896933', 'CustomUser', '2', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 2, NULL, 'LOGOUT'),
+  (253, '2026-09-25 15:27:20.037465', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso. Modelo institucional: Colegio / Escuela (Básica y Media)', 4, NULL, 'LOGIN'),
+  (254, '2026-09-25 15:28:56.670807', 'CustomUser', '4', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 4, NULL, 'LOGOUT'),
+  (255, '2026-09-25 15:30:19.822520', 'CustomUser', '10', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso. Modelo institucional: Colegio / Escuela (Básica y Media)', 10, NULL, 'LOGIN'),
+  (256, '2026-09-25 15:31:22.024668', 'CustomUser', '10', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 10, NULL, 'LOGOUT'),
+  (257, '2026-09-25 15:32:32.282475', 'CustomUser', '5', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso. Modelo institucional: Colegio / Escuela (Básica y Media)', 5, NULL, 'LOGIN'),
+  (258, '2026-09-25 15:33:55.387212', 'CustomUser', '5', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 5, NULL, 'LOGOUT'),
+  (259, '2026-09-25 15:35:42.871623', 'CustomUser', '6', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso. Modelo institucional: Colegio / Escuela (Básica y Media)', 6, NULL, 'LOGIN'),
+  (260, '2026-09-25 15:38:09.514029', 'CustomUser', '6', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 6, NULL, 'LOGOUT'),
+  (261, '2026-10-01 14:45:26.240664', 'CustomUser', NULL, NULL, '{"attempted_username": "secretaria1", "role": "SECRETARIA"}', '127.0.0.1', 'Intento fallido de autenticación: Credenciales inválidas. Verifique su usuario y contraseña.', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36', 'FAILED_LOGIN'),
+  (262, '2026-10-01 14:46:19.749867', 'CustomUser', NULL, NULL, '{"attempted_username": "Secretaria1", "role": "SECRETARIA"}', '127.0.0.1', 'Intento fallido de autenticación: Credenciales inválidas. Verifique su usuario y contraseña.', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36', 'FAILED_LOGIN'),
+  (263, '2026-10-01 14:48:16.477559', 'CustomUser', NULL, NULL, '{"attempted_username": "Secretaria", "role": "SECRETARIA"}', '127.0.0.1', 'Intento fallido de autenticación: Credenciales inválidas. Verifique su usuario y contraseña.', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36', 'FAILED_LOGIN'),
+  (264, '2026-10-01 14:48:59.399822', 'CustomUser', NULL, NULL, '{"attempted_username": "rectora1", "role": "RECTOR"}', '127.0.0.1', 'Intento fallido de autenticación: Credenciales inválidas. Verifique su usuario y contraseña.', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36', 'FAILED_LOGIN'),
+  (265, '2026-10-01 14:54:37.361807', 'CustomUser', NULL, NULL, '{"attempted_username": "docente1", "role": "TEACHER"}', '127.0.0.1', 'Intento fallido de autenticación: Credenciales inválidas. Verifique su usuario y contraseña.', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36', 'FAILED_LOGIN'),
+  (266, '2026-10-01 15:11:36.332105', 'CustomUser', '8', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso. Modelo institucional: Colegio / Escuela (Básica y Media)', 8, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36', 'LOGIN'),
+  (267, '2026-10-01 15:14:13.089211', 'CustomUser', '8', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 8, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36', 'LOGOUT'),
+  (268, '2026-10-01 15:14:50.574437', 'CustomUser', NULL, NULL, '{"attempted_username": "secretaria1", "role": "SECRETARIA"}', '127.0.0.1', 'Intento fallido de autenticación: Credenciales inválidas. Verifique su usuario y contraseña.', NULL, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36', 'FAILED_LOGIN'),
+  (269, '2026-10-01 15:15:30.140619', 'CustomUser', '10', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso. Modelo institucional: Colegio / Escuela (Básica y Media)', 10, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36', 'LOGIN'),
+  (270, '2026-10-01 15:17:46.516734', 'CustomUser', '10', NULL, NULL, '127.0.0.1', 'Cierre de sesión manual voluntario', 10, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36', 'LOGOUT'),
+  (271, '2026-10-01 15:18:37.889740', 'CustomUser', '11', NULL, NULL, '127.0.0.1', 'Inicio de sesión exitoso. Modelo institucional: Colegio / Escuela (Básica y Media)', 11, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36', 'LOGIN');
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `auth_group`
@@ -679,7 +743,7 @@ CREATE TABLE `auth_permission` (
   CONSTRAINT `fk_auth_permission_content_type_id` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcado de datos para la tabla `auth_permission` (132 registros)
+-- Volcado de datos para la tabla `auth_permission` (156 registros)
 INSERT INTO `auth_permission` (`id`, `content_type_id`, `codename`, `name`) VALUES
   (1, 1, 'add_logentry', 'Can add log entry'),
   (2, 1, 'change_logentry', 'Can change log entry'),
@@ -812,7 +876,31 @@ INSERT INTO `auth_permission` (`id`, `content_type_id`, `codename`, `name`) VALU
   (129, 33, 'add_studentobservation', 'Can add Observación de Estudiante'),
   (130, 33, 'change_studentobservation', 'Can change Observación de Estudiante'),
   (131, 33, 'delete_studentobservation', 'Can delete Observación de Estudiante'),
-  (132, 33, 'view_studentobservation', 'Can view Observación de Estudiante');
+  (132, 33, 'view_studentobservation', 'Can view Observación de Estudiante'),
+  (133, 34, 'add_systemthemesettings', 'Can add Configuración de Tema del Sistema'),
+  (134, 34, 'change_systemthemesettings', 'Can change Configuración de Tema del Sistema'),
+  (135, 34, 'delete_systemthemesettings', 'Can delete Configuración de Tema del Sistema'),
+  (136, 34, 'view_systemthemesettings', 'Can view Configuración de Tema del Sistema'),
+  (137, 35, 'add_expedientedocumento', 'Can add Documento del Expediente'),
+  (138, 35, 'change_expedientedocumento', 'Can change Documento del Expediente'),
+  (139, 35, 'delete_expedientedocumento', 'Can delete Documento del Expediente'),
+  (140, 35, 'view_expedientedocumento', 'Can view Documento del Expediente'),
+  (141, 36, 'add_anotaciondisciplinaria', 'Can add Anotación del Observador'),
+  (142, 36, 'change_anotaciondisciplinaria', 'Can change Anotación del Observador'),
+  (143, 36, 'delete_anotaciondisciplinaria', 'Can delete Anotación del Observador'),
+  (144, 36, 'view_anotaciondisciplinaria', 'Can view Anotación del Observador'),
+  (145, 37, 'add_feeconcept', 'Can add Concepto de Cobro'),
+  (146, 37, 'change_feeconcept', 'Can change Concepto de Cobro'),
+  (147, 37, 'delete_feeconcept', 'Can delete Concepto de Cobro'),
+  (148, 37, 'view_feeconcept', 'Can view Concepto de Cobro'),
+  (149, 38, 'add_studentfeeobligation', 'Can add Obligación Financiera'),
+  (150, 38, 'change_studentfeeobligation', 'Can change Obligación Financiera'),
+  (151, 38, 'delete_studentfeeobligation', 'Can delete Obligación Financiera'),
+  (152, 38, 'view_studentfeeobligation', 'Can view Obligación Financiera'),
+  (153, 39, 'add_feepayment', 'Can add Recibo de Pago'),
+  (154, 39, 'change_feepayment', 'Can change Recibo de Pago'),
+  (155, 39, 'delete_feepayment', 'Can delete Recibo de Pago'),
+  (156, 39, 'view_feepayment', 'Can view Recibo de Pago');
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `courses_academicyear`
@@ -856,12 +944,24 @@ CREATE TABLE `courses_coursesection` (
   CONSTRAINT `fk_courses_coursesection_academic_year_id` FOREIGN KEY (`academic_year_id`) REFERENCES `courses_academicyear` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcado de datos para la tabla `courses_coursesection` (4 registros)
+-- Volcado de datos para la tabla `courses_coursesection` (16 registros)
 INSERT INTO `courses_coursesection` (`id`, `name`, `classroom`, `capacity`, `is_active`, `academic_year_id`, `homeroom_teacher_id`, `grade_level_id`) VALUES
   (1, '6-A', 'Aula 101', 35, 1, 1, 4, 1),
   (2, '6-B', 'Aula 102', 35, 1, 1, NULL, 1),
   (3, '7-A', '2', 35, 1, 1, 4, 2),
-  (4, '8-C', 'Aula 200', 35, 1, 1, 8, 3);
+  (4, '8-C', 'Aula 200', 35, 1, 1, 8, 3),
+  (5, 'Grupo 101 - Ingeniería', 'Edificio B - Aula 204', 35, 1, 1, NULL, 7),
+  (6, 'Grupo 102 - Administración', 'Edificio A - Aula 105', 35, 1, 1, NULL, 7),
+  (7, 'Grupo 201 - Ingeniería', 'Edificio B - Aula 301', 32, 1, 1, NULL, 8),
+  (8, 'Ficha 2670123 - ADSO', 'Ambiente 301 - Sistemas', 30, 1, 1, NULL, 12),
+  (9, 'Ficha 2670124 - ADSO', 'Ambiente 302 - Software', 30, 1, 1, NULL, 13),
+  (10, 'Ficha 2580911 - Redes y Datos', 'Laboratorio de Redes y Telecomunicaciones', 28, 1, 1, NULL, 14),
+  (11, 'Clase A1 - Horario Mañana', 'Salón Virtual Alpha', 20, 1, 1, NULL, 16),
+  (12, 'Clase B1 - Horario Noche', 'Salón Virtual Beta', 20, 1, 1, NULL, 18),
+  (13, 'Diplomado B2 - Sábados Intensivo', 'Sede Central - Auditorio 1', 25, 1, 1, NULL, 18),
+  (14, '6-A', 'Aula 101', 35, 1, 1, NULL, 20),
+  (15, '6-B', 'Aula 102', 35, 1, 1, NULL, 20),
+  (16, '10-A', 'Aula 201', 35, 1, 1, NULL, 24);
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `courses_gradelevel`
@@ -877,14 +977,33 @@ CREATE TABLE `courses_gradelevel` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcado de datos para la tabla `courses_gradelevel` (6 registros)
+-- Volcado de datos para la tabla `courses_gradelevel` (25 registros)
 INSERT INTO `courses_gradelevel` (`id`, `code`, `level_stage`, `order`, `institution_type`, `name`) VALUES
   (1, '06', 'SECUNDARIA', 6, 'COLEGIO', 'Sexto'),
   (2, '07', 'SECUNDARIA', 7, 'COLEGIO', 'Séptimo'),
   (3, '08', 'SECUNDARIA', 8, 'COLEGIO', 'Octavo'),
   (4, '09', 'SECUNDARIA', 9, 'COLEGIO', 'Noveno'),
   (5, '10', 'MEDIA', 10, 'COLEGIO', 'Décimo'),
-  (6, '11', 'MEDIA', 11, 'COLEGIO', 'Once');
+  (6, '11', 'MEDIA', 11, 'COLEGIO', 'Once'),
+  (7, 'UNI-SEM-1', 'SUPERIOR', 1, 'UNIVERSIDAD', 'Semestre I'),
+  (8, 'UNI-SEM-2', 'SUPERIOR', 2, 'UNIVERSIDAD', 'Semestre II'),
+  (9, 'UNI-SEM-3', 'SUPERIOR', 3, 'UNIVERSIDAD', 'Semestre III'),
+  (10, 'UNI-SEM-4', 'SUPERIOR', 4, 'UNIVERSIDAD', 'Semestre IV'),
+  (11, 'UNI-SEM-5', 'SUPERIOR', 5, 'UNIVERSIDAD', 'Semestre V'),
+  (12, 'SENA-TR-1', 'TECNICO', 1, 'SENA_TECNICO', 'Trimestre I - Inducción y Fundamentos'),
+  (13, 'SENA-TR-2', 'TECNICO', 2, 'SENA_TECNICO', 'Trimestre II - Desarrollo y Algoritmos'),
+  (14, 'SENA-TR-3', 'TECNICO', 3, 'SENA_TECNICO', 'Trimestre III - Bases de Datos y Backend'),
+  (15, 'SENA-TR-4', 'TECNICO', 4, 'SENA_TECNICO', 'Trimestre IV - Frontend y Pruebas QA'),
+  (16, 'ACAD-A1', 'CONTINUA', 1, 'ACADEMIA', 'Nivel Principiante (A1)'),
+  (17, 'ACAD-A2', 'CONTINUA', 2, 'ACADEMIA', 'Nivel Elemental (A2)'),
+  (18, 'ACAD-B1', 'CONTINUA', 3, 'ACADEMIA', 'Nivel Intermedio (B1)'),
+  (19, 'ACAD-B2', 'CONTINUA', 4, 'ACADEMIA', 'Nivel Intermedio Alto (B2)'),
+  (20, 'GR-06', 'SECUNDARIA', 6, 'COLEGIO', 'Sexto'),
+  (21, 'GR-07', 'SECUNDARIA', 7, 'COLEGIO', 'Séptimo'),
+  (22, 'GR-08', 'SECUNDARIA', 8, 'COLEGIO', 'Octavo'),
+  (23, 'GR-09', 'SECUNDARIA', 9, 'COLEGIO', 'Noveno'),
+  (24, 'GR-10', 'MEDIA', 10, 'COLEGIO', 'Décimo'),
+  (25, 'GR-11', 'MEDIA', 11, 'COLEGIO', 'Once');
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `courses_institutionsetting`
@@ -906,12 +1025,76 @@ CREATE TABLE `courses_institutionsetting` (
   `term_subjects` VARCHAR(30) NOT NULL,
   `term_director` VARCHAR(30) NOT NULL,
   `updated_at` DATETIME NOT NULL,
+  `school_scope` VARCHAR(20) NOT NULL,
+  `contact_email` VARCHAR(254) NOT NULL,
+  `contact_phone` VARCHAR(30) NOT NULL,
+  `hero_image` VARCHAR(100) DEFAULT NULL,
+  `logo` VARCHAR(100) DEFAULT NULL,
+  `primary_color` VARCHAR(7) NOT NULL,
+  `secondary_color` VARCHAR(7) NOT NULL,
+  `website_url` VARCHAR(200) NOT NULL,
+  `block_report_cards_on_debt` TINYINT(1) NOT NULL,
+  `consecutive_resolution` VARCHAR(150) NOT NULL,
+  `dane_code` VARCHAR(25) NOT NULL,
+  `enable_gratuity_control` TINYINT(1) NOT NULL,
+  `enable_online_admissions` TINYINT(1) NOT NULL,
+  `enable_pae_module` TINYINT(1) NOT NULL,
+  `enable_payment_gateway` TINYINT(1) NOT NULL,
+  `enable_simat_integration` TINYINT(1) NOT NULL,
+  `enable_tuition_billing` TINYINT(1) NOT NULL,
+  `grade_decimal_places` INT NOT NULL,
+  `grading_scale_type` VARCHAR(20) NOT NULL,
+  `max_grade` DECIMAL(5,2) NOT NULL,
+  `min_grade` DECIMAL(5,2) NOT NULL,
+  `passing_grade` DECIMAL(5,2) NOT NULL,
+  `period_structure` VARCHAR(20) NOT NULL,
+  `sector_mode` VARCHAR(15) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Volcado de datos para la tabla `courses_institutionsetting` (1 registros)
-INSERT INTO `courses_institutionsetting` (`id`, `institution_type`, `institution_name`, `slogan`, `term_student`, `term_students`, `term_teacher`, `term_teachers`, `term_grade`, `term_section`, `term_sections`, `term_subject`, `term_subjects`, `term_director`, `updated_at`) VALUES
-  (1, 'COLEGIO', 'ACADEMIX', 'Sistema Integral de Gestión Académica y Control Escolar', 'Estudiante', 'Estudiantes', 'Docente', 'Docentes', 'Grado', 'Curso', 'Cursos', 'Asignatura', 'Asignaturas', 'Rector(a)', '2026-09-25 12:23:06.304135');
+INSERT INTO `courses_institutionsetting` (`id`, `institution_type`, `institution_name`, `slogan`, `term_student`, `term_students`, `term_teacher`, `term_teachers`, `term_grade`, `term_section`, `term_sections`, `term_subject`, `term_subjects`, `term_director`, `updated_at`, `school_scope`, `contact_email`, `contact_phone`, `hero_image`, `logo`, `primary_color`, `secondary_color`, `website_url`, `block_report_cards_on_debt`, `consecutive_resolution`, `dane_code`, `enable_gratuity_control`, `enable_online_admissions`, `enable_pae_module`, `enable_payment_gateway`, `enable_simat_integration`, `enable_tuition_billing`, `grade_decimal_places`, `grading_scale_type`, `max_grade`, `min_grade`, `passing_grade`, `period_structure`, `sector_mode`) VALUES
+  (1, 'COLEGIO', 'ACADEMIX', 'Sistema Integral de Gestión Académica y Control Escolar', 'Estudiante', 'Estudiantes', 'Docente', 'Docentes', 'Grado', 'Curso', 'Cursos', 'Asignatura', 'Asignaturas', 'Rector(a)', '2026-09-25 13:02:47.913760', 'COMPLETA', '', '', NULL, NULL, '#7c3aed', '#c4b5fd', '', 0, '', '', 0, 1, 0, 0, 0, 1, 2, 'NUMERIC_5', 5, 1, 3, 'PERIODS_4', 'PRIVADO');
+
+-- ----------------------------------------------------------------------------
+-- Estructura de tabla para `discipline_anotaciondisciplinaria`
+-- ----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `discipline_anotaciondisciplinaria`;
+CREATE TABLE `discipline_anotaciondisciplinaria` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `fault_type` VARCHAR(20) NOT NULL,
+  `date` DATE NOT NULL,
+  `time` TIME DEFAULT NULL,
+  `location` VARCHAR(150) NOT NULL,
+  `title` VARCHAR(200) NOT NULL,
+  `description` LONGTEXT NOT NULL,
+  `student_disclaimer` TEXT DEFAULT NULL,
+  `pedagogical_commitment` TEXT DEFAULT NULL,
+  `parent_notified` TINYINT(1) NOT NULL,
+  `parent_acknowledged_at` DATETIME DEFAULT NULL,
+  `parent_signature_name` VARCHAR(200) DEFAULT NULL,
+  `parent_comments` TEXT DEFAULT NULL,
+  `status` VARCHAR(20) NOT NULL,
+  `closed_at` DATETIME DEFAULT NULL,
+  `created_at` DATETIME NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  `academic_year_id` BIGINT NOT NULL,
+  `author_id` BIGINT NOT NULL,
+  `closed_by_id` BIGINT DEFAULT NULL,
+  `period_id` BIGINT DEFAULT NULL,
+  `student_id` BIGINT NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_discipline_anotaciondisciplinaria_student_id` (`student_id`),
+  CONSTRAINT `fk_discipline_anotaciondisciplinaria_student_id` FOREIGN KEY (`student_id`) REFERENCES `students_studentprofile` (`id`),
+  KEY `idx_discipline_anotaciondisciplinaria_period_id` (`period_id`),
+  CONSTRAINT `fk_discipline_anotaciondisciplinaria_period_id` FOREIGN KEY (`period_id`) REFERENCES `periods_academicperiod` (`id`),
+  KEY `idx_discipline_anotaciondisciplinaria_closed_by_id` (`closed_by_id`),
+  CONSTRAINT `fk_discipline_anotaciondisciplinaria_closed_by_id` FOREIGN KEY (`closed_by_id`) REFERENCES `accounts_customuser` (`id`),
+  KEY `idx_discipline_anotaciondisciplinaria_author_id` (`author_id`),
+  CONSTRAINT `fk_discipline_anotaciondisciplinaria_author_id` FOREIGN KEY (`author_id`) REFERENCES `accounts_customuser` (`id`),
+  KEY `idx_discipline_anotaciondisciplinaria_academic_year_id` (`academic_year_id`),
+  CONSTRAINT `fk_discipline_anotaciondisciplinaria_academic_year_id` FOREIGN KEY (`academic_year_id`) REFERENCES `courses_academicyear` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `django_admin_log`
@@ -951,7 +1134,7 @@ CREATE TABLE `django_content_type` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcado de datos para la tabla `django_content_type` (33 registros)
+-- Volcado de datos para la tabla `django_content_type` (39 registros)
 INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
   (1, 'admin', 'logentry'),
   (2, 'auth', 'permission'),
@@ -985,7 +1168,13 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
   (30, 'alerts', 'institutionalactivity'),
   (31, 'courses', 'institutionsetting'),
   (32, 'subjects', 'subjectnorm'),
-  (33, 'students', 'studentobservation');
+  (33, 'students', 'studentobservation'),
+  (34, 'accounts', 'systemthemesettings'),
+  (35, 'students', 'expedientedocumento'),
+  (36, 'discipline', 'anotaciondisciplinaria'),
+  (37, 'finance', 'feeconcept'),
+  (38, 'finance', 'studentfeeobligation'),
+  (39, 'finance', 'feepayment');
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `django_migrations`
@@ -999,7 +1188,7 @@ CREATE TABLE `django_migrations` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcado de datos para la tabla `django_migrations` (45 registros)
+-- Volcado de datos para la tabla `django_migrations` (58 registros)
 INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
   (1, 'contenttypes', '0001_initial', '2026-09-15 01:36:35.064034'),
   (2, 'contenttypes', '0002_remove_content_type_name', '2026-09-15 01:36:35.071158'),
@@ -1045,7 +1234,20 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
   (42, 'students', '0003_alter_enrollment_status', '2026-09-25 12:21:12.855522'),
   (43, 'students', '0004_enrollment_admission_requirement_info_and_more', '2026-09-25 12:21:12.958184'),
   (44, 'subjects', '0002_alter_knowledgearea_options_alter_subject_options_and_more', '2026-09-25 12:21:13.141983'),
-  (45, 'subjects', '0003_alter_subject_options_subject_category_and_more', '2026-09-25 12:21:13.311994');
+  (45, 'subjects', '0003_alter_subject_options_subject_category_and_more', '2026-09-25 12:21:13.311994'),
+  (46, 'accounts', '0002_add_system_theme_settings', '2026-10-01 14:38:43.068036'),
+  (47, 'audit', '0002_auditlog_user_agent_alter_auditlog_action_and_more', '2026-10-01 14:38:43.187291'),
+  (48, 'courses', '0005_institutionsetting_school_scope', '2026-10-01 14:38:43.203250'),
+  (49, 'courses', '0006_institution_branding', '2026-10-01 14:38:43.295832'),
+  (50, 'courses', '0007_institutionsetting_block_report_cards_on_debt_and_more', '2026-10-01 14:38:43.628528'),
+  (51, 'students', '0005_expedientedocumento', '2026-10-01 14:38:43.693048'),
+  (52, 'discipline', '0001_initial', '2026-10-01 14:38:43.743351'),
+  (53, 'finance', '0001_initial', '2026-10-01 14:38:43.886389'),
+  (54, 'subjects', '0004_split_categories_historia_arte_deporte', '2026-10-01 14:38:43.961867'),
+  (55, 'subjects', '0005_alter_subjectnorm_options_subjectnorm_competency_and_more', '2026-10-01 14:38:44.266690'),
+  (56, 'grades', '0005_add_topic_to_evaluation_criterion', '2026-10-01 14:38:44.356595'),
+  (57, 'grades', '0006_evaluationcriterion_norm', '2026-10-01 14:38:44.443469'),
+  (58, 'teachers', '0002_add_is_group_director', '2026-10-01 14:38:44.519375');
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `django_session`
@@ -1058,7 +1260,7 @@ CREATE TABLE `django_session` (
   PRIMARY KEY (`session_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcado de datos para la tabla `django_session` (34 registros)
+-- Volcado de datos para la tabla `django_session` (44 registros)
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
   ('hd71cbcgyqu6kq8txo7h4i41gm0sv307', '.eJxVjEEOwiAQRe_C2hAKTEGX7nsGMsyAVA0kpV0Z765NutDtf-_9lwi4rSVsPS1hZnERgzj9bhHpkeoO-I711iS1ui5zlLsiD9rl1Dg9r4f7d1Cwl29tFXkFo8-ULBA77TMYtppH1NqZs8mGwfiBkSMplR2B1-AUeGK2EcT7A9WXN6U:1x6IKp:wYKueBOcT0w0M3n49AWkPYlMPRGQCeYL-8rggnUJG_Q', '2026-09-29 01:51:47.404676'),
   ('yn8lcp59htqf58ffh69xpmleos0xf4ix', '.eJxVjEEOwiAQRe_C2hAKTEGX7nsGMsyAVA0kpV0Z765NutDtf-_9lwi4rSVsPS1hZnERgzj9bhHpkeoO-I711iS1ui5zlLsiD9rl1Dg9r4f7d1Cwl29tFXkFo8-ULBA77TMYtppH1NqZs8mGwfiBkSMplR2B1-AUeGK2EcT7A9WXN6U:1x6IZl:mjZVXjurhvPP8PHYFdnsFW2x819Ec47RDiq3kCxG2rw', '2026-09-29 02:07:13.741636'),
@@ -1087,13 +1289,83 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
   ('7fc8onj9azvcaanyaup1rxr3gpngqzip', '.eJxVjDsOwjAQBe_iGlmWjWMvJT1niPZnHECJFCdVxN0hUgpo38y8zfS4LrVfm879IOZiwJx-N0J-6rgDeeB4nyxP4zIPZHfFHrTZ2yT6uh7u30HFVr-1Jpac2cfsUTuIUEJwzFo8InWskl3nYgheCBKj10RFCQo4dHIuYN4fCTk5Bg:1x6Te2:yADfNN8J4ZVUeCBJnoukbseAydZ498tRqpleHdDFU3g', '2026-09-29 13:56:22.976065'),
   ('zv8i1avnll2z03twluq441jblzwt04o3', '.eJxVjMEKwyAQRP_FcxE1umKPvfcbZN2VmrYoxOQU-u81kEPL3Oa9mV1E3NYSt56XOLO4Cq3E5bdMSK9cD8JPrI8mqdV1mZM8FHnSLu-N8_t2un8HBXsZ68QTWqBkmVUwI2BAk4HJJg8cgsLAKTAo6xiIVB6e984Bk0dtWXy-Aco4Bg:1x6TeH:rAE2scG9pAwGZakTs3uYNJiLPZx2IIEUhgXz9FDGcJQ', '2026-09-29 13:56:37.535824'),
   ('akwftiqdafsbx2x69z6lbh3fkfa79wen', '.eJxVjMsOwiAQRf-FtSE8WqAu3fsNZIYZpGogKe3K-O_apAvd3nPOfYkI21ri1nmJM4mzCOL0uyGkB9cd0B3qrcnU6rrMKHdFHrTLayN-Xg7376BAL9-ajSejiY0N4PU0OiZATJ5ctoSDnSxogyoMTMGzUto7zmNOTiXWLnjx_gD5Pjg6:1x6TeI:5QqsHenRk8tdSgFmzkt9MzAQkM8ZTdcTBZhiNnqjKT8', '2026-09-29 13:56:38.380747'),
-  ('gz9q356ovqdjp7osfd0c8f6cy9kdew6o', '.eJxVjM0OwiAQhN-FsyFQfpb16N1nICyLUjU0Ke3J-O62SQ-azGm-b-YtYlqXGtde5jiyOAsQp9-OUn6WtgN-pHafZJ7aMo8kd0UetMvrxOV1Ody_g5p63dbemGScUkYDIWtkpTRZZg9hUBDQaiiMnrMtW26EQ0CyLjNzcoFAfL7ANjez:1x6TgC:Oh4_Y3LNkDTi_dByOZVltkGc3T03wVYPWuKw6RrivyM', '2026-09-29 13:58:36.461724'),
   ('o3ypnb1cj607d7qzr8aahfpkjno5nhdj', '.eJxVjMsOwiAQRf-FtSE8WqAu3fsNZIYZpGogKe3K-O_apAvd3nPOfYkI21ri1nmJM4mzCOL0uyGkB9cd0B3qrcnU6rrMKHdFHrTLayN-Xg7376BAL9-ajSejiY0N4PU0OiZATJ5ctoSDnSxogyoMTMGzUto7zmNOTiXWLnjx_gD5Pjg6:1x6o9F:YJjC7Ud8vpf02a6C7qS2dzslQNhMeUABVtct0eZVFsE', '2026-09-30 11:49:57.244915'),
   ('ccc690443x3e8c3k6susmcyxfvpu9f88', '.eJxVjDsOwjAQBe_iGlmWjWMvJT1niPZnHECJFCdVxN0hUgpo38y8zfS4LrVfm879IOZiwJx-N0J-6rgDeeB4nyxP4zIPZHfFHrTZ2yT6uh7u30HFVr-1Jpac2cfsUTuIUEJwzFo8InWskl3nYgheCBKj10RFCQo4dHIuYN4fCTk5Bg:1x6oEK:pQSEegO3SznIl0S3T6cEwWkBB41f5xuDyEsAI8gvrm8', '2026-09-30 11:55:12.410361'),
   ('pqpfsn9ohj9cemixos2cf17elv35asqg', '.eJxVjDsOwjAQBe_iGlmb9Sc2JT1nsHbtDQkgR4qTCnF3iJQC2jcz76USbeuYtiZLmoo6qw7V6Xdkyg-pOyl3qrdZ57muy8R6V_RBm77ORZ6Xw_07GKmN3xp9jgF6MCLMiAUcWEYJPTjT9ZGRAtAQnSmesBvA5TAIIBhrDdvo1fsD5dk2_g:1x6olB:rX-l8q5WzHtOItn5iL6aCejkyK83xP5hxXLrTHLlLKQ', '2026-09-30 12:29:09.874840'),
   ('e8h149lxpkr9dnw98qdxh8zs2wdcrwn6', '.eJxVjDsOwjAQBe_iGlmb9Sc2JT1nsHbtDQkgR4qTCnF3iJQC2jcz76USbeuYtiZLmoo6qw7V6Xdkyg-pOyl3qrdZ57muy8R6V_RBm77ORZ6Xw_07GKmN3xp9jgF6MCLMiAUcWEYJPTjT9ZGRAtAQnSmesBvA5TAIIBhrDdvo1fsD5dk2_g:1x6qIi:T-g7BB9E4V4Gy6nGzV7qheSpTg0w0M4jOFINi4Nq4f8', '2026-09-30 14:07:52.898118'),
   ('pm8st5nmw79e6t8vodrh8xhhjh8piq1t', '.eJxVjDsOwjAQBe_iGlmb9Sc2JT1nsHbtDQkgR4qTCnF3iJQC2jcz76USbeuYtiZLmoo6qw7V6Xdkyg-pOyl3qrdZ57muy8R6V_RBm77ORZ6Xw_07GKmN3xp9jgF6MCLMiAUcWEYJPTjT9ZGRAtAQnSmesBvA5TAIIBhrDdvo1fsD5dk2_g:1x6qpy:aIR10O-U1sj_F4HqSxkSC9uZcjmvC-dpmQIULMoh_yk', '2026-09-30 14:42:14.054698'),
-  ('xq9ahu5rgpusi4vaf798h49hufvxp7zk', '.eJxVjDsOwjAQBe_iGlmb9Sc2JT1nsHbtDQkgR4qTCnF3iJQC2jcz76USbeuYtiZLmoo6qw7V6Xdkyg-pOyl3qrdZ57muy8R6V_RBm77ORZ6Xw_07GKmN3xp9jgF6MCLMiAUcWEYJPTjT9ZGRAtAQnSmesBvA5TAIIBhrDdvo1fsD5dk2_g:1x6qqr:0URFHPEEcJllGbwidUTYHIDeV7CGXPpeFy6CuBfrDrw', '2026-09-30 14:43:09.892803');
+  ('xq9ahu5rgpusi4vaf798h49hufvxp7zk', '.eJxVjDsOwjAQBe_iGlmb9Sc2JT1nsHbtDQkgR4qTCnF3iJQC2jcz76USbeuYtiZLmoo6qw7V6Xdkyg-pOyl3qrdZ57muy8R6V_RBm77ORZ6Xw_07GKmN3xp9jgF6MCLMiAUcWEYJPTjT9ZGRAtAQnSmesBvA5TAIIBhrDdvo1fsD5dk2_g:1x6qqr:0URFHPEEcJllGbwidUTYHIDeV7CGXPpeFy6CuBfrDrw', '2026-09-30 14:43:09.892803'),
+  ('pyj0kv5myc5vd6vrxstl2dqqdrl8bzd7', '.eJxVjMsOwiAQAP-FsyEsjxY8evcbyG5hpWogKe3J-O-mpge9zkzmJSJua4lbz0uckzgLAHH6hYTTI9fdpDvWW5NTq-syk9wTedgury3l5-Vo_wYFe_l-WTv2iowyQTvyKVtiAmZj1KiAfUBmcMr6wdnBkcbRAmodKKPyRrw_8mg3YQ:1xCIYP:kumBvHFquk1bZdlHX8ur5cWH1MZY3EpEzUO04GLGXJw', '2026-10-15 15:18:37.899589'),
+  ('i26c8tvogvne2xsomswhmwnmarsp96ok', '.eJxVjDsOwjAQBe_iGlmb9Sc2JT1nsHbtDQkgR4qTCnF3iJQC2jcz76USbeuYtiZLmoo6qw7V6Xdkyg-pOyl3qrdZ57muy8R6V_RBm77ORZ6Xw_07GKmN3xp9jgF6MCLMiAUcWEYJPTjT9ZGRAtAQnSmesBvA5TAIIBhrDdvo1fsD5dk2_g:1xCIde:swwWqDGvjfG0T6yaunRw1_ctcZ1rHVMOQebLJJsj4WE', '2026-10-15 15:24:02.314528'),
+  ('kblsbv7vjljqnvh42rdlkqpmab2e4vdi', '.eJxVjEEOwiAQRe_C2hBgAhSX7j0DGYZBqgaS0q6Md9cmXej2v_f-S0Tc1hq3wUucszgL7cTpd0xID247yXdsty6pt3WZk9wVedAhrz3z83K4fwcVR_3WbLzVSDn4EhRYgKAYbUJjSAfUrF2xhFASQGJEIKPLBOAMTMqzLeL9AQyEOCI:1xCIde:y4IQ_JSX0NBfQM1UEoZVDPS3EBsP9GJ_ZhlN_wZB9ws', '2026-10-15 15:24:02.814132'),
+  ('yhel1wzz6uysxvkh3mk1b3wm52kcft7y', '.eJxVjDsOwjAQBe_iGln-r01JnzNYtneNAyiR4qRC3J1ESgHtm5n3ZjFta4tbpyWOyK7MssvvllN50nQAfKTpPvMyT-syZn4o_KSdDzPS63a6fwct9bbXYHImX4lQoSropRUSjJDGO3CatK0aMsgdO1FC8AJBkCxKm2pNcMA-X-EENyQ:1xCIg7:sEqCtTnIqX4IJ0lbh9VOyRZZb8pwK4ltbkeODgmJAXI', '2026-10-15 15:26:35.776907'),
+  ('kgchlb3yanf7359rcm1sus6pgrikm7ti', '.eJxVjDsOwjAQBe_iGlmWjWMvJT1niPZnHECJFCdVxN0hUgpo38y8zfS4LrVfm879IOZiwJx-N0J-6rgDeeB4nyxP4zIPZHfFHrTZ2yT6uh7u30HFVr-1Jpac2cfsUTuIUEJwzFo8InWskl3nYgheCBKj10RFCQo4dHIuYN4fCTk5Bg:1xCIg8:NjiDaAic-bzDEemF8q8N7acucMPvgzTgQkMsxoxrkVM', '2026-10-15 15:26:36.112478'),
+  ('5xdi3n4zqabzmzymsn5l0ki55v4mjy3j', '.eJxVjDsOwjAQBe_iGlmb9Sc2JT1nsHbtDQkgR4qTCnF3iJQC2jcz76USbeuYtiZLmoo6qw7V6Xdkyg-pOyl3qrdZ57muy8R6V_RBm77ORZ6Xw_07GKmN3xp9jgF6MCLMiAUcWEYJPTjT9ZGRAtAQnSmesBvA5TAIIBhrDdvo1fsD5dk2_g:1xCIg8:xe2ysIOZgVitC5xQHY6muwNz-dRbZ5NzANKNmZ6LjOM', '2026-10-15 15:26:36.162961'),
+  ('zvnbnadvscanabsy7qyg58n41757x32u', '.eJxVjMsOwiAQAP-FsyEsjxY8evcbyG5hpWogKe3J-O-mpge9zkzmJSJua4lbz0uckzgLAHH6hYTTI9fdpDvWW5NTq-syk9wTedgury3l5-Vo_wYFe_l-WTv2iowyQTvyKVtiAmZj1KiAfUBmcMr6wdnBkcbRAmodKKPyRrw_8mg3YQ:1xCIg8:ShdRk-2Q7eKd_27U67qsX7GivOhmtcu_2Px5FtbG-P4', '2026-10-15 15:26:36.240011'),
+  ('mnsdkp3rwi7xs1npzlkbwyyd66jyxmtu', '.eJxVjDsOwjAQBe_iGlmb9Sc2JT1nsHbtDQkgR4qTCnF3iJQC2jcz76USbeuYtiZLmoo6qw7V6Xdkyg-pOyl3qrdZ57muy8R6V_RBm77ORZ6Xw_07GKmN3xp9jgF6MCLMiAUcWEYJPTjT9ZGRAtAQnSmesBvA5TAIIBhrDdvo1fsD5dk2_g:1xCJ0p:8WaxYjyl-85AVGYi9Fn8eUJVzqSILS2LwmAwKKmFug8', '2026-10-15 15:47:59.766644'),
+  ('wlht7x14s6etcjy5coa6kh7stvkwbx9t', '.eJxVjDsOwjAQBe_iGln-4B8lfc5grb1rHEC2FCcV4u4QKQW0b2bei0XY1hq3QUuckV2YZaffLUF-UNsB3qHdOs-9rcuc-K7wgw4-daTn9XD_DiqM-q2FL8qELL1JKTgkKUkDULAERmfKHg1Kp5VIEM7WoxQ2UYHiBGZCrdj7A_ihOMI:1xCJ0q:LRpRPST92jait--lHY5GwWUYOpDA17UoGtn36e_JOFM', '2026-10-15 15:48:00.222845'),
+  ('whzke64jpm45c3rz69r45apftqqt045i', '.eJxVjDsOwjAQBe_iGlmb9Sc2JT1nsHbtDQkgR4qTCnF3iJQC2jcz76USbeuYtiZLmoo6qw7V6Xdkyg-pOyl3qrdZ57muy8R6V_RBm77ORZ6Xw_07GKmN3xp9jgF6MCLMiAUcWEYJPTjT9ZGRAtAQnSmesBvA5TAIIBhrDdvo1fsD5dk2_g:1xCJ1B:JKyKwarGLFD25eHX60zB7WZtl_KABQWUsNs42j1axbQ', '2026-10-15 15:48:21.419017'),
+  ('71lo2w7ywwxnvwpocl0qto16pahg7dq8', '.eJxVjDsOwjAQBe_iGln-4B8lfc5grb1rHEC2FCcV4u4QKQW0b2bei0XY1hq3QUuckV2YZaffLUF-UNsB3qHdOs-9rcuc-K7wgw4-daTn9XD_DiqM-q2FL8qELL1JKTgkKUkDULAERmfKHg1Kp5VIEM7WoxQ2UYHiBGZCrdj7A_ihOMI:1xCJ1B:Zj1VdKO-Yy8Icfih_umGj3eGWup0XBqtwsAGSZmRyxo', '2026-10-15 15:48:21.775334');
+
+-- ----------------------------------------------------------------------------
+-- Estructura de tabla para `finance_feeconcept`
+-- ----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `finance_feeconcept`;
+CREATE TABLE `finance_feeconcept` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(150) NOT NULL,
+  `code` VARCHAR(30) NOT NULL,
+  `recurrence` VARCHAR(20) NOT NULL,
+  `default_amount` DECIMAL(10,2) NOT NULL,
+  `is_active` TINYINT(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------------------------------------------------------
+-- Estructura de tabla para `finance_feepayment`
+-- ----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `finance_feepayment`;
+CREATE TABLE `finance_feepayment` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `amount` DECIMAL(10,2) NOT NULL,
+  `payment_date` DATE NOT NULL,
+  `payment_method` VARCHAR(20) NOT NULL,
+  `receipt_number` VARCHAR(50) NOT NULL,
+  `notes` VARCHAR(250) DEFAULT NULL,
+  `created_at` DATETIME NOT NULL,
+  `registered_by_id` BIGINT NOT NULL,
+  `obligation_id` BIGINT NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_finance_feepayment_obligation_id` (`obligation_id`),
+  CONSTRAINT `fk_finance_feepayment_obligation_id` FOREIGN KEY (`obligation_id`) REFERENCES `finance_studentfeeobligation` (`id`),
+  KEY `idx_finance_feepayment_registered_by_id` (`registered_by_id`),
+  CONSTRAINT `fk_finance_feepayment_registered_by_id` FOREIGN KEY (`registered_by_id`) REFERENCES `accounts_customuser` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------------------------------------------------------
+-- Estructura de tabla para `finance_studentfeeobligation`
+-- ----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `finance_studentfeeobligation`;
+CREATE TABLE `finance_studentfeeobligation` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `month` INT DEFAULT NULL,
+  `due_date` DATE NOT NULL,
+  `amount` DECIMAL(10,2) NOT NULL,
+  `paid_amount` DECIMAL(10,2) NOT NULL,
+  `status` VARCHAR(20) NOT NULL,
+  `created_at` DATETIME NOT NULL,
+  `updated_at` DATETIME NOT NULL,
+  `academic_year_id` BIGINT NOT NULL,
+  `concept_id` BIGINT NOT NULL,
+  `student_id` BIGINT NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_finance_studentfeeobligation_student_id` (`student_id`),
+  CONSTRAINT `fk_finance_studentfeeobligation_student_id` FOREIGN KEY (`student_id`) REFERENCES `students_studentprofile` (`id`),
+  KEY `idx_finance_studentfeeobligation_concept_id` (`concept_id`),
+  CONSTRAINT `fk_finance_studentfeeobligation_concept_id` FOREIGN KEY (`concept_id`) REFERENCES `finance_feeconcept` (`id`),
+  KEY `idx_finance_studentfeeobligation_academic_year_id` (`academic_year_id`),
+  CONSTRAINT `fk_finance_studentfeeobligation_academic_year_id` FOREIGN KEY (`academic_year_id`) REFERENCES `courses_academicyear` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `grades_evaluationcriterion`
@@ -1107,7 +1379,11 @@ CREATE TABLE `grades_evaluationcriterion` (
   `academic_period_id` BIGINT NOT NULL,
   `course_section_id` BIGINT NOT NULL,
   `subject_id` BIGINT NOT NULL,
+  `topic` VARCHAR(200) NOT NULL,
+  `norm_id` BIGINT DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `idx_grades_evaluationcriterion_norm_id` (`norm_id`),
+  CONSTRAINT `fk_grades_evaluationcriterion_norm_id` FOREIGN KEY (`norm_id`) REFERENCES `subjects_subjectnorm` (`id`),
   KEY `idx_grades_evaluationcriterion_subject_id` (`subject_id`),
   CONSTRAINT `fk_grades_evaluationcriterion_subject_id` FOREIGN KEY (`subject_id`) REFERENCES `subjects_subject` (`id`),
   KEY `idx_grades_evaluationcriterion_course_section_id` (`course_section_id`),
@@ -1117,28 +1393,28 @@ CREATE TABLE `grades_evaluationcriterion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Volcado de datos para la tabla `grades_evaluationcriterion` (21 registros)
-INSERT INTO `grades_evaluationcriterion` (`id`, `name`, `percentage`, `order`, `academic_period_id`, `course_section_id`, `subject_id`) VALUES
-  (1, 'Evaluaciones y Quices', 40, 1, 1, 1, 1),
-  (2, 'Talleres y Actividades', 40, 2, 1, 1, 1),
-  (3, 'Actitudinal y Autoevaluación', 20, 3, 1, 1, 1),
-  (4, 'Evaluaciones y Quices', 40, 1, 2, 1, 1),
-  (5, 'Talleres y Actividades', 40, 2, 2, 1, 1),
-  (6, 'Actitudinal y Autoevaluación', 20, 3, 2, 1, 1),
-  (7, 'Evaluaciones y Quices', 40, 1, 1, 3, 5),
-  (8, 'Talleres y Actividades', 40, 2, 1, 3, 5),
-  (9, 'Actitudinal y Autoevaluación', 20, 3, 1, 3, 5),
-  (10, 'Evaluaciones y Quices', 40, 1, 1, 3, 2),
-  (11, 'Talleres y Actividades', 40, 2, 1, 3, 2),
-  (12, 'Actitudinal y Autoevaluación', 20, 3, 1, 3, 2),
-  (13, 'Evaluaciones y Quices', 40, 1, 1, 1, 2),
-  (14, 'Talleres y Actividades', 40, 2, 1, 1, 2),
-  (15, 'Actitudinal y Autoevaluación', 20, 3, 1, 1, 2),
-  (16, 'Evaluaciones y Quices', 40, 1, 1, 4, 6),
-  (17, 'Talleres y Actividades', 40, 2, 1, 4, 6),
-  (18, 'Actitudinal y Autoevaluación', 20, 3, 1, 4, 6),
-  (19, 'Evaluaciones y Quices', 40, 1, 1, 1, 5),
-  (20, 'Talleres y Actividades', 40, 2, 1, 1, 5),
-  (21, 'Actitudinal y Autoevaluación', 20, 3, 1, 1, 5);
+INSERT INTO `grades_evaluationcriterion` (`id`, `name`, `percentage`, `order`, `academic_period_id`, `course_section_id`, `subject_id`, `topic`, `norm_id`) VALUES
+  (1, 'Evaluaciones y Quices', 40, 1, 1, 1, 1, '', NULL),
+  (2, 'Talleres y Actividades', 40, 2, 1, 1, 1, '', NULL),
+  (3, 'Actitudinal y Autoevaluación', 20, 3, 1, 1, 1, '', NULL),
+  (4, 'Evaluaciones y Quices', 40, 1, 2, 1, 1, '', NULL),
+  (5, 'Talleres y Actividades', 40, 2, 2, 1, 1, '', NULL),
+  (6, 'Actitudinal y Autoevaluación', 20, 3, 2, 1, 1, '', NULL),
+  (7, 'Evaluaciones y Quices', 40, 1, 1, 3, 5, '', NULL),
+  (8, 'Talleres y Actividades', 40, 2, 1, 3, 5, '', NULL),
+  (9, 'Actitudinal y Autoevaluación', 20, 3, 1, 3, 5, '', NULL),
+  (10, 'Evaluaciones y Quices', 40, 1, 1, 3, 2, '', NULL),
+  (11, 'Talleres y Actividades', 40, 2, 1, 3, 2, '', NULL),
+  (12, 'Actitudinal y Autoevaluación', 20, 3, 1, 3, 2, '', NULL),
+  (13, 'Evaluaciones y Quices', 40, 1, 1, 1, 2, '', NULL),
+  (14, 'Talleres y Actividades', 40, 2, 1, 1, 2, '', NULL),
+  (15, 'Actitudinal y Autoevaluación', 20, 3, 1, 1, 2, '', NULL),
+  (16, 'Evaluaciones y Quices', 40, 1, 1, 4, 6, '', NULL),
+  (17, 'Talleres y Actividades', 40, 2, 1, 4, 6, '', NULL),
+  (18, 'Actitudinal y Autoevaluación', 20, 3, 1, 4, 6, '', NULL),
+  (19, 'Evaluaciones y Quices', 40, 1, 1, 1, 5, '', NULL),
+  (20, 'Talleres y Actividades', 40, 2, 1, 1, 5, '', NULL),
+  (21, 'Actitudinal y Autoevaluación', 20, 3, 1, 1, 5, '', NULL);
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `grades_graderecord`
@@ -1419,14 +1695,53 @@ CREATE TABLE `students_enrollment` (
   CONSTRAINT `fk_students_enrollment_academic_year_id` FOREIGN KEY (`academic_year_id`) REFERENCES `courses_academicyear` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcado de datos para la tabla `students_enrollment` (6 registros)
+-- Volcado de datos para la tabla `students_enrollment` (16 registros)
 INSERT INTO `students_enrollment` (`id`, `enrollment_date`, `status`, `academic_year_id`, `course_section_id`, `student_id`, `admission_requirement_info`, `financial_status`) VALUES
   (1, '2026-09-14', 'ACTIVE', 1, 1, 1, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
   (2, '2026-09-16', 'ACTIVE', 1, 1, 3, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
   (3, '2026-09-16', 'ACTIVE', 1, 1, 2, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
   (4, '2026-09-16', 'ACTIVE', 1, 3, 4, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
   (5, '2026-09-16', 'ACTIVE', 1, 3, 5, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
-  (6, '2026-09-16', 'ACTIVE', 1, 2, 6, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO');
+  (6, '2026-09-16', 'ACTIVE', 1, 2, 6, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
+  (7, '2026-09-25', 'ACTIVE', 1, 5, 7, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
+  (8, '2026-09-25', 'ACTIVE', 1, 5, 8, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
+  (9, '2026-09-25', 'ACTIVE', 1, 7, 9, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
+  (10, '2026-09-25', 'ACTIVE', 1, 8, 10, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
+  (11, '2026-09-25', 'ACTIVE', 1, 8, 11, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
+  (12, '2026-09-25', 'ACTIVE', 1, 9, 12, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
+  (13, '2026-09-25', 'ACTIVE', 1, 9, 13, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
+  (14, '2026-09-25', 'ACTIVE', 1, 11, 14, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
+  (15, '2026-09-25', 'ACTIVE', 1, 11, 15, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO'),
+  (16, '2026-09-25', 'ACTIVE', 1, 12, 16, 'Requisitos de Admisión al día', 'PAZ_Y_SALVO');
+
+-- ----------------------------------------------------------------------------
+-- Estructura de tabla para `students_expedientedocumento`
+-- ----------------------------------------------------------------------------
+DROP TABLE IF EXISTS `students_expedientedocumento`;
+CREATE TABLE `students_expedientedocumento` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `category` VARCHAR(20) NOT NULL,
+  `document_type` VARCHAR(30) NOT NULL,
+  `title` VARCHAR(150) NOT NULL,
+  `file` VARCHAR(100) NOT NULL,
+  `is_verified` TINYINT(1) NOT NULL,
+  `verified_at` DATETIME DEFAULT NULL,
+  `uploaded_at` DATETIME NOT NULL,
+  `notes` TEXT DEFAULT NULL,
+  `academic_year_id` BIGINT DEFAULT NULL,
+  `student_id` BIGINT NOT NULL,
+  `uploaded_by_id` BIGINT DEFAULT NULL,
+  `verified_by_id` BIGINT DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_students_expedientedocumento_verified_by_id` (`verified_by_id`),
+  CONSTRAINT `fk_students_expedientedocumento_verified_by_id` FOREIGN KEY (`verified_by_id`) REFERENCES `accounts_customuser` (`id`),
+  KEY `idx_students_expedientedocumento_uploaded_by_id` (`uploaded_by_id`),
+  CONSTRAINT `fk_students_expedientedocumento_uploaded_by_id` FOREIGN KEY (`uploaded_by_id`) REFERENCES `accounts_customuser` (`id`),
+  KEY `idx_students_expedientedocumento_student_id` (`student_id`),
+  CONSTRAINT `fk_students_expedientedocumento_student_id` FOREIGN KEY (`student_id`) REFERENCES `students_studentprofile` (`id`),
+  KEY `idx_students_expedientedocumento_academic_year_id` (`academic_year_id`),
+  CONSTRAINT `fk_students_expedientedocumento_academic_year_id` FOREIGN KEY (`academic_year_id`) REFERENCES `courses_academicyear` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `students_studentobservation`
@@ -1475,14 +1790,25 @@ CREATE TABLE `students_studentprofile` (
   CONSTRAINT `fk_students_studentprofile_parent_id` FOREIGN KEY (`parent_id`) REFERENCES `accounts_customuser` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcado de datos para la tabla `students_studentprofile` (6 registros)
+-- Volcado de datos para la tabla `students_studentprofile` (17 registros)
 INSERT INTO `students_studentprofile` (`id`, `student_code`, `blood_type`, `eps`, `medical_notes`, `parent_id`, `user_id`) VALUES
   (1, 'EST-2026-0001', 'O+', NULL, NULL, 6, 5),
   (2, 'EST-2026-0002', 'O+', NULL, NULL, NULL, 9),
   (3, '236654', 'O+', NULL, NULL, NULL, 11),
   (4, '452314', 'O+', NULL, NULL, NULL, 14),
   (5, '236745', 'O+', NULL, NULL, NULL, 16),
-  (6, '234567', 'O+', NULL, NULL, NULL, 18);
+  (6, '234567', 'O+', NULL, NULL, NULL, 18),
+  (7, 'ESTU-0001', 'A+', NULL, NULL, NULL, 19),
+  (8, 'ESTU-0002', 'A+', NULL, NULL, NULL, 20),
+  (9, 'ESTU-0003', 'A+', NULL, NULL, NULL, 21),
+  (10, 'AP-0101', 'O+', NULL, NULL, NULL, 22),
+  (11, 'AP-0102', 'O+', NULL, NULL, NULL, 23),
+  (12, 'AP-0103', 'O+', NULL, NULL, NULL, 24),
+  (13, 'AP-0104', 'O+', NULL, NULL, NULL, 25),
+  (14, 'ALUM-0001', 'B+', NULL, NULL, NULL, 26),
+  (15, 'ALUM-0002', 'B+', NULL, NULL, NULL, 27),
+  (16, 'ALUM-0003', 'B+', NULL, NULL, NULL, 28),
+  (17, 'EST-0012', 'O+', NULL, NULL, NULL, 12);
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `subjects_gradesubject`
@@ -1501,7 +1827,7 @@ CREATE TABLE `subjects_gradesubject` (
   CONSTRAINT `fk_subjects_gradesubject_grade_level_id` FOREIGN KEY (`grade_level_id`) REFERENCES `courses_gradelevel` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcado de datos para la tabla `subjects_gradesubject` (8 registros)
+-- Volcado de datos para la tabla `subjects_gradesubject` (55 registros)
 INSERT INTO `subjects_gradesubject` (`id`, `weekly_hours`, `weight_percentage`, `grade_level_id`, `subject_id`) VALUES
   (1, 4, 100, 1, 1),
   (2, 4, 100, 1, 2),
@@ -1510,7 +1836,54 @@ INSERT INTO `subjects_gradesubject` (`id`, `weekly_hours`, `weight_percentage`, 
   (5, 4, 100, 1, 5),
   (6, 4, 100, 1, 6),
   (7, 4, 100, 1, 7),
-  (8, 4, 100, 1, 8);
+  (8, 4, 100, 1, 8),
+  (9, 4, 100, 7, 9),
+  (10, 4, 100, 8, 9),
+  (11, 4, 100, 7, 10),
+  (12, 4, 100, 8, 10),
+  (13, 4, 100, 7, 11),
+  (14, 4, 100, 8, 11),
+  (15, 4, 100, 7, 12),
+  (16, 4, 100, 8, 12),
+  (17, 4, 100, 7, 13),
+  (18, 4, 100, 8, 13),
+  (19, 4, 100, 7, 14),
+  (20, 4, 100, 8, 14),
+  (21, 4, 100, 7, 15),
+  (22, 4, 100, 8, 15),
+  (23, 4, 100, 7, 16),
+  (24, 4, 100, 8, 16),
+  (25, 6, 100, 12, 17),
+  (26, 6, 100, 13, 17),
+  (27, 6, 100, 12, 18),
+  (28, 6, 100, 13, 18),
+  (29, 6, 100, 12, 19),
+  (30, 6, 100, 13, 19),
+  (31, 6, 100, 12, 20),
+  (32, 6, 100, 13, 20),
+  (33, 6, 100, 12, 21),
+  (34, 6, 100, 13, 21),
+  (35, 6, 100, 12, 22),
+  (36, 6, 100, 13, 22),
+  (37, 6, 100, 12, 23),
+  (38, 6, 100, 13, 23),
+  (39, 3, 100, 16, 24),
+  (40, 3, 100, 18, 24),
+  (41, 3, 100, 16, 25),
+  (42, 3, 100, 18, 25),
+  (43, 3, 100, 16, 26),
+  (44, 3, 100, 18, 26),
+  (45, 3, 100, 16, 27),
+  (46, 3, 100, 18, 27),
+  (47, 3, 100, 16, 28),
+  (48, 3, 100, 18, 28),
+  (49, 4, 100, 20, 29),
+  (50, 4, 100, 20, 30),
+  (51, 4, 100, 20, 31),
+  (52, 4, 100, 20, 32),
+  (53, 4, 100, 20, 33),
+  (54, 4, 100, 20, 34),
+  (55, 4, 100, 20, 35);
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `subjects_knowledgearea`
@@ -1524,14 +1897,23 @@ CREATE TABLE `subjects_knowledgearea` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcado de datos para la tabla `subjects_knowledgearea` (6 registros)
+-- Volcado de datos para la tabla `subjects_knowledgearea` (15 registros)
 INSERT INTO `subjects_knowledgearea` (`id`, `order`, `institution_type`, `name`) VALUES
   (1, 1, 'COLEGIO', 'Matemáticas'),
   (2, 2, 'COLEGIO', 'Ciencias Naturales y Educación Ambiental'),
   (3, 3, 'COLEGIO', 'Humanidades y Lengua Castellana'),
   (4, 4, 'COLEGIO', 'Idioma Extranjero'),
   (5, 5, 'COLEGIO', 'Tecnología e Informática'),
-  (6, 6, 'COLEGIO', 'Ciencias Sociales');
+  (6, 6, 'COLEGIO', 'Ciencias Sociales'),
+  (7, 1, 'UNIVERSIDAD', 'Facultad de Ingeniería y Ciencias Básicas'),
+  (8, 2, 'UNIVERSIDAD', 'Ingeniería de Software y Sistemas'),
+  (9, 3, 'UNIVERSIDAD', 'Humanidades y Metodología'),
+  (10, 1, 'SENA_TECNICO', 'Desarrollo de Software y Tecnologías de la Información'),
+  (11, 2, 'SENA_TECNICO', 'Competencias Clave y Transversales SENA'),
+  (12, 1, 'ACADEMIA', 'Programa de Inglés Comunicativo'),
+  (13, 2, 'ACADEMIA', 'Talleres Prácticos y Habilidades'),
+  (14, 1, 'COLEGIO', 'Matemáticas y Lógica'),
+  (15, 2, 'COLEGIO', 'Lengua Castellana y Humanidades');
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `subjects_subject`
@@ -1546,21 +1928,49 @@ CREATE TABLE `subjects_subject` (
   `institution_type` VARCHAR(20) NOT NULL,
   `category` VARCHAR(20) NOT NULL,
   `credits` INT NOT NULL,
+  `is_primary` TINYINT(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_subjects_subject_area_id` (`area_id`),
   CONSTRAINT `fk_subjects_subject_area_id` FOREIGN KEY (`area_id`) REFERENCES `subjects_knowledgearea` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcado de datos para la tabla `subjects_subject` (8 registros)
-INSERT INTO `subjects_subject` (`id`, `name`, `code`, `description`, `area_id`, `institution_type`, `category`, `credits`) VALUES
-  (1, 'Matemáticas Fundamentales', 'MAT-01', NULL, 1, 'COLEGIO', 'PRINCIPAL', 3),
-  (2, 'Geometría y Estadística', 'GEO-01', NULL, 1, 'COLEGIO', 'PRINCIPAL', 3),
-  (3, 'Biología General', 'BIO-01', NULL, 2, 'COLEGIO', 'PRINCIPAL', 3),
-  (4, 'Física Elemental', 'FIS-01', NULL, 2, 'COLEGIO', 'PRINCIPAL', 3),
-  (5, 'Lengua Castellana', 'ESP-01', NULL, 3, 'COLEGIO', 'PRINCIPAL', 3),
-  (6, 'Inglés Comunicativo', 'ING-01', NULL, 4, 'COLEGIO', 'PRINCIPAL', 3),
-  (7, 'Tecnología e Informática', 'TEC-01', NULL, 5, 'COLEGIO', 'PRINCIPAL', 3),
-  (8, 'Historia y Geografía', 'SOC-01', NULL, 6, 'COLEGIO', 'PRINCIPAL', 3);
+-- Volcado de datos para la tabla `subjects_subject` (35 registros)
+INSERT INTO `subjects_subject` (`id`, `name`, `code`, `description`, `area_id`, `institution_type`, `category`, `credits`, `is_primary`) VALUES
+  (1, 'Matemáticas Fundamentales', 'MAT-01', NULL, 1, 'COLEGIO', 'PRINCIPAL', 3, 0),
+  (2, 'Geometría y Estadística', 'GEO-01', NULL, 1, 'COLEGIO', 'PRINCIPAL', 3, 0),
+  (3, 'Biología General', 'BIO-01', NULL, 2, 'COLEGIO', 'PRINCIPAL', 3, 0),
+  (4, 'Física Elemental', 'FIS-01', NULL, 2, 'COLEGIO', 'PRINCIPAL', 3, 0),
+  (5, 'Lengua Castellana', 'ESP-01', NULL, 3, 'COLEGIO', 'PRINCIPAL', 3, 0),
+  (6, 'Inglés Comunicativo', 'ING-01', NULL, 4, 'COLEGIO', 'PRINCIPAL', 3, 0),
+  (7, 'Tecnología e Informática', 'TEC-01', NULL, 5, 'COLEGIO', 'PRINCIPAL', 3, 0),
+  (8, 'Historia y Geografía', 'SOC-01', NULL, 6, 'COLEGIO', 'PRINCIPAL', 3, 0),
+  (9, 'Cálculo Diferencial e Integral', 'UNI-CALC1', 'Límites, derivadas, integrales y aplicaciones.', 7, 'UNIVERSIDAD', 'PRINCIPAL', 3, 0),
+  (10, 'Álgebra Lineal y Geometría Analítica', 'UNI-ALG1', 'Matrices, vectores y transformaciones lineales.', 7, 'UNIVERSIDAD', 'PRINCIPAL', 3, 0),
+  (11, 'Física Mecánica y Ondas', 'UNI-FIS1', 'Leyes de movimiento, trabajo y energía.', 7, 'UNIVERSIDAD', 'PRINCIPAL', 3, 0),
+  (12, 'Algoritmos y Estructuras de Datos', 'UNI-EDD1', 'Estructuras dinámicas, grafos y complejidad.', 8, 'UNIVERSIDAD', 'PRINCIPAL', 3, 0),
+  (13, 'Bases de Datos Relacionales y NoSQL', 'UNI-BDA1', 'Diseño relacional, ACID y MongoDB.', 8, 'UNIVERSIDAD', 'PRINCIPAL', 3, 0),
+  (14, 'Arquitectura de Sistemas Distribuidos', 'UNI-ARQ1', 'Microservicios, patrones y cloud computing.', 8, 'UNIVERSIDAD', 'PRINCIPAL', 3, 0),
+  (15, 'Metodología de la Investigación Científica', 'UNI-INV1', 'Rigor científico y redacción de papers.', 9, 'UNIVERSIDAD', 'PRINCIPAL', 3, 0),
+  (16, 'Ética Profesional y Ciudadana', 'UNI-ETI1', 'Deontología y dilemas éticos en ingeniería.', 9, 'UNIVERSIDAD', 'PRINCIPAL', 3, 0),
+  (17, 'Análisis y Especificación de Requisitos de Software', 'SENA-REQ-01', 'Levantamiento de requerimientos y casos de uso.', 10, 'SENA_TECNICO', 'PRINCIPAL', 3, 0),
+  (18, 'Desarrollo de Software Web y Móvil', 'SENA-DEV-01', 'Programación con arquitecturas modernas.', 10, 'SENA_TECNICO', 'PRINCIPAL', 3, 0),
+  (19, 'Diseño y Administración de Bases de Datos', 'SENA-BD-01', 'Modelamiento relacional y SQL.', 10, 'SENA_TECNICO', 'PRINCIPAL', 3, 0),
+  (20, 'Pruebas y Despliegue de Calidad (QA)', 'SENA-QA-01', 'Testing unitario, integración y CI/CD.', 10, 'SENA_TECNICO', 'PRINCIPAL', 3, 0),
+  (21, 'Inglés Técnico para TI', 'SENA-ING-01', 'Lectura técnica y comunicación internacional.', 11, 'SENA_TECNICO', 'PRINCIPAL', 3, 0),
+  (22, 'Seguridad y Salud en el Trabajo (SST)', 'SENA-SST-01', 'Normativa de prevención y autocuidado.', 11, 'SENA_TECNICO', 'PRINCIPAL', 3, 0),
+  (23, 'Ética y Cultura de Paz', 'SENA-ETI-01', 'Habilidades para la vida y convivencia laboral.', 11, 'SENA_TECNICO', 'PRINCIPAL', 3, 0),
+  (24, 'Grammar, Vocabulary & Structures', 'ACAD-GRM1', 'Estructuras gramaticales y vocabulario base.', 12, 'ACADEMIA', 'PRINCIPAL', 3, 0),
+  (25, 'Conversation Club & Fluency Workshop', 'ACAD-CONV1', 'Inmersión oral, debates y pronunciación.', 12, 'ACADEMIA', 'PRINCIPAL', 3, 0),
+  (26, 'Business English & Corporate Communication', 'ACAD-BUS1', 'Inglés de negocios y presentaciones.', 12, 'ACADEMIA', 'PRINCIPAL', 3, 0),
+  (27, 'Taller de Fonética y Reducción de Acento', 'ACAD-FON1', 'Fonemas, entonación y acentuación en inglés.', 13, 'ACADEMIA', 'PRINCIPAL', 3, 0),
+  (28, 'Taller de Redacción y Escritura Creativa', 'ACAD-WRT1', 'Ensayos, correos y artículos.', 13, 'ACADEMIA', 'PRINCIPAL', 3, 0),
+  (29, 'Matemáticas Fundamentales', 'MAT-06', 'Aritmética, álgebra y resolución de problemas.', 14, 'COLEGIO', 'PRINCIPAL', 3, 0),
+  (30, 'Geometría y Estadística', 'GEO-06', 'Geometría plana y análisis descriptivo de datos.', 14, 'COLEGIO', 'PRINCIPAL', 3, 0),
+  (31, 'Lengua Castellana', 'CAS-06', 'Comprensión lectora, gramática y producción escrita.', 15, 'COLEGIO', 'PRINCIPAL', 3, 0),
+  (32, 'Inglés Comunicativo', 'ING-06', 'Nivel básico-intermedio A2 de inglés comunicativo.', 15, 'COLEGIO', 'PRINCIPAL', 3, 0),
+  (33, 'Biología General', 'BIO-06', 'Biología celular, ecosistemas y biodiversidad.', 2, 'COLEGIO', 'PRINCIPAL', 3, 0),
+  (34, 'Física Elemental', 'FIS-10', 'Cinemática, dinámica y leyes de Newton.', 2, 'COLEGIO', 'PRINCIPAL', 3, 0),
+  (35, 'Tecnología e Informática', 'TEC-06', 'Herramientas digitales, ofimática y lógica computacional.', 5, 'COLEGIO', 'PRINCIPAL', 3, 0);
 
 -- ----------------------------------------------------------------------------
 -- Estructura de tabla para `subjects_subjectnorm`
@@ -1570,10 +1980,18 @@ CREATE TABLE `subjects_subjectnorm` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `code` VARCHAR(50) NOT NULL,
   `title` VARCHAR(200) NOT NULL,
-  `description` LONGTEXT NOT NULL,
   `order` INT NOT NULL,
   `created_at` DATETIME NOT NULL,
   `subject_id` BIGINT NOT NULL,
+  `competency` VARCHAR(255) NOT NULL,
+  `dimension` VARCHAR(150) NOT NULL,
+  `domain` VARCHAR(150) NOT NULL,
+  `evidence` TEXT NOT NULL,
+  `hacer` TEXT NOT NULL,
+  `indicator` TEXT NOT NULL,
+  `saber` TEXT NOT NULL,
+  `ser` TEXT NOT NULL,
+  `description` LONGTEXT NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_subjects_subjectnorm_subject_id` (`subject_id`),
   CONSTRAINT `fk_subjects_subjectnorm_subject_id` FOREIGN KEY (`subject_id`) REFERENCES `subjects_subject` (`id`)
@@ -1612,6 +2030,7 @@ CREATE TABLE `teachers_teachingassignment` (
   `course_section_id` BIGINT NOT NULL,
   `subject_id` BIGINT NOT NULL,
   `teacher_id` BIGINT NOT NULL,
+  `is_group_director` TINYINT(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_teachers_teachingassignment_teacher_id` (`teacher_id`),
   CONSTRAINT `fk_teachers_teachingassignment_teacher_id` FOREIGN KEY (`teacher_id`) REFERENCES `teachers_teacherprofile` (`id`),
@@ -1624,14 +2043,14 @@ CREATE TABLE `teachers_teachingassignment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Volcado de datos para la tabla `teachers_teachingassignment` (7 registros)
-INSERT INTO `teachers_teachingassignment` (`id`, `is_active`, `created_at`, `academic_year_id`, `course_section_id`, `subject_id`, `teacher_id`) VALUES
-  (1, 1, '2026-09-15 02:03:45.624240', 1, 1, 1, 1),
-  (2, 1, '2026-09-15 02:03:45.638486', 1, 2, 1, 1),
-  (3, 1, '2026-09-16 12:08:34.364618', 1, 3, 5, 2),
-  (4, 1, '2026-09-16 12:34:58.113556', 1, 1, 2, 2),
-  (5, 1, '2026-09-16 14:44:57.216729', 1, 4, 6, 2),
-  (6, 1, '2026-09-16 15:50:24.180979', 1, 1, 4, 3),
-  (7, 1, '2026-09-16 15:51:14.498200', 1, 2, 5, 3);
+INSERT INTO `teachers_teachingassignment` (`id`, `is_active`, `created_at`, `academic_year_id`, `course_section_id`, `subject_id`, `teacher_id`, `is_group_director`) VALUES
+  (1, 1, '2026-09-15 02:03:45.624240', 1, 1, 1, 1, 0),
+  (2, 1, '2026-09-15 02:03:45.638486', 1, 2, 1, 1, 0),
+  (3, 1, '2026-09-16 12:08:34.364618', 1, 3, 5, 2, 0),
+  (4, 1, '2026-09-16 12:34:58.113556', 1, 1, 2, 2, 0),
+  (5, 1, '2026-09-16 14:44:57.216729', 1, 4, 6, 2, 0),
+  (6, 1, '2026-09-16 15:50:24.180979', 1, 1, 4, 3, 0),
+  (7, 1, '2026-09-16 15:51:14.498200', 1, 2, 5, 3, 0);
 
 SET FOREIGN_KEY_CHECKS = 1;
 -- ============================================================================

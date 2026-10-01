@@ -210,7 +210,7 @@
                         </div>
                         <div class="col-sm-8">
                             <label class="form-label small fw-semibold text-secondary">Número de Cédula *</label>
-                            <input type="text" name="document_number" class="form-control" placeholder="Ej: 52123456" required>
+                            <input type="text" name="document_number" class="form-control only-numbers" inputmode="numeric" pattern="[0-9]*" placeholder="Ej: 52123456" required>
                         </div>
                     </div>
 
@@ -222,7 +222,7 @@
                     <div class="row g-2 mb-2">
                         <div class="col-sm-6">
                             <label class="form-label small fw-semibold text-secondary">Teléfono</label>
-                            <input type="text" name="phone" class="form-control" placeholder="Ej: 3001234567">
+                            <input type="text" name="phone" class="form-control only-numbers" inputmode="numeric" pattern="[0-9]*" placeholder="Ej: 3001234567">
                         </div>
                         <div class="col-sm-6">
                             <label class="form-label small fw-semibold text-secondary">Correo Institucional</label>

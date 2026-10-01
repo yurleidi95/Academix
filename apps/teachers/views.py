@@ -134,6 +134,14 @@ def create_teacher_view(request):
         email = request.POST.get('email', '').strip()
         phone = request.POST.get('phone', '').strip()
 
+        if doc_num and not doc_num.isdigit():
+            messages.error(request, 'El número de cédula debe contener exclusivamente dígitos numéricos (sin letras ni símbolos).')
+            return redirect('teachers:list')
+
+        if phone and not phone.isdigit():
+            messages.error(request, 'El teléfono debe contener exclusivamente dígitos numéricos (sin letras ni símbolos).')
+            return redirect('teachers:list')
+
         username = f"doc_{doc_num}" if doc_num else f"{first_name.lower()[:3]}{last_name.lower()[:3]}"
         if CustomUser.objects.filter(username=username).exists():
             username = f"{username}_{CustomUser.objects.count() + 1}"

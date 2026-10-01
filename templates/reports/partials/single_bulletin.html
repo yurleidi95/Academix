@@ -177,15 +177,15 @@
                     <i class="bi bi-patch-check-fill me-1"></i>FIRMA DIGITAL AUTORIZADA
                 </span>
                 <div style="font-family: 'Brush Script MT', 'Dancing Script', 'Segoe Script', cursive; font-size: 1.8rem; color: #1e3a8a; line-height: 1.0; font-weight: bold; transform: rotate(-2deg);">
-                    María Rectora
+                    Rectoría Institucional
                 </div>
             </div>
             {% else %}
             <div style="height: 48px;"></div>
             {% endif %}
             <div class="signature-line"></div>
-            <strong class="d-block text-dark small">DRA. MARÍA RECTORA</strong>
-            <small class="text-muted" style="font-size: 0.72rem;">Rectora Institucional</small>
+            <strong class="d-block text-dark small">{{ b.institution.term_director|default:"RECTORÍA"|upper }} INSTITUCIONAL</strong>
+            <small class="text-muted" style="font-size: 0.72rem;">Rectoría / Dirección General</small>
             {% if b.rector_signature_authorized %}
             <small class="text-success d-block" style="font-size: 0.65rem;">
                 <i class="bi bi-shield-check me-1"></i>Certificado Oficial Academix

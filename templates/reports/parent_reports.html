@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Boletines de Calificaciones — ACADEMIX{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+    <!-- Encabezado Principal -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom">
+        <div>
+            <h1 class="h3 fw-bold text-dark mb-1">
+                <i class="bi bi-file-earmark-pdf-fill text-danger me-2"></i>Boletines Oficiales de Calificaciones
+            </h1>
+            <p class="text-muted small mb-0">
+                Consulta y descarga oficial de los informes de desempeño escolar para acudientes y padres de familia.
+            </p>
+        </div>
+        <div class="d-flex gap-2 align-items-center">
+            <span class="badge bg-primary fs-6 px-3 py-2">
+                <i class="bi bi-calendar-check me-1"></i> Año Lectivo: {{ current_year.year|default:"2026" }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Mensaje Normativo Informativo -->
+    <div class="alert alert-info border-info-subtle shadow-sm mb-4 d-flex align-items-start gap-3">
+        <i class="bi bi-info-circle-fill fs-4 text-info mt-1"></i>
+        <div>
+            <h6 class="alert-heading fw-bold mb-1">Disponibilidad de Boletines Oficiales (Decreto 1290)</h6>
+            <p class="mb-0 small text-secondary">
+                Por normativa institucional y académica, los boletines oficiales quedan a disposición de los padres de familia únicamente 
+                <strong>cuando el periodo lectivo ha sido cerrado formalmente</strong> por la institución educativa. 
+                Mientras el periodo se encuentre en curso o abierto, las calificaciones continúan en etapa de registro docente.
+            </p>
+        </div>
+    </div>
+
+    {% if dependents %}
+        {% for student in dependents %}
+        <div class="card ac-card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center fw-bold fs-5"
+                         style="width: 48px; height: 48px;">
+                        {{ student.user.first_name|first|upper }}
+                    </div>
+                    <div>
+                        <h5 class="fw-bold text-dark mb-0">{{ student.user.get_full_name }}</h5>
+                        <div class="small text-muted">
+                            <span class="me-2"><i class="bi bi-person-badge me-1"></i>ID Único: <strong>{{ student.student_code }}</strong></span>
+                            {% if student.user.document_number %}
+                            <span><i class="bi bi-card-text me-1"></i>Doc: {{ student.user.document_number }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <a href="{% url 'grades:index' %}" class="btn btn-outline-primary btn-sm fw-semibold">
+                        <i class="bi bi-journal-text me-1"></i>Ver Detalle de Notas
+                    </a>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <h6 class="fw-bold text-secondary mb-3">
+                    <i class="bi bi-calendar3 me-1"></i>Periodos Académicos del Año Lectivo
+                </h6>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 30%;">Periodo</th>
+                                <th style="width: 25%;">Fechas</th>
+                                <th style="width: 20%;" class="text-center">Estado del Periodo</th>
+                                <th style="width: 25%;" class="text-end">Acciones / Descargas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in periods %}
+                            <tr>
+                                <td>
+                                    <div class="fw-bold text-dark">{{ p.name }}</div>
+                                    <small class="text-muted">Ponderación: {{ p.percentage }}%</small>
+                                </td>
+                                <td class="small text-muted">
+                                    {{ p.start_date|date:"d M Y" }} &mdash; {{ p.end_date|date:"d M Y" }}
+                                </td>
+                                <td class="text-center">
+                                    {% if p.status == 'CLOSED' or p.status == 'LOCKED' %}
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
+                                        <i class="bi bi-check-circle-fill me-1"></i>Cerrado Oficialmente
+                                    </span>
+                                    {% elif p.status == 'ACTIVE' %}
+                                    <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1">
+                                        <i class="bi bi-hourglass-split me-1"></i>En Curso (Abierto)
+                                    </span>
+                                    {% else %}
+                                    <span class="badge bg-secondary-subtle text-secondary px-2 py-1">
+                                        <i class="bi bi-clock me-1"></i>Pendiente
+                                    </span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    {% if p.status == 'CLOSED' or p.status == 'LOCKED' %}
+                                    <div class="d-inline-flex gap-2">
+                                        <a href="{% url 'reports:student_bulletin' student_id=student.id period_id=p.id %}"
+                                           class="btn btn-sm btn-outline-primary fw-semibold" target="_blank"
+                                           title="Ver informe oficial en pantalla">
+                                            <i class="bi bi-eye-fill me-1"></i>Ver Boletín
+                                        </a>
+                                        <a href="{% url 'reports:download_student_bulletin_pdf' student_id=student.id period_id=p.id %}"
+                                           class="btn btn-sm btn-danger fw-semibold" target="_blank"
+                                           title="Descargar boletín en formato PDF">
+                                            <i class="bi bi-file-earmark-pdf-fill me-1"></i>Descargar PDF
+                                        </a>
+                                    </div>
+                                    {% else %}
+                                    <span class="text-muted small fst-italic">
+                                        <i class="bi bi-lock-fill me-1"></i>Disponible al cierre del periodo
+                                    </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    No se registran periodos académicos configurados para este año lectivo.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="card ac-card p-5 text-center shadow-sm border-0">
+        <div class="rounded-circle bg-secondary-subtle text-secondary d-inline-flex p-4 mx-auto mb-3">
+            <i class="bi bi-people display-4"></i>
+        </div>
+        <h4 class="fw-bold text-dark mb-2">No tiene alumnos asociados</h4>
+        <p class="text-muted small mx-auto" style="max-width: 500px;">
+            Su cuenta de acudiente aún no tiene alumnos vinculados formalmente. Si ya tiene el ID Único del alumno, comuníquese con secretaría para registrar la vinculación.
+        </p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

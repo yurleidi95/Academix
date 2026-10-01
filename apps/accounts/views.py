@@ -433,10 +433,16 @@ def dashboard_view(request):
 
 
     elif user.is_parent:
-        # Acudientes: hijos a cargo
+        # Acudientes: hijos a cargo y acceso a boletines cerrados
         dependents = StudentProfile.objects.filter(parent=user).select_related('user')
         stats['dependents'] = dependents
         stats['dependents_count'] = dependents.count()
+        closed_periods = AcademicPeriod.objects.filter(
+            academic_year=current_year,
+            status__in=['CLOSED', 'LOCKED']
+        ).order_by('number') if current_year else AcademicPeriod.objects.none()
+        stats['closed_periods'] = closed_periods
+        stats['latest_closed_period'] = closed_periods.last()
 
     elif user.is_admin_role or user.is_rector:
         # Estadísticas ejecutivas completas

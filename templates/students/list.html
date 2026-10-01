@@ -259,7 +259,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                         <div class="col-sm-8">
                             <label class="form-label small fw-semibold text-secondary">Número de Documento *</label>
-                            <input type="text" name="document_number" class="form-control" placeholder="Ej: 1098765432" required>
+                            <input type="text" name="document_number" class="form-control only-numbers" inputmode="numeric" pattern="[0-9]*" placeholder="Ej: 1098765432" required>
                         </div>
                     </div>
 
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                         <div class="col-sm-6">
                             <label class="form-label small fw-semibold text-secondary">Teléfono de Contacto</label>
-                            <input type="text" name="phone" class="form-control" placeholder="Ej: 3101234567">
+                            <input type="text" name="phone" class="form-control only-numbers" inputmode="numeric" pattern="[0-9]*" placeholder="Ej: 3101234567">
                         </div>
                     </div>
 

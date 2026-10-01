@@ -189,7 +189,12 @@ class RegistrationForm(forms.Form):
         label='Tipo de Documento'
     )
     document_number = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Número de documento de identidad'}),
+        widget=forms.TextInput(attrs={
+            'class': 'form-control only-numbers',
+            'placeholder': 'Número de documento de identidad (solo números)',
+            'inputmode': 'numeric',
+            'pattern': '[0-9]*'
+        }),
         label='Número de Documento'
     )
     student_id_target = forms.CharField(
@@ -218,6 +223,8 @@ class RegistrationForm(forms.Form):
 
     def clean_document_number(self):
         doc = self.cleaned_data.get('document_number', '').strip()
+        if not doc.isdigit():
+            raise ValidationError("El número de documento debe contener exclusivamente dígitos numéricos (sin letras ni símbolos).")
         if CustomUser.objects.filter(document_number=doc).exists():
             raise ValidationError("Ya existe un usuario con este número de documento.")
         return doc
@@ -258,7 +265,13 @@ class UserProfileForm(forms.ModelForm):
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control only-numbers', 'inputmode': 'numeric', 'pattern': '[0-9]*', 'placeholder': 'Ej: 3101234567'}),
             'address': forms.TextInput(attrs={'class': 'form-control'}),
             'avatar': forms.FileInput(attrs={'class': 'form-control'}),
         }
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone', '').strip() if self.cleaned_data.get('phone') else ''
+        if phone and not phone.isdigit():
+            raise ValidationError("El teléfono debe contener exclusivamente dígitos numéricos (sin letras ni símbolos).")
+        return phone or None

@@ -70,10 +70,37 @@
                             <a href="{% url 'attendance:index' %}" class="btn btn-sm btn-outline-success flex-fill">
                                 <i class="bi bi-calendar-check me-1"></i>Asistencia
                             </a>
-                            {% if stats.active_period %}
-                            <a href="{% url 'reports:student_bulletin' student_id=dep.id period_id=stats.active_period.id %}"
-                               class="btn btn-sm btn-outline-info flex-fill">
-                                <i class="bi bi-file-text me-1"></i>Boletín
+                            {% if stats.latest_closed_period %}
+                            <div class="btn-group flex-fill">
+                                <a href="{% url 'reports:student_bulletin' student_id=dep.id period_id=stats.latest_closed_period.id %}"
+                                   class="btn btn-sm btn-outline-info flex-fill" target="_blank" title="Ver boletín oficial de {{ stats.latest_closed_period.name }}">
+                                    <i class="bi bi-file-earmark-pdf me-1"></i>Boletín
+                                </a>
+                                {% if stats.closed_periods|length > 1 %}
+                                <button type="button" class="btn btn-sm btn-outline-info dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="visually-hidden">Elegir Periodo</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                    <li><h6 class="dropdown-header small">Periodos Cerrados Oficialmente</h6></li>
+                                    {% for cp in stats.closed_periods %}
+                                    <li>
+                                        <a class="dropdown-item small" href="{% url 'reports:student_bulletin' student_id=dep.id period_id=cp.id %}" target="_blank">
+                                            <i class="bi bi-check2-circle text-success me-1"></i>{{ cp.name }}
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item small text-primary fw-semibold" href="{% url 'reports:index' %}">
+                                            <i class="bi bi-folder2-open me-1"></i>Ver todos los boletines
+                                        </a>
+                                    </li>
+                                </ul>
+                                {% endif %}
+                            </div>
+                            {% else %}
+                            <a href="{% url 'reports:index' %}" class="btn btn-sm btn-outline-secondary flex-fill text-muted" title="El boletín estará habilitado cuando la institución cierre el periodo">
+                                <i class="bi bi-lock me-1"></i>Boletín
                             </a>
                             {% endif %}
                         </div>
